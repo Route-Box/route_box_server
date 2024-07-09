@@ -1,0 +1,3 @@
+spring:
+    application:
+        name: route_box_server
