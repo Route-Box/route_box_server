@@ -1,3 +1,120 @@
+routebox.app-version: 0.0.1
+
 spring:
     application:
         name: route_box_server
+    servlet:
+        multipart:
+            # TODO: 최대 용량 정책 논의 후 점검 및 수정 필요
+            max-request-size: 100MB
+            max-file-size: 10MB
+    datasource:
+        url: ${DB_URL}
+        username: ${DB_USERNAME}
+        password: ${DB_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    sql:
+        init:
+            mode: never
+    jpa:
+        hibernate:
+            ddl-auto: validate
+        open-in-view: true
+        properties:
+            hibernate:
+                format_sql: false
+                default_batch_fetch_size: 100
+        defer-datasource-initialization: false
+
+logging:
+    level:
+        com.routebox.routebox: info
+        org:
+            hibernate:
+                SQL: info
+            springframework:
+                jdbc: info
+                web.client.RestTemplate: info
+
+springdoc:
+    swagger-ui:
+        operations-sorter: method
+
+---
+spring:
+    config:
+        activate:
+            on-profile: prod
+    jpa:
+        properties:
+            hibernate:
+                format_sql: false
+
+---
+spring:
+    config:
+        activate:
+            on-profile: dev
+    jpa:
+        properties:
+            hibernate:
+                format_sql: false
+
+---
+spring:
+    config:
+        activate:
+            on-profile: local
+    sql:
+        init:
+            mode: always
+    jpa:
+        properties:
+            hibernate:
+                format_sql: true
+
+logging:
+    level:
+        com.routebox.routebox: debug
+        org:
+            hibernate:
+                type: trace
+                SQL: debug
+            springframework:
+                jdbc: debug
+                web.client.RestTemplate: debug
+
+springdoc:
+    show-actuator: true
+
+---
+spring:
+    config:
+        activate:
+            on-profile: test
+    datasource:
+        # Test용 embedded DB 설정
+        url: jdbc:h2:mem:testdb
+        username: sa
+        password:
+        driver-class-name: org.h2.Driver
+    sql:
+        init:
+            mode: always
+            schema-locations: classpath:schema.sql
+            data-locations:
+    jpa:
+        properties:
+            hibernate:
+                format_sql: true
+
+logging:
+    level:
+        com.routebox.routebox: debug
+        org:
+            hibernate:
+                type: trace
+                SQL: debug
+            springframework:
+                jdbc: debug
+                web.client.RestTemplate: debug

@@ -10,5 +10,6 @@ insert_final_newline = true
 ktlint_standard_package-name = disabled
 
 [*{kt,kts}]
+indent_size = 4
 ktlint_code_style = intellij_idea # Based on Kotlin official code style (https://kotlinlang.org/docs/coding-conventions.html)
 ij_kotlin_packages_to_use_import_on_demand = unset # Don't allow any wildcard imports
