@@ -14,7 +14,7 @@ class TraceId {
         this.level = level
     }
 
-    private fun createId(): String = LogTraceUtils.logTraceId
+    private fun createId(): String = MDCLogTraceManager.logTraceId
 
     fun createNextId(): TraceId = TraceId(id, level + 1)
 

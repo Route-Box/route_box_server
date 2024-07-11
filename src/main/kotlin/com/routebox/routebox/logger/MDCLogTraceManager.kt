@@ -3,7 +3,7 @@ package com.routebox.routebox.logger
 import org.slf4j.MDC
 import java.util.UUID
 
-object LogTraceUtils {
+object MDCLogTraceManager {
 
     private const val LOG_TRACE_ID_MDC_KEY: String = "LogTraceId"
 

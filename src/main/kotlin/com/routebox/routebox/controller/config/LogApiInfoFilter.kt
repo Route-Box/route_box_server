@@ -1,6 +1,6 @@
 package com.routebox.routebox.controller.config
 
-import com.routebox.routebox.logger.LogTraceUtils
+import com.routebox.routebox.logger.MDCLogTraceManager
 import com.routebox.routebox.logger.Logger
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ReadListener
@@ -25,8 +25,8 @@ class LogApiInfoFilter : OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        if (!StringUtils.hasText(LogTraceUtils.logTraceId)) {
-            LogTraceUtils.setLogTraceId()
+        if (!StringUtils.hasText(MDCLogTraceManager.logTraceId)) {
+            MDCLogTraceManager.setLogTraceId()
         }
 
         try {
@@ -60,7 +60,7 @@ class LogApiInfoFilter : OncePerRequestFilter() {
                 }
             }
         } finally {
-            LogTraceUtils.removeLogTraceId()
+            MDCLogTraceManager.removeLogTraceId()
         }
     }
 

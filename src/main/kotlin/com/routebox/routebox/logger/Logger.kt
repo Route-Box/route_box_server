@@ -17,7 +17,7 @@ object Logger {
      * @param content 로그에 출력할 내용
      */
     fun trace(content: String?) {
-        logger.trace("[{}] {}", LogTraceUtils.logTraceId, content)
+        logger.trace("[{}] {}", MDCLogTraceManager.logTraceId, content)
     }
 
     /**
@@ -27,7 +27,7 @@ object Logger {
      * @param content 로그에 출력할 내용
      */
     fun debug(content: String?) {
-        logger.debug("[{}] {}", LogTraceUtils.logTraceId, content)
+        logger.debug("[{}] {}", MDCLogTraceManager.logTraceId, content)
     }
 
     /**
@@ -37,7 +37,7 @@ object Logger {
      * @param content 로그에 출력할 내용
      */
     fun info(content: String?) {
-        logger.info("[{}] {}", LogTraceUtils.logTraceId, content)
+        logger.info("[{}] {}", MDCLogTraceManager.logTraceId, content)
     }
 
     /**
@@ -47,7 +47,7 @@ object Logger {
      * @param content 로그에 출력할 내용
      */
     fun warn(content: String?) {
-        logger.warn("[{}] {}", LogTraceUtils.logTraceId, content)
+        logger.warn("[{}] {}", MDCLogTraceManager.logTraceId, content)
     }
 
     /**
@@ -57,6 +57,6 @@ object Logger {
      * @param content 로그에 출력할 내용
      */
     fun error(content: String?) {
-        logger.error("[{}] {}", LogTraceUtils.logTraceId, content)
+        logger.error("[{}] {}", MDCLogTraceManager.logTraceId, content)
     }
 }
