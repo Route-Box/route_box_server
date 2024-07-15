@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS notification;
-DROP TABLE IF EXISTS notification_settings;
 DROP TABLE IF EXISTS inquiry_response;
 DROP TABLE IF EXISTS inquiry_image;
 DROP TABLE IF EXISTS inquiry;
@@ -9,18 +8,20 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users
 (
-    user_id           BIGINT       NOT NULL AUTO_INCREMENT,
-    login_type        VARCHAR(255) NOT NULL,
-    social_login_uid  VARCHAR(255) NOT NULL UNIQUE,
-    profile_image_url VARCHAR(255) NOT NULL,
-    nickname          VARCHAR(8)   NOT NULL UNIQUE,
-    point             INT          NOT NULL,
-    gender            VARCHAR(255) NOT NULL,
-    birth_day         DATE         NOT NULL,
-    introduction      VARCHAR(25)  NOT NULL,
-    created_at        DATETIME     NOT NULL,
-    updated_at        DATETIME     NOT NULL,
-    deleted_at        DATETIME,
+    user_id                         BIGINT       NOT NULL AUTO_INCREMENT,
+    login_type                      VARCHAR(255) NOT NULL,
+    social_login_uid                VARCHAR(255) NOT NULL UNIQUE,
+    profile_image_url               VARCHAR(255) NOT NULL,
+    nickname                        VARCHAR(8)   NOT NULL UNIQUE,
+    point                           INT          NOT NULL,
+    gender                          VARCHAR(255) NOT NULL,
+    birth_day                       DATE         NOT NULL,
+    introduction                    VARCHAR(25)  NOT NULL,
+    enable_receiving_marketing_info BOOLEAN      NOT NULL,
+    enable_receiving_travel_photo   BOOLEAN      NOT NULL,
+    created_at                      DATETIME     NOT NULL,
+    updated_at                      DATETIME     NOT NULL,
+    deleted_at                      DATETIME,
     PRIMARY KEY (user_id)
 );
 -- CREATE UNIQUE INDEX idx__users__nickname ON users (nickname);
@@ -61,18 +62,6 @@ CREATE TABLE notification
     PRIMARY KEY (notification_id)
 );
 CREATE INDEX idx__notification__user_id ON notification (user_id);
-
-CREATE TABLE notification_settings
-(
-    notification_settings_id BIGINT   NOT NULL AUTO_INCREMENT,
-    user_id                  BIGINT   NOT NULL,
-    receive_marketing_info   BOOLEAN  NOT NULL,
-    receive_travel_photo     BOOLEAN  NOT NULL,
-    created_at               DATETIME NOT NULL,
-    updated_at               DATETIME NOT NULL,
-    PRIMARY KEY (notification_settings_id)
-);
-CREATE INDEX idx__notification_settings__user_id ON notification_settings (user_id);
 
 CREATE TABLE inquiry
 (
