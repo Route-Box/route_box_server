@@ -20,10 +20,10 @@ abstract class TimeTrackedBaseEntity protected constructor(
     @Column(nullable = false, updatable = false)
     @CreatedDate
     var createdAt: LocalDateTime = createdAt
-        private set
+        protected set
 
     @Column(nullable = false)
     @LastModifiedDate
     var updatedAt: LocalDateTime = updatedAt
-        private set
+        protected set
 }

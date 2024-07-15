@@ -17,10 +17,10 @@ abstract class BaseEntity protected constructor(
     @Column(nullable = false, updatable = false)
     @CreatedBy
     var createdBy = createdBy
-        private set
+        protected set
 
     @Column(nullable = false)
     @LastModifiedBy
     var updatedBy = updatedBy
-        private set
+        protected set
 }
