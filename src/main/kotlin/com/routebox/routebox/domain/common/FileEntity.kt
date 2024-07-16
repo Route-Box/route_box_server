@@ -8,7 +8,7 @@ abstract class FileEntity protected constructor(
     storedFileName: String,
     fileUrl: String,
     deletedAt: LocalDateTime? = null,
-) : BaseEntity() {
+) : TimeTrackedBaseEntity() {
     var storedFileName: String = storedFileName
         protected set
 
