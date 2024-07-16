@@ -3,7 +3,10 @@ package com.routebox.routebox.domain.user
 import com.routebox.routebox.domain.common.TimeTrackedBaseEntity
 import com.routebox.routebox.domain.constant.Gender
 import com.routebox.routebox.domain.constant.LoginType
+import com.routebox.routebox.domain.constant.UserRoleType
+import com.routebox.routebox.domain.converter.UserRoleTypesConverter
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -24,6 +27,7 @@ class User(
     gender: Gender,
     birthDay: LocalDate,
     id: Long = 0,
+    roles: Set<UserRoleType> = setOf(UserRoleType.USER),
     profileImageUrl: String = USER_DEFAULT_PROFILE_IMAGE_URL,
     point: Int = 0,
     introduction: String = "",
@@ -40,6 +44,9 @@ class User(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     val id: Long = id
+
+    @Convert(converter = UserRoleTypesConverter::class)
+    var roles: Set<UserRoleType> = roles
 
     @Enumerated(EnumType.STRING)
     val loginType: LoginType = loginType

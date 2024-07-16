@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users
 (
     user_id                         BIGINT       NOT NULL AUTO_INCREMENT,
+    roles                           VARCHAR(255) NOT NULL,
     login_type                      VARCHAR(255) NOT NULL,
     social_login_uid                VARCHAR(255) NOT NULL UNIQUE,
     profile_image_url               VARCHAR(255) NOT NULL,
