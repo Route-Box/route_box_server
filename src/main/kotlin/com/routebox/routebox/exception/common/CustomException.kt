@@ -3,42 +3,19 @@ package com.routebox.routebox.exception.common
 import com.routebox.routebox.exception.CustomExceptionType
 import org.springframework.http.HttpStatus
 
-abstract class CustomException : RuntimeException {
-    val httpStatus: HttpStatus
-    val code: Int
-    final override val message: String
-    final override val cause: Throwable?
+abstract class CustomException(
+    val httpStatus: HttpStatus,
+    val exceptionType: CustomExceptionType,
+    val optionalMessage: String? = null,
+    override val cause: Throwable? = null,
+) : RuntimeException() {
+    val code: Int = exceptionType.code
+    override val message: String get() = createErrorMessage(exceptionType.message, optionalMessage)
 
-    constructor(httpStatus: HttpStatus, exceptionType: CustomExceptionType) {
-        this.httpStatus = httpStatus
-        this.code = exceptionType.code
-        this.message = exceptionType.message
-        this.cause = null
-    }
-
-    constructor(httpStatus: HttpStatus, exceptionType: CustomExceptionType, optionalMessage: String) {
-        this.httpStatus = httpStatus
-        this.code = exceptionType.code
-        this.message = exceptionType.message + " " + optionalMessage
-        this.cause = null
-    }
-
-    constructor(httpStatus: HttpStatus, exceptionType: CustomExceptionType, cause: Throwable?) {
-        this.httpStatus = httpStatus
-        this.code = exceptionType.code
-        this.message = exceptionType.message
-        this.cause = cause
-    }
-
-    constructor(
-        httpStatus: HttpStatus,
-        exceptionType: CustomExceptionType,
-        optionalMessage: String,
-        cause: Throwable?,
-    ) {
-        this.httpStatus = httpStatus
-        this.code = exceptionType.code
-        this.message = exceptionType.message + " " + optionalMessage
-        this.cause = cause
-    }
+    private fun createErrorMessage(baseMessage: String, optionalMessage: String?): String =
+        if (optionalMessage.isNullOrBlank()) {
+            baseMessage
+        } else {
+            "$baseMessage $optionalMessage"
+        }
 }

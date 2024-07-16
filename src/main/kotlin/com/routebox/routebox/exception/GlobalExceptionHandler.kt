@@ -28,13 +28,15 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 import org.springframework.web.multipart.support.MissingServletRequestPartException
 import org.springframework.web.servlet.NoHandlerFoundException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
+import java.io.PrintWriter
+import java.io.StringWriter
 
 @RestControllerAdvice
 class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(CustomException::class)
     fun handleCustomException(ex: CustomException): ResponseEntity<ErrorResponse> {
-        Logger.error("Custom Exception: ${ExceptionUtils.getExceptionStackTrace(ex)}")
+        Logger.error("Custom Exception: ${getExceptionStackTrace(ex)}")
 
         return ResponseEntity
             .status(ex.httpStatus)
@@ -47,7 +49,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         status: HttpStatusCode,
         request: WebRequest,
     ): ResponseEntity<Any>? {
-        Logger.error("Validation Exception: ${ExceptionUtils.getExceptionStackTrace(ex)}")
+        Logger.error("Validation Exception: ${getExceptionStackTrace(ex)}")
 
         val errorDetails = ex.bindingResult
             .fieldErrors
@@ -71,7 +73,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(ConstraintViolationException::class)
     fun handleConstraintViolationException(ex: ConstraintViolationException): ResponseEntity<ValidationErrorResponse> {
-        Logger.error("Validation Exception: ${ExceptionUtils.getExceptionStackTrace(ex)}")
+        Logger.error("Validation Exception: ${getExceptionStackTrace(ex)}")
 
         val errorDetails = ex.constraintViolations.map { violation ->
             ValidationErrorDetailResponse(
@@ -98,7 +100,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         statusCode: HttpStatusCode,
         request: WebRequest,
     ): ResponseEntity<Any> {
-        Logger.error("Spring MVC Basic Exception: ${ExceptionUtils.getExceptionStackTrace(ex)}")
+        Logger.error("Spring MVC Basic Exception: ${getExceptionStackTrace(ex)}")
 
         val exceptionType = GlobalExceptionType.from(ex::class.java) ?: GlobalExceptionType.UNHANDLED
 
@@ -114,7 +116,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(Exception::class)
     fun handleException(ex: Exception): ResponseEntity<ErrorResponse> {
-        Logger.error("UnHandled Exception: ${ExceptionUtils.getExceptionStackTrace(ex)}")
+        Logger.error("UnHandled Exception: ${getExceptionStackTrace(ex)}")
 
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -143,6 +145,12 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
      * @return 발생한 violation exception의 message(설명)
      */
     private fun getMessageFromConstraintViolation(violation: ConstraintViolation<*>): String = violation.message
+
+    private fun getExceptionStackTrace(ex: Exception): String {
+        val stringWriter = StringWriter()
+        ex.printStackTrace(PrintWriter(stringWriter))
+        return stringWriter.toString()
+    }
 }
 
 enum class GlobalExceptionType(
