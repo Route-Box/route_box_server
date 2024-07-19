@@ -48,6 +48,8 @@ dependencies {
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.3")
+
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
