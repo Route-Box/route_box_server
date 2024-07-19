@@ -172,4 +172,4 @@ class RequestWrapper(request: HttpServletRequest) : HttpServletRequestWrapper(re
     }
 }
 
-class ResponseWrapper(response: HttpServletResponse?) : ContentCachingResponseWrapper(response!!)
+class ResponseWrapper(response: HttpServletResponse) : ContentCachingResponseWrapper(response)
