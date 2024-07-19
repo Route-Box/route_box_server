@@ -1,4 +1,7 @@
-routebox.app-version: 0.0.1
+routebox:
+    jwt:
+        secret-key: ${JWT_SECRET_KEY}
+    app-version: 0.0.1
 
 spring:
     application:
