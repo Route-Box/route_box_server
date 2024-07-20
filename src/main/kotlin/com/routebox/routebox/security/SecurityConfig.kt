@@ -24,6 +24,7 @@ class SecurityConfig {
         // Authentication white list (특정 endpoint, HTTP method에 대해서만)
         private val AUTH_WHITE_LIST = mapOf(
             "/api/v1/auth/login/kakao" to HttpMethod.POST,
+            "/api/v1/auth/login/apple" to HttpMethod.POST,
         )
 
         @Bean
