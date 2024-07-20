@@ -23,7 +23,7 @@ class SecurityConfig {
 
         // Authentication white list (특정 endpoint, HTTP method에 대해서만)
         private val AUTH_WHITE_LIST = mapOf(
-            "/api/auth/login/kakao" to HttpMethod.POST,
+            "/api/v1/auth/login/kakao" to HttpMethod.POST,
         )
 
         @Bean
@@ -63,7 +63,7 @@ class SecurityConfig {
                 }
                 .authorizeHttpRequests { auth ->
                     auth.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                    AUTH_WHITE_PATHS.forEach { authWhitePath -> auth.requestMatchers(authWhitePath) }
+                    AUTH_WHITE_PATHS.forEach { authWhitePath -> auth.requestMatchers(authWhitePath).permitAll() }
                     AUTH_WHITE_LIST.forEach { (path: String, httpMethod: HttpMethod) ->
                         auth.requestMatchers(httpMethod, path).permitAll()
                     }

@@ -1,9 +1,12 @@
 package com.routebox.routebox.exception
 
 /**
- * Error code 목록
+ * Error code 목록.
+ * Error code 값은 각 도메인(또는 기능)별로 **200** 단위씩 끊어서 정의한다.
  *
  * - 2XXX: 일반 예외. 아래 항목에 해당하지 않는 대부분의 예외가 여기에 해당한다.
+ * - 3000 ~ 3199: 유저 관련 예외
+ * - 10000 ~ 10199: kakao(kakao open api 등) 관련 관련 예외
  */
 enum class CustomExceptionType(
     val code: Int,
@@ -21,4 +24,9 @@ enum class CustomExceptionType(
      */
     USER_NOT_FOUND(3000, "일치하는 유저를 찾을 수 없습니다."),
     USER_SOCIAL_LOGIN_UID_DUPLICATION(3001, "이미 가입한 계정입니다."),
+
+    /**
+     * Kakao(kakao open api 등) 관련 관련 예외
+     */
+    REQUEST_KAKAO_USER_INFO(10000, "카카오 사용자 정보 조회 중 오류가 발생했습니다."),
 }

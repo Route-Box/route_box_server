@@ -1,6 +1,6 @@
 package com.routebox.routebox.security
 
-import com.routebox.routebox.domain.constant.UserRoleType
+import com.routebox.routebox.domain.user.UserRoleType
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
