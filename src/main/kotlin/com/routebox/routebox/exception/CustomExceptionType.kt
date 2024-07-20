@@ -26,7 +26,13 @@ enum class CustomExceptionType(
     USER_SOCIAL_LOGIN_UID_DUPLICATION(3001, "이미 가입한 계정입니다."),
 
     /**
-     * Kakao(kakao open api 등) 관련 관련 예외
+     * Kakao(kakao open api 등) 관련 예외
      */
     REQUEST_KAKAO_USER_INFO(10000, "카카오 사용자 정보 조회 중 오류가 발생했습니다."),
+
+    /**
+     * Apple 관련 예외
+     */
+    REQUEST_APPLE_AUTH_KEYS(10200, "Apple auth keys 조회 중 오류가 발생했습니다."),
+    INVALID_APPLE_ID_TOKEN(10201, "유효하지 않은 id token입니다."),
 }

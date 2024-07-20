@@ -13,5 +13,5 @@ interface KakaoApiClient {
         value = ["/v2/user/me"],
         headers = ["Content-type=application/x-www-form-urlencoded;charset=utf-8"],
     )
-    fun getUserInfo(@RequestHeader("Authorization") authorizationHeader: String): OAuthUserInfoResponse
+    fun getUserInfo(@RequestHeader("Authorization") authorizationHeader: String): KakaoUserInfo
 }

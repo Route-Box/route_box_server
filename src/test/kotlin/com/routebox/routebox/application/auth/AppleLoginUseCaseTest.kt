@@ -23,9 +23,9 @@ import kotlin.random.Random
 import kotlin.test.Test
 
 @ExtendWith(MockitoExtension::class)
-class KakaoLoginUseCaseTest {
+class AppleLoginUseCaseTest {
     @InjectMocks
-    lateinit var sut: KakaoLoginUseCase
+    lateinit var sut: AppleLoginUseCase
 
     @Mock
     lateinit var userService: UserService
@@ -37,25 +37,25 @@ class KakaoLoginUseCaseTest {
     lateinit var jwtManager: JwtManager
 
     @Test
-    fun `(신규 유저) Kakao에서 발행한 access token이 주어지고, 주어진 token으로 유저 정보 조회 및 회원가입을 진행한다`() {
+    fun `(신규 유저) Apple에서 발행한 id token이 주어지고, 주어진 token으로 유저 정보 조회 및 회원가입을 진행한다`() {
         // given
-        val kakaoAccessToken = Random.toString()
-        val kakaoUid = Random.toString()
+        val appleIdToken = Random.toString()
+        val appleUid = Random.toString()
         val newUser = createUser(id = Random.nextLong())
         val expectedAccessTokenResult = JwtInfo(token = Random.toString(), expiresAt = LocalDateTime.now())
         val expectedRefreshTokenResult = JwtInfo(token = Random.toString(), expiresAt = LocalDateTime.now())
-        given(authService.getUserInfo(LoginType.KAKAO, kakaoAccessToken))
-            .willReturn(OAuthUserInfo(uid = kakaoUid))
-        given(userService.createNewUser(LoginType.KAKAO, kakaoUid)).willReturn(newUser)
+        given(authService.getUserInfo(LoginType.APPLE, appleIdToken))
+            .willReturn(OAuthUserInfo(uid = appleUid))
+        given(userService.createNewUser(LoginType.APPLE, appleUid)).willReturn(newUser)
         given(jwtManager.createAccessToken(newUser.id, newUser.roles)).willReturn(expectedAccessTokenResult)
         given(jwtManager.createRefreshToken(newUser.id, newUser.roles)).willReturn(expectedRefreshTokenResult)
 
         // when
-        val result = sut.invoke(KakaoLoginCommand(kakaoAccessToken))
+        val result = sut.invoke(AppleLoginCommand(appleIdToken))
 
         // then
-        then(authService).should().getUserInfo(LoginType.KAKAO, kakaoAccessToken)
-        then(userService).should().createNewUser(LoginType.KAKAO, kakaoUid)
+        then(authService).should().getUserInfo(LoginType.APPLE, appleIdToken)
+        then(userService).should().createNewUser(LoginType.APPLE, appleUid)
         then(jwtManager).should().createAccessToken(newUser.id, newUser.roles)
         then(jwtManager).should().createRefreshToken(newUser.id, newUser.roles)
         verifyEveryMocksShouldHaveNoMoreInteractions()
@@ -65,10 +65,10 @@ class KakaoLoginUseCaseTest {
     }
 
     @Test
-    fun `(기존 유저) Kakao에서 발행한 access token이 주어지고, 주어진 token으로 유저 정보 조회 및 로그인을 진행한다`() {
+    fun `(기존 유저) Apple에서 발행한 id token이 주어지고, 주어진 token으로 유저 정보 조회 및 로그인을 진행한다`() {
         // given
-        val kakaoAccessToken = Random.toString()
-        val kakaoUid = Random.toString()
+        val appleIdToken = Random.toString()
+        val appleUid = Random.toString()
         val user = createUser(id = Random.nextLong())
         val expectedAccessTokenResult = JwtInfo(token = Random.toString(), expiresAt = LocalDateTime.now())
         val expectedRefreshTokenResult = JwtInfo(token = Random.toString(), expiresAt = LocalDateTime.now())
@@ -76,21 +76,21 @@ class KakaoLoginUseCaseTest {
         // 기존 유저 데이터를 표현하기 위해 createdAt != updatedAt이 되게끔 set.
         ReflectionTestUtils.setField(user, "updatedAt", LocalDateTime.now().plusDays(1))
 
-        given(authService.getUserInfo(LoginType.KAKAO, kakaoAccessToken))
-            .willReturn(OAuthUserInfo(uid = kakaoUid))
-        given(userService.createNewUser(LoginType.KAKAO, kakaoUid))
+        given(authService.getUserInfo(LoginType.APPLE, appleIdToken))
+            .willReturn(OAuthUserInfo(uid = appleUid))
+        given(userService.createNewUser(LoginType.APPLE, appleUid))
             .willThrow(UserSocialLoginUidDuplicationException::class.java)
-        given(userService.getUserBySocialLoginUid(kakaoUid)).willReturn(user)
+        given(userService.getUserBySocialLoginUid(appleUid)).willReturn(user)
         given(jwtManager.createAccessToken(user.id, user.roles)).willReturn(expectedAccessTokenResult)
         given(jwtManager.createRefreshToken(user.id, user.roles)).willReturn(expectedRefreshTokenResult)
 
         // when
-        val result = sut.invoke(KakaoLoginCommand(kakaoAccessToken))
+        val result = sut.invoke(AppleLoginCommand(appleIdToken))
 
         // then
-        then(authService).should().getUserInfo(LoginType.KAKAO, kakaoAccessToken)
-        then(userService).should().createNewUser(LoginType.KAKAO, kakaoUid)
-        then(userService).should().getUserBySocialLoginUid(kakaoUid)
+        then(authService).should().getUserInfo(LoginType.APPLE, appleIdToken)
+        then(userService).should().createNewUser(LoginType.APPLE, appleUid)
+        then(userService).should().getUserBySocialLoginUid(appleUid)
         then(jwtManager).should().createAccessToken(user.id, user.roles)
         then(jwtManager).should().createRefreshToken(user.id, user.roles)
         verifyEveryMocksShouldHaveNoMoreInteractions()
@@ -107,7 +107,7 @@ class KakaoLoginUseCaseTest {
 
     private fun createUser(id: Long) = User(
         id = id,
-        loginType = LoginType.KAKAO,
+        loginType = LoginType.APPLE,
         socialLoginUid = Random.toString(),
         nickname = Random.toString(),
         gender = Gender.PRIVATE,
