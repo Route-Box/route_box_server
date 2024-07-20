@@ -1,6 +1,6 @@
 package com.routebox.routebox.security
 
-import com.routebox.routebox.domain.constant.UserRoleType
+import com.routebox.routebox.domain.user.UserRoleType
 import com.routebox.routebox.exception.security.InvalidTokenException
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
@@ -20,9 +20,7 @@ import java.time.ZoneId
 import java.util.Date
 
 @Component
-class JwtManager(
-    @Value("\${routebox.jwt.secret-key}") private val salt: String,
-) {
+class JwtManager(@Value("\${routebox.jwt.secret-key}") private val salt: String) {
     companion object {
         private const val MILLISECONDS_IN_MINUTE: Long = 1000 * 60
         private const val MILLISECONDS_IN_HOUR: Long = 60 * MILLISECONDS_IN_MINUTE

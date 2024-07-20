@@ -1,6 +1,6 @@
 package com.routebox.routebox.domain.converter
 
-import com.routebox.routebox.domain.constant.UserRoleType
+import com.routebox.routebox.domain.user.UserRoleType
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Converter
 import java.util.stream.Collectors

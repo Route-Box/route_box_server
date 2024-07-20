@@ -1,9 +1,6 @@
 package com.routebox.routebox.domain.user
 
 import com.routebox.routebox.domain.common.TimeTrackedBaseEntity
-import com.routebox.routebox.domain.constant.Gender
-import com.routebox.routebox.domain.constant.LoginType
-import com.routebox.routebox.domain.constant.UserRoleType
 import com.routebox.routebox.domain.converter.UserRoleTypesConverter
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
