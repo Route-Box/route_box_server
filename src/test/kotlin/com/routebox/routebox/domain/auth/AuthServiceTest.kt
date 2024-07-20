@@ -16,9 +16,9 @@ import kotlin.random.Random
 import kotlin.test.Test
 
 @ExtendWith(MockitoExtension::class)
-class OAuthServiceTest {
+class AuthServiceTest {
     @InjectMocks
-    lateinit var sut: OAuthService
+    lateinit var sut: AuthService
 
     @Mock
     lateinit var kakaoApiClient: KakaoApiClient

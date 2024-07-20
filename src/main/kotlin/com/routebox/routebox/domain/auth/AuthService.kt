@@ -7,7 +7,7 @@ import com.routebox.routebox.infrastructure.kakao.OAuthUserInfoResponse
 import org.springframework.stereotype.Service
 
 @Service
-class OAuthService(private val kakaoApiClient: KakaoApiClient) {
+class AuthService(private val kakaoApiClient: KakaoApiClient) {
     /**
      * OAuth 로그인을 위해, 사용자 정보를 조회한다.
      *

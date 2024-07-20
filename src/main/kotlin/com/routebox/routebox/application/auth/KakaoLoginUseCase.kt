@@ -1,6 +1,6 @@
 package com.routebox.routebox.application.auth
 
-import com.routebox.routebox.domain.auth.OAuthService
+import com.routebox.routebox.domain.auth.AuthService
 import com.routebox.routebox.domain.user.LoginType
 import com.routebox.routebox.domain.user.UserService
 import com.routebox.routebox.exception.user.UserSocialLoginUidDuplicationException
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 @Component
 class KakaoLoginUseCase(
     private val userService: UserService,
-    private val oAuthService: OAuthService,
+    private val authService: AuthService,
     private val jwtManager: JwtManager,
 ) {
     /**
@@ -21,7 +21,7 @@ class KakaoLoginUseCase(
      * @return 로그인 결과로 신규 유저인지에 대한 정보, access token 정보, refresh token 정보를 응답한다.
      */
     operator fun invoke(@Valid command: KakaoLoginCommand): KakaoLoginResult {
-        val kakaoUserInfo = oAuthService.getUserInfo(LoginType.KAKAO, command.kakaoAccessToken)
+        val kakaoUserInfo = authService.getUserInfo(LoginType.KAKAO, command.kakaoAccessToken)
 
         val user = runCatching {
             userService.createNewUser(LoginType.KAKAO, kakaoUserInfo.uid)
