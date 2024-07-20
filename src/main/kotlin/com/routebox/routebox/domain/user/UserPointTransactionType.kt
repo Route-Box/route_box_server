@@ -1,4 +1,4 @@
-package com.routebox.routebox.domain.constant
+package com.routebox.routebox.domain.user
 
 enum class UserPointTransactionType {
     CHARGE,

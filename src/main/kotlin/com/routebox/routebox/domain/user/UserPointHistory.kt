@@ -1,7 +1,6 @@
 package com.routebox.routebox.domain.user
 
 import com.routebox.routebox.domain.common.TimeTrackedBaseEntity
-import com.routebox.routebox.domain.constant.UserPointTransactionType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
