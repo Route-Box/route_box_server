@@ -1,11 +1,11 @@
 package com.routebox.routebox.controller.auth
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.routebox.routebox.application.auth.AppleLoginCommand
 import com.routebox.routebox.application.auth.AppleLoginUseCase
-import com.routebox.routebox.application.auth.KakaoLoginCommand
 import com.routebox.routebox.application.auth.KakaoLoginUseCase
-import com.routebox.routebox.application.auth.LoginResult
+import com.routebox.routebox.application.auth.dto.AppleLoginCommand
+import com.routebox.routebox.application.auth.dto.KakaoLoginCommand
+import com.routebox.routebox.application.auth.dto.LoginResult
 import com.routebox.routebox.config.ControllerTestConfig
 import com.routebox.routebox.domain.user.constant.LoginType
 import com.routebox.routebox.security.JwtInfo
@@ -43,8 +43,8 @@ class AuthControllerTest @Autowired constructor(
         val expectedResult = LoginResult(
             isNew = false,
             loginType = LoginType.KAKAO,
-            accessToken = JwtInfo(token = Random.toString(), expiresAt = LocalDateTime.now()),
-            refreshToken = JwtInfo(token = Random.toString(), expiresAt = LocalDateTime.now()),
+            accessToken = JwtInfo(token = toString(), expiresAt = LocalDateTime.now()),
+            refreshToken = JwtInfo(token = toString(), expiresAt = LocalDateTime.now()),
         )
         given(kakaoLoginUseCase.invoke(KakaoLoginCommand(kakaoAccessToken))).willReturn(expectedResult)
 
@@ -69,8 +69,8 @@ class AuthControllerTest @Autowired constructor(
         val expectedResult = LoginResult(
             isNew = false,
             loginType = LoginType.APPLE,
-            accessToken = JwtInfo(token = Random.toString(), expiresAt = LocalDateTime.now()),
-            refreshToken = JwtInfo(token = Random.toString(), expiresAt = LocalDateTime.now()),
+            accessToken = JwtInfo(token = toString(), expiresAt = LocalDateTime.now()),
+            refreshToken = JwtInfo(token = toString(), expiresAt = LocalDateTime.now()),
         )
         given(appleLoginUseCase.invoke(AppleLoginCommand(appleIdToken))).willReturn(expectedResult)
 

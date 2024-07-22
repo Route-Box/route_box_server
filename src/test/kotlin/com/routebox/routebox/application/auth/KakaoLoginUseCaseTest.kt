@@ -1,5 +1,6 @@
 package com.routebox.routebox.application.auth
 
+import com.routebox.routebox.application.auth.dto.KakaoLoginCommand
 import com.routebox.routebox.domain.auth.AuthService
 import com.routebox.routebox.domain.auth.OAuthUserInfo
 import com.routebox.routebox.domain.user.User

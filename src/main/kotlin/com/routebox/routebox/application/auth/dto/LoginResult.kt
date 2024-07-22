@@ -1,4 +1,4 @@
-package com.routebox.routebox.application.auth
+package com.routebox.routebox.application.auth.dto
 
 import com.routebox.routebox.domain.user.constant.LoginType
 import com.routebox.routebox.security.JwtInfo

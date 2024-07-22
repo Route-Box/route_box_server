@@ -1,11 +1,12 @@
 package com.routebox.routebox.controller.auth
 
-import com.routebox.routebox.application.auth.AppleLoginCommand
 import com.routebox.routebox.application.auth.AppleLoginUseCase
-import com.routebox.routebox.application.auth.KakaoLoginCommand
 import com.routebox.routebox.application.auth.KakaoLoginUseCase
+import com.routebox.routebox.application.auth.dto.AppleLoginCommand
+import com.routebox.routebox.application.auth.dto.KakaoLoginCommand
 import com.routebox.routebox.controller.common.BaseResponse
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -28,7 +29,7 @@ class AuthController(
     )
     @ApiResponses(
         ApiResponse(responseCode = "200"),
-        ApiResponse(responseCode = "400", description = "[10000] Kakao API 서버로부터 오류를 응답받은 경우."),
+        ApiResponse(responseCode = "400", description = "[10000] Kakao API 서버로부터 오류를 응답받은 경우.", content = [Content()]),
     )
     @PostMapping("/v1/auth/login/kakao")
     fun kakaoLoginV1(@RequestBody @Valid request: KakaoLoginRequest): BaseResponse<LoginResponse> {
@@ -42,8 +43,8 @@ class AuthController(
     )
     @ApiResponses(
         ApiResponse(responseCode = "200"),
-        ApiResponse(responseCode = "400", description = "[10200] Apple API 서버로부터 오류를 응답받은 경우."),
-        ApiResponse(responseCode = "401", description = "[10201] Id token이 유효하지 않은 경우"),
+        ApiResponse(responseCode = "400", description = "[10200] Apple API 서버로부터 오류를 응답받은 경우.", content = [Content()]),
+        ApiResponse(responseCode = "401", description = "[10201] Id token이 유효하지 않은 경우", content = [Content()]),
     )
     @PostMapping("/v1/auth/login/apple")
     fun appleLoginV1(@RequestBody @Valid request: AppleLoginRequest): BaseResponse<LoginResponse> {

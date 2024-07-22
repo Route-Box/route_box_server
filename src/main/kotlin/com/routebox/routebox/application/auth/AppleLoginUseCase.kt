@@ -1,5 +1,7 @@
 package com.routebox.routebox.application.auth
 
+import com.routebox.routebox.application.auth.dto.AppleLoginCommand
+import com.routebox.routebox.application.auth.dto.LoginResult
 import com.routebox.routebox.domain.auth.AuthService
 import com.routebox.routebox.domain.user.UserService
 import com.routebox.routebox.domain.user.constant.LoginType

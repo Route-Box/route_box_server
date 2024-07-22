@@ -1,6 +1,6 @@
 package com.routebox.routebox.controller.auth
 
-import com.routebox.routebox.application.auth.LoginResult
+import com.routebox.routebox.application.auth.dto.LoginResult
 import com.routebox.routebox.domain.user.constant.LoginType
 import com.routebox.routebox.security.JwtInfo
 import io.swagger.v3.oas.annotations.media.Schema
