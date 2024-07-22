@@ -1,6 +1,6 @@
 package com.routebox.routebox.domain.auth
 
-import com.routebox.routebox.domain.user.LoginType
+import com.routebox.routebox.domain.user.constant.LoginType
 import com.routebox.routebox.exception.apple.InvalidAppleIdTokenException
 import com.routebox.routebox.exception.kakao.RequestKakaoUserInfoException
 import com.routebox.routebox.infrastructure.apple.AppleApiClient

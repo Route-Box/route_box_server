@@ -1,5 +1,8 @@
 package com.routebox.routebox.domain.user
 
+import com.routebox.routebox.domain.user.constant.Gender
+import com.routebox.routebox.domain.user.constant.LoginType
+import com.routebox.routebox.exception.user.UserNicknameDuplicationException
 import com.routebox.routebox.exception.user.UserNotFoundException
 import com.routebox.routebox.exception.user.UserSocialLoginUidDuplicationException
 import com.routebox.routebox.infrastructure.user.UserRepository
@@ -120,6 +123,90 @@ class UserServiceTest {
         then(userRepository).should().existsBySocialLoginUid(socialLoginUid)
         verifyEveryMocksShouldHaveNoMoreInteractions()
         assertThat(ex).isInstanceOf(UserSocialLoginUidDuplicationException::class.java)
+    }
+
+    @Test
+    fun `유저 id와 변경하고자 하는 닉네임이 주어지고, 유저 닉네임을 변경하면, 변경된 유저 정보가 반환된다`() {
+        // given
+        val userId = Random.nextLong()
+        val newNickname = Random.toString()
+        given(userRepository.findById(userId)).willReturn(Optional.of(createUser(userId)))
+        given(userRepository.existsByNickname(newNickname)).willReturn(false)
+
+        // when
+        val result = sut.updateUser(id = userId, nickname = newNickname)
+
+        // then
+        then(userRepository).should().findById(userId)
+        then(userRepository).should().existsByNickname(newNickname)
+        verifyEveryMocksShouldHaveNoMoreInteractions()
+        assertThat(result.nickname).isEqualTo(newNickname)
+    }
+
+    @Test
+    fun `유저 id와 변경하고자 하는 닉네임이 주어지고, 유저 닉네임을 변경한다, 만약 다른 유저가 사용중인 닉네임이라면, 예외가 발생한다`() {
+        // given
+        val userId = Random.nextLong()
+        val nickname = Random.toString()
+        given(userRepository.findById(userId)).willReturn(Optional.of(createUser(userId)))
+        given(userRepository.existsByNickname(nickname)).willReturn(true)
+
+        // when
+        val ex = catchThrowable { sut.updateUser(id = userId, nickname = nickname) }
+
+        // then
+        then(userRepository).should().findById(userId)
+        then(userRepository).should().existsByNickname(nickname)
+        verifyEveryMocksShouldHaveNoMoreInteractions()
+        assertThat(ex).isInstanceOf(UserNicknameDuplicationException::class.java)
+    }
+
+    @Test
+    fun `유저 id와 변경하고자 하는 성별이 주어지고, 유저 성별을 변경하면, 변경된 유저 정보가 반환된다`() {
+        // given
+        val userId = Random.nextLong()
+        val newGender = Gender.MALE
+        given(userRepository.findById(userId)).willReturn(Optional.of(createUser(userId)))
+
+        // when
+        val result = sut.updateUser(id = userId, gender = newGender)
+
+        // then
+        then(userRepository).should().findById(userId)
+        verifyEveryMocksShouldHaveNoMoreInteractions()
+        assertThat(result.gender).isEqualTo(newGender)
+    }
+
+    @Test
+    fun `유저 id와 변경하고자 하는 생일이 주어지고, 유저 생일을 변경하면, 변경된 유저 정보가 반환된다`() {
+        // given
+        val userId = Random.nextLong()
+        val newBirthDay = LocalDate.now()
+        given(userRepository.findById(userId)).willReturn(Optional.of(createUser(userId)))
+
+        // when
+        val result = sut.updateUser(id = userId, birthDay = newBirthDay)
+
+        // then
+        then(userRepository).should().findById(userId)
+        verifyEveryMocksShouldHaveNoMoreInteractions()
+        assertThat(result.birthDay).isEqualTo(newBirthDay)
+    }
+
+    @Test
+    fun `유저 id와 변경하고자 하는 한 줄 소개가 주어지고, 유저 한 줄 소개를 변경하면, 변경된 유저 정보가 반환된다`() {
+        // given
+        val userId = Random.nextLong()
+        val newIntroduction = Random.toString()
+        given(userRepository.findById(userId)).willReturn(Optional.of(createUser(userId)))
+
+        // when
+        val result = sut.updateUser(id = userId, introduction = newIntroduction)
+
+        // then
+        then(userRepository).should().findById(userId)
+        verifyEveryMocksShouldHaveNoMoreInteractions()
+        assertThat(result.introduction).isEqualTo(newIntroduction)
     }
 
     private fun verifyEveryMocksShouldHaveNoMoreInteractions() {

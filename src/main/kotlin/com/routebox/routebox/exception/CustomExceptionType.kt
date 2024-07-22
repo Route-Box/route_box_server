@@ -23,7 +23,8 @@ enum class CustomExceptionType(
      * 유저 관련 예외
      */
     USER_NOT_FOUND(3000, "일치하는 유저를 찾을 수 없습니다."),
-    USER_SOCIAL_LOGIN_UID_DUPLICATION(3001, "이미 가입한 계정입니다."),
+    USER_SOCIAL_LOGIN_UID_DUPLICATION(3001, "이미 가입된 계정입니다."),
+    USER_NICKNAME_DUPLICATION(3002, "이미 사용중인 닉네임입니다."),
 
     /**
      * Kakao(kakao open api 등) 관련 예외

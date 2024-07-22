@@ -1,8 +1,8 @@
 package com.routebox.routebox.application.auth
 
 import com.routebox.routebox.domain.auth.AuthService
-import com.routebox.routebox.domain.user.LoginType
 import com.routebox.routebox.domain.user.UserService
+import com.routebox.routebox.domain.user.constant.LoginType
 import com.routebox.routebox.exception.user.UserSocialLoginUidDuplicationException
 import com.routebox.routebox.security.JwtManager
 import jakarta.validation.Valid

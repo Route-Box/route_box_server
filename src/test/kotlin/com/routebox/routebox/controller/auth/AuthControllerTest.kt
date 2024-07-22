@@ -7,7 +7,7 @@ import com.routebox.routebox.application.auth.KakaoLoginCommand
 import com.routebox.routebox.application.auth.KakaoLoginUseCase
 import com.routebox.routebox.application.auth.LoginResult
 import com.routebox.routebox.config.ControllerTestConfig
-import com.routebox.routebox.domain.user.LoginType
+import com.routebox.routebox.domain.user.constant.LoginType
 import com.routebox.routebox.security.JwtInfo
 import org.mockito.kotlin.given
 import org.mockito.kotlin.then

@@ -2,10 +2,10 @@ package com.routebox.routebox.application.auth
 
 import com.routebox.routebox.domain.auth.AuthService
 import com.routebox.routebox.domain.auth.OAuthUserInfo
-import com.routebox.routebox.domain.user.Gender
-import com.routebox.routebox.domain.user.LoginType
 import com.routebox.routebox.domain.user.User
 import com.routebox.routebox.domain.user.UserService
+import com.routebox.routebox.domain.user.constant.Gender
+import com.routebox.routebox.domain.user.constant.LoginType
 import com.routebox.routebox.exception.user.UserSocialLoginUidDuplicationException
 import com.routebox.routebox.security.JwtInfo
 import com.routebox.routebox.security.JwtManager
