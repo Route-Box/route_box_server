@@ -32,10 +32,8 @@ class UserController(
         security = [SecurityRequirement(name = "access-token")],
     )
     @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "200"),
-            ApiResponse(responseCode = "409", description = "[3002] 변경하려고 하는 닉네임이 이미 사용중인 경우", content = [Content()]),
-        ],
+        ApiResponse(responseCode = "200"),
+        ApiResponse(responseCode = "409", description = "[3002] 변경하려고 하는 닉네임이 이미 사용중인 경우", content = [Content()]),
     )
     @PatchMapping("/v1/users/me")
     fun updateUserInfo(

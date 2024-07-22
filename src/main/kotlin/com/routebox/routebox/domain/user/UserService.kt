@@ -29,7 +29,7 @@ class UserService(private val userRepository: UserRepository) {
      *
      * @param socialLoginUid 조회할 유저의 social login uid
      * @return 조회된 user entity
-     * * @throws UserNotFoundException 주어진 social login uid와 일치하는 유저가 없는 경우
+     * @throws UserNotFoundException 주어진 social login uid와 일치하는 유저가 없는 경우
      */
     @Transactional(readOnly = true)
     fun getUserBySocialLoginUid(socialLoginUid: String): User =
