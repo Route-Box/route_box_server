@@ -1,9 +1,9 @@
 package com.routebox.routebox.config
 
-import com.routebox.routebox.domain.user.Gender
-import com.routebox.routebox.domain.user.LoginType
 import com.routebox.routebox.domain.user.User
 import com.routebox.routebox.domain.user.UserService
+import com.routebox.routebox.domain.user.constant.Gender
+import com.routebox.routebox.domain.user.constant.LoginType
 import com.routebox.routebox.security.CustomUserDetailsService
 import com.routebox.routebox.security.JwtAccessDeniedHandler
 import com.routebox.routebox.security.JwtAuthenticationEntryPoint

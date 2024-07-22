@@ -2,6 +2,9 @@ package com.routebox.routebox.domain.user
 
 import com.routebox.routebox.domain.common.TimeTrackedBaseEntity
 import com.routebox.routebox.domain.converter.UserRoleTypesConverter
+import com.routebox.routebox.domain.user.constant.Gender
+import com.routebox.routebox.domain.user.constant.LoginType
+import com.routebox.routebox.domain.user.constant.UserRoleType
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Embedded
@@ -44,6 +47,7 @@ class User(
 
     @Convert(converter = UserRoleTypesConverter::class)
     var roles: Set<UserRoleType> = roles
+        private set
 
     @Enumerated(EnumType.STRING)
     val loginType: LoginType = loginType
@@ -75,4 +79,20 @@ class User(
 
     var deletedAt: LocalDateTime? = deletedAt
         private set
+
+    fun updateNickname(nickname: String) {
+        this.nickname = nickname
+    }
+
+    fun updateGender(gender: Gender) {
+        this.gender = gender
+    }
+
+    fun updateBirthDay(birthday: LocalDate) {
+        this.birthDay = birthday
+    }
+
+    fun updateIntroduction(introduction: String) {
+        this.introduction = introduction
+    }
 }

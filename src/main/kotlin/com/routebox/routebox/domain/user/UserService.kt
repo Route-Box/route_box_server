@@ -1,5 +1,7 @@
 package com.routebox.routebox.domain.user
 
+import com.routebox.routebox.domain.user.constant.Gender
+import com.routebox.routebox.domain.user.constant.LoginType
 import com.routebox.routebox.exception.user.UserNotFoundException
 import com.routebox.routebox.exception.user.UserSocialLoginUidDuplicationException
 import com.routebox.routebox.infrastructure.user.UserRepository

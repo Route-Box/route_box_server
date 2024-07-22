@@ -1,6 +1,6 @@
 package com.routebox.routebox.security
 
-import com.routebox.routebox.domain.user.UserRoleType
+import com.routebox.routebox.domain.user.constant.UserRoleType
 import com.routebox.routebox.exception.security.InvalidTokenException
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException

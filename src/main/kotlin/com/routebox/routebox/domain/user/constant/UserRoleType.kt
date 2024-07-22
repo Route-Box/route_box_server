@@ -1,4 +1,4 @@
-package com.routebox.routebox.domain.user
+package com.routebox.routebox.domain.user.constant
 
 enum class UserRoleType(
     val roleName: String,
