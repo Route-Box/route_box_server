@@ -1,6 +1,7 @@
 package com.routebox.routebox.controller.user
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.routebox.routebox.application.user.CheckNicknameAvailabilityUseCase
 import com.routebox.routebox.application.user.UpdateUserInfoUseCase
 import com.routebox.routebox.application.user.dto.UpdateUserInfoCommand
 import com.routebox.routebox.application.user.dto.UpdateUserInfoResult
@@ -19,6 +20,7 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -34,6 +36,26 @@ class UserControllerTest @Autowired constructor(
 ) {
     @MockBean
     lateinit var updateUserInfoUseCase: UpdateUserInfoUseCase
+
+    @MockBean
+    lateinit var checkNicknameAvailabilityUseCase: CheckNicknameAvailabilityUseCase
+
+    @Test
+    fun `닉네임이 주어지고, 주어진 닉네임이 이용 가능한지 확인한다`() {
+        // given
+        val nickname = RandomStringUtils.random(8, true, true)
+        val expectedResult = true
+        given(checkNicknameAvailabilityUseCase.invoke(nickname)).willReturn(expectedResult)
+
+        // when & then
+        mvc.perform(
+            get("/api/v1/users/nickname/{nickname}/availability", nickname),
+        ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.result.nickname").value(nickname))
+            .andExpect(jsonPath("$.result.isAvailable").value(expectedResult))
+        then(checkNicknameAvailabilityUseCase).should().invoke(nickname)
+        verifyEveryMocksShouldHaveNoMoreInteractions()
+    }
 
     @Test
     fun `수정할 유저 정보(닉네임, 생일 등)가 주어지고, 유저 정보를 수정하면, 변경된 유저 정보가 응답된다`() {
@@ -80,6 +102,7 @@ class UserControllerTest @Autowired constructor(
 
     private fun verifyEveryMocksShouldHaveNoMoreInteractions() {
         then(updateUserInfoUseCase).shouldHaveNoMoreInteractions()
+        then(checkNicknameAvailabilityUseCase).shouldHaveNoMoreInteractions()
     }
 
     private fun createUserPrincipal(userId: Long) = UserPrincipal(
