@@ -36,6 +36,16 @@ class UserService(private val userRepository: UserRepository) {
         userRepository.findBySocialLoginUid(socialLoginUid) ?: throw UserNotFoundException()
 
     /**
+     * 닉네임이 이용 가능한지 조회한다.
+     *
+     * @param nickname 이용 가능 여부를 확인할 닉네임
+     * @return 닉네임의 이용 가능 여부. `true`인 경우 이용 가능한 닉네임.
+     */
+    @Transactional(readOnly = true)
+    fun isNicknameAvailable(nickname: String): Boolean =
+        !userRepository.existsByNickname(nickname)
+
+    /**
      * 신규 유저 데이터를 생성 및 저장한다.
      *
      * @param loginType 유저가 사용한 로그인 종류

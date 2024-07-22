@@ -6,9 +6,12 @@ import com.routebox.routebox.exception.user.UserNicknameDuplicationException
 import com.routebox.routebox.exception.user.UserNotFoundException
 import com.routebox.routebox.exception.user.UserSocialLoginUidDuplicationException
 import com.routebox.routebox.infrastructure.user.UserRepository
+import org.apache.commons.lang3.RandomStringUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.InjectMocks
@@ -123,6 +126,22 @@ class UserServiceTest {
         then(userRepository).should().existsBySocialLoginUid(socialLoginUid)
         verifyEveryMocksShouldHaveNoMoreInteractions()
         assertThat(ex).isInstanceOf(UserSocialLoginUidDuplicationException::class.java)
+    }
+
+    @ValueSource(booleans = [true, false])
+    @ParameterizedTest
+    fun `닉네임이 주어지고, 주어진 닉네임이 이용 가능한지 확인한다`(expectedResult: Boolean) {
+        // given
+        val nickname = RandomStringUtils.random(8, true, true)
+        given(userRepository.existsByNickname(nickname)).willReturn(!expectedResult)
+
+        // when
+        val actualResult = sut.isNicknameAvailable(nickname)
+
+        // then
+        then(userRepository).should().existsByNickname(nickname)
+        verifyEveryMocksShouldHaveNoMoreInteractions()
+        assertThat(actualResult).isEqualTo(expectedResult)
     }
 
     @Test

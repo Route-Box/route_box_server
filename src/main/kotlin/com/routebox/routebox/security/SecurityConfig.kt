@@ -25,6 +25,7 @@ class SecurityConfig {
         private val AUTH_WHITE_LIST = mapOf(
             "/api/v1/auth/login/kakao" to HttpMethod.POST,
             "/api/v1/auth/login/apple" to HttpMethod.POST,
+            "/api/v1/users/nickname/*/availability" to HttpMethod.GET,
         )
 
         @Bean
