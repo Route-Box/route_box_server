@@ -2,6 +2,7 @@ package com.routebox.routebox.domain.user
 
 import com.routebox.routebox.domain.user.constant.Gender
 import com.routebox.routebox.domain.user.constant.LoginType
+import com.routebox.routebox.exception.user.UserNicknameDuplicationException
 import com.routebox.routebox.exception.user.UserNotFoundException
 import com.routebox.routebox.exception.user.UserSocialLoginUidDuplicationException
 import com.routebox.routebox.infrastructure.user.UserRepository
@@ -56,6 +57,41 @@ class UserService(private val userRepository: UserRepository) {
                 birthDay = LocalDate.of(1, 1, 1),
             ),
         )
+    }
+
+    /**
+     * 유저 정보 수정.
+     * `null`이 아닌 값으로 전달된 항목들에 대해서만 수정이 진행된다.
+     *
+     * @param id id of user
+     * @param nickname 설정하고자 하는 닉네임
+     * @param gender 설정하고자 하는 성별
+     * @param birthDay 설정하고자 하는 생일
+     * @param introduction 설정하고자 하는 한 줄 소개
+     * @return 변경된 user entity
+     * @throws UserNicknameDuplicationException 변경하려고 하는 닉네임이 이미 사용중인 경우
+     */
+    @Transactional
+    fun updateUser(
+        id: Long,
+        nickname: String? = null,
+        gender: Gender? = null,
+        birthDay: LocalDate? = null,
+        introduction: String? = null,
+    ): User {
+        val user = getUserById(id)
+
+        nickname?.let { newNickname ->
+            if (userRepository.existsByNickname(newNickname)) {
+                throw UserNicknameDuplicationException()
+            }
+            user.updateNickname(newNickname)
+        }
+        gender?.let { user.updateGender(it) }
+        birthDay?.let { user.updateBirthDay(it) }
+        introduction?.let { user.updateIntroduction(it) }
+
+        return user
     }
 
     /**
