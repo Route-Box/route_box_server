@@ -50,8 +50,8 @@ class SecurityConfig {
                             "http://localhost*",
                             "http://myroutebox.com",
                             "https://myroutebox.com",
-                        )
-                        corsConfig.allowedOriginPatterns = listOf(
+                            "http://api-dev.myroutebox.com",
+                            "https://api-dev.myroutebox.com",
                             "http://*.myroutebox.com",
                             "https://*.myroutebox.com",
                         )
@@ -65,6 +65,7 @@ class SecurityConfig {
                         )
                         corsConfig.allowedHeaders = listOf("*")
                         corsConfig.exposedHeaders = listOf("*")
+                        corsConfig.allowCredentials = true
                         return@CorsConfigurationSource corsConfig
                     }
                     corsConfigurer.configurationSource(corsConfigSrc)
