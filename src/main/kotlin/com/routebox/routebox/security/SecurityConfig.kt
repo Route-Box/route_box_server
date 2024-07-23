@@ -48,6 +48,12 @@ class SecurityConfig {
                         corsConfig.allowedOrigins = listOf(
                             // TODO: 웹 서비스 배포 후 CORS 정책 추가 필요
                             "http://localhost*",
+                            "http://myroutebox.com",
+                            "https://myroutebox.com",
+                        )
+                        corsConfig.allowedOriginPatterns = listOf(
+                            "http://*.myroutebox.com",
+                            "https://*.myroutebox.com"
                         )
                         corsConfig.allowedMethods = listOf(
                             HttpMethod.GET.name(),
