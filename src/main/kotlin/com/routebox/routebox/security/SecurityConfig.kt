@@ -53,7 +53,7 @@ class SecurityConfig {
                         )
                         corsConfig.allowedOriginPatterns = listOf(
                             "http://*.myroutebox.com",
-                            "https://*.myroutebox.com"
+                            "https://*.myroutebox.com",
                         )
                         corsConfig.allowedMethods = listOf(
                             HttpMethod.GET.name(),
