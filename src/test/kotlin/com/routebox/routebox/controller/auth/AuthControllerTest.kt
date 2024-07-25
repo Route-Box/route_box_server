@@ -54,10 +54,10 @@ class AuthControllerTest @Autowired constructor(
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(KakaoLoginRequest(kakaoAccessToken))),
         ).andExpect(status().isOk)
-            .andExpect(jsonPath("$.result.isNew").value(expectedResult.isNew))
-            .andExpect(jsonPath("$.result.loginType").value(expectedResult.loginType.toString()))
-            .andExpect(jsonPath("$.result.accessToken.token").value(expectedResult.accessToken.token))
-            .andExpect(jsonPath("$.result.refreshToken.token").value(expectedResult.refreshToken.token))
+            .andExpect(jsonPath("$.isNew").value(expectedResult.isNew))
+            .andExpect(jsonPath("$.loginType").value(expectedResult.loginType.toString()))
+            .andExpect(jsonPath("$.accessToken.token").value(expectedResult.accessToken.token))
+            .andExpect(jsonPath("$.refreshToken.token").value(expectedResult.refreshToken.token))
         then(kakaoLoginUseCase).should().invoke(KakaoLoginCommand(kakaoAccessToken))
         verifyEveryMocksShouldHaveNoMoreInteractions()
     }
@@ -80,10 +80,10 @@ class AuthControllerTest @Autowired constructor(
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(AppleLoginRequest(appleIdToken))),
         ).andExpect(status().isOk)
-            .andExpect(jsonPath("$.result.isNew").value(expectedResult.isNew))
-            .andExpect(jsonPath("$.result.loginType").value(expectedResult.loginType.toString()))
-            .andExpect(jsonPath("$.result.accessToken.token").value(expectedResult.accessToken.token))
-            .andExpect(jsonPath("$.result.refreshToken.token").value(expectedResult.refreshToken.token))
+            .andExpect(jsonPath("$.isNew").value(expectedResult.isNew))
+            .andExpect(jsonPath("$.loginType").value(expectedResult.loginType.toString()))
+            .andExpect(jsonPath("$.accessToken.token").value(expectedResult.accessToken.token))
+            .andExpect(jsonPath("$.refreshToken.token").value(expectedResult.refreshToken.token))
         then(appleLoginUseCase).should().invoke(AppleLoginCommand(appleIdToken))
         verifyEveryMocksShouldHaveNoMoreInteractions()
     }
