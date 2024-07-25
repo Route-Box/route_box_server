@@ -4,7 +4,6 @@ import com.routebox.routebox.application.auth.AppleLoginUseCase
 import com.routebox.routebox.application.auth.KakaoLoginUseCase
 import com.routebox.routebox.application.auth.dto.AppleLoginCommand
 import com.routebox.routebox.application.auth.dto.KakaoLoginCommand
-import com.routebox.routebox.controller.common.BaseResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -32,9 +31,9 @@ class AuthController(
         ApiResponse(responseCode = "400", description = "[10000] Kakao API 서버로부터 오류를 응답받은 경우.", content = [Content()]),
     )
     @PostMapping("/v1/auth/login/kakao")
-    fun kakaoLoginV1(@RequestBody @Valid request: KakaoLoginRequest): BaseResponse<LoginResponse> {
+    fun kakaoLoginV1(@RequestBody @Valid request: KakaoLoginRequest): LoginResponse {
         val result = kakaoLoginUseCase(KakaoLoginCommand(request.kakaoAccessToken))
-        return BaseResponse.success(LoginResponse.from(result))
+        return LoginResponse.from(result)
     }
 
     @Operation(
@@ -47,8 +46,8 @@ class AuthController(
         ApiResponse(responseCode = "401", description = "[10201] Id token이 유효하지 않은 경우", content = [Content()]),
     )
     @PostMapping("/v1/auth/login/apple")
-    fun appleLoginV1(@RequestBody @Valid request: AppleLoginRequest): BaseResponse<LoginResponse> {
+    fun appleLoginV1(@RequestBody @Valid request: AppleLoginRequest): LoginResponse {
         val result = appleLoginUseCase(AppleLoginCommand(request.idToken))
-        return BaseResponse.success(LoginResponse.from(result))
+        return LoginResponse.from(result)
     }
 }

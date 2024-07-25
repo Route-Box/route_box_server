@@ -3,7 +3,6 @@ package com.routebox.routebox.controller.user
 import com.routebox.routebox.application.user.CheckNicknameAvailabilityUseCase
 import com.routebox.routebox.application.user.UpdateUserInfoUseCase
 import com.routebox.routebox.application.user.dto.UpdateUserInfoCommand
-import com.routebox.routebox.controller.common.BaseResponse
 import com.routebox.routebox.controller.user.dto.CheckNicknameAvailabilityResponse
 import com.routebox.routebox.controller.user.dto.UpdateUserInfoRequest
 import com.routebox.routebox.controller.user.dto.UserResponse
@@ -44,9 +43,9 @@ class UserController(
             description = "이용 가능 여부를 확인할 닉네임. 닉네임은 한글, 영문, 숫자로 이루어진, 특수문자와 공백을 제외한 2~8 글자여야 합니다.",
             example = "고작가",
         ) nickname: String,
-    ): BaseResponse<CheckNicknameAvailabilityResponse> {
+    ): CheckNicknameAvailabilityResponse {
         val isAvailable = checkNicknameAvailabilityUseCase(nickname)
-        return BaseResponse.success(CheckNicknameAvailabilityResponse(nickname, isAvailable))
+        return CheckNicknameAvailabilityResponse(nickname, isAvailable)
     }
 
     @Operation(
@@ -63,7 +62,7 @@ class UserController(
     fun updateUserInfo(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @RequestBody @Valid request: UpdateUserInfoRequest,
-    ): BaseResponse<UserResponse> {
+    ): UserResponse {
         val updateUserInfo = updateUserInfoUseCase(
             UpdateUserInfoCommand(
                 id = userPrincipal.userId,
@@ -73,6 +72,6 @@ class UserController(
                 introduction = request.introduction,
             ),
         )
-        return BaseResponse.success(UserResponse.from(updateUserInfo))
+        return UserResponse.from(updateUserInfo)
     }
 }

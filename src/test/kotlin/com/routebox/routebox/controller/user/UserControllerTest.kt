@@ -51,8 +51,8 @@ class UserControllerTest @Autowired constructor(
         mvc.perform(
             get("/api/v1/users/nickname/{nickname}/availability", nickname),
         ).andExpect(status().isOk)
-            .andExpect(jsonPath("$.result.nickname").value(nickname))
-            .andExpect(jsonPath("$.result.isAvailable").value(expectedResult))
+            .andExpect(jsonPath("$.nickname").value(nickname))
+            .andExpect(jsonPath("$.isAvailable").value(expectedResult))
         then(checkNicknameAvailabilityUseCase).should().invoke(nickname)
         verifyEveryMocksShouldHaveNoMoreInteractions()
     }
@@ -92,10 +92,10 @@ class UserControllerTest @Autowired constructor(
                 .content(mapper.writeValueAsString(request))
                 .with(user(createUserPrincipal(userId))),
         ).andExpect(status().isOk)
-            .andExpect(jsonPath("$.result.id").value(expectedResult.id))
-            .andExpect(jsonPath("$.result.nickname").value(expectedResult.nickname))
-            .andExpect(jsonPath("$.result.gender").value(expectedResult.gender.toString()))
-            .andExpect(jsonPath("$.result.birthDay").value(expectedResult.birthDay.toString()))
+            .andExpect(jsonPath("$.id").value(expectedResult.id))
+            .andExpect(jsonPath("$.nickname").value(expectedResult.nickname))
+            .andExpect(jsonPath("$.gender").value(expectedResult.gender.toString()))
+            .andExpect(jsonPath("$.birthDay").value(expectedResult.birthDay.toString()))
         then(updateUserInfoUseCase).should().invoke(command)
         verifyEveryMocksShouldHaveNoMoreInteractions()
     }
