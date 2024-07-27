@@ -6,7 +6,6 @@ import com.routebox.routebox.domain.auth.AuthService
 import com.routebox.routebox.domain.user.UserService
 import com.routebox.routebox.domain.user.constant.LoginType
 import com.routebox.routebox.exception.user.UserSocialLoginUidDuplicationException
-import com.routebox.routebox.security.JwtManager
 import jakarta.validation.Valid
 import org.springframework.stereotype.Component
 
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component
 class KakaoLoginUseCase(
     private val userService: UserService,
     private val authService: AuthService,
-    private val jwtManager: JwtManager,
 ) {
     /**
      * 카카오 로그인.
@@ -44,8 +42,8 @@ class KakaoLoginUseCase(
         return LoginResult(
             isNew = user.createdAt == user.updatedAt,
             loginType = LoginType.KAKAO,
-            accessToken = jwtManager.createAccessToken(user.id, user.roles),
-            refreshToken = jwtManager.createRefreshToken(user.id, user.roles),
+            accessToken = authService.issueAccessToken(user),
+            refreshToken = authService.issueRefreshToken(user),
         )
     }
 }

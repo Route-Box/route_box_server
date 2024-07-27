@@ -1,5 +1,7 @@
 package com.routebox.routebox.domain.auth
 
+import com.routebox.routebox.domain.user.User
+import com.routebox.routebox.domain.user.constant.Gender
 import com.routebox.routebox.domain.user.constant.LoginType
 import com.routebox.routebox.exception.apple.InvalidAppleIdTokenException
 import com.routebox.routebox.exception.kakao.RequestKakaoUserInfoException
@@ -8,14 +10,21 @@ import com.routebox.routebox.infrastructure.apple.AppleAuthKey
 import com.routebox.routebox.infrastructure.apple.AppleAuthKeys
 import com.routebox.routebox.infrastructure.kakao.KakaoApiClient
 import com.routebox.routebox.infrastructure.kakao.KakaoUserInfo
+import com.routebox.routebox.security.JwtInfo
+import com.routebox.routebox.security.JwtManager
+import org.apache.commons.lang3.RandomStringUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.BDDMockito.willDoNothing
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import org.mockito.kotlin.given
 import org.mockito.kotlin.then
+import java.time.LocalDate
+import java.time.LocalDateTime
 import kotlin.random.Random
 import kotlin.test.Test
 
@@ -29,6 +38,12 @@ class AuthServiceTest {
 
     @Mock
     lateinit var appleApiClient: AppleApiClient
+
+    @Mock
+    lateinit var refreshTokenRepository: RefreshTokenRepository
+
+    @Mock
+    lateinit var jwtManager: JwtManager
 
     @Test
     fun `Kakao에서 발행받은 access token이 주어지고, 주어진 token으로 사용자 정보를 조회한다`() {
@@ -111,8 +126,60 @@ class AuthServiceTest {
         assertThat(ex).isInstanceOf(InvalidAppleIdTokenException::class.java)
     }
 
+    @Test
+    fun `유저 정보가 주어지고, 주어진 유저 정보로 access token을 발급한다`() {
+        // given
+        val user = createUser()
+        val expectedResult = createJwtInfo()
+        given(jwtManager.createAccessToken(user.id, user.roles)).willReturn(expectedResult)
+
+        // when
+        val actualResult = sut.issueAccessToken(user)
+
+        // then
+        then(jwtManager).should().createAccessToken(user.id, user.roles)
+        verifyEveryMocksShouldHaveNoMoreInteractions()
+        assertThat(actualResult).isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `유저 정보가 주어지고, 주어진 유저 정보로 refresh token을 발급한다`() {
+        // given
+        val user = createUser()
+        val expectedResult = createJwtInfo()
+        given(jwtManager.createRefreshToken(user.id, user.roles)).willReturn(expectedResult)
+        willDoNothing().given(refreshTokenRepository).save(any())
+
+        // when
+        val actualResult = sut.issueRefreshToken(user)
+
+        // then
+        then(jwtManager).should().createRefreshToken(user.id, user.roles)
+        then(refreshTokenRepository).should().save(any())
+        verifyEveryMocksShouldHaveNoMoreInteractions()
+        assertThat(actualResult).isEqualTo(expectedResult)
+    }
+
     private fun verifyEveryMocksShouldHaveNoMoreInteractions() {
         then(kakaoApiClient).shouldHaveNoMoreInteractions()
         then(appleApiClient).shouldHaveNoMoreInteractions()
+        then(refreshTokenRepository).shouldHaveNoMoreInteractions()
+        then(jwtManager).shouldHaveNoMoreInteractions()
     }
+
+    private fun createUser(): User =
+        User(
+            id = Random.nextLong(),
+            loginType = LoginType.KAKAO,
+            socialLoginUid = RandomStringUtils.random(10),
+            nickname = RandomStringUtils.random(5),
+            gender = Gender.PRIVATE,
+            birthDay = LocalDate.of(2024, 1, 1),
+        )
+
+    private fun createJwtInfo(): JwtInfo =
+        JwtInfo(
+            token = RandomStringUtils.random(20),
+            expiresAt = LocalDateTime.now().plusDays(1),
+        )
 }

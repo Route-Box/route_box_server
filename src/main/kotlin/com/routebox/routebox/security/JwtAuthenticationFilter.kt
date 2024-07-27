@@ -37,7 +37,7 @@ class JwtAuthenticationFilter(
         if (!accessToken.isNullOrBlank()) {
             try {
                 jwtManager.validate(accessToken)
-                val userId = jwtManager.getSubjectFromToken(accessToken)
+                val userId = jwtManager.getUserIdFromToken(accessToken)
                 val userDetails = userDetailsService.loadUserByUsername(userId)
                 val authentication = UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
                 SecurityContextHolder.getContext().authentication = authentication

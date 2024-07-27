@@ -25,8 +25,8 @@ class JwtManager(@Value("\${routebox.jwt.secret-key}") private val salt: String)
         private const val MILLISECONDS_IN_MINUTE: Long = 1000 * 60
         private const val MILLISECONDS_IN_HOUR: Long = 60 * MILLISECONDS_IN_MINUTE
         private const val MILLISECONDS_IN_DAY: Long = 24 * MILLISECONDS_IN_HOUR
-        private const val ACCESS_TOKEN_EXPIRED_DURATION: Long = 2 * MILLISECONDS_IN_HOUR
-        private const val REFRESH_TOKEN_EXPIRED_DURATION: Long = 30 * MILLISECONDS_IN_DAY
+        private const val ACCESS_TOKEN_EXPIRED_DURATION_MILLIS: Long = 2 * MILLISECONDS_IN_HOUR
+        const val REFRESH_TOKEN_EXPIRED_DURATION_MILLIS: Long = 30 * MILLISECONDS_IN_DAY
         private const val USER_ROLE_CLAIM_KEY = "role"
     }
 
@@ -46,10 +46,10 @@ class JwtManager(@Value("\${routebox.jwt.secret-key}") private val salt: String)
      * @param userId PK of user
      * @param userRoles roles of user
      * @return 생성된 access token 정보(토큰 값, 만료 시각)
-     * @see ACCESS_TOKEN_EXPIRED_DURATION access token 만료 기한
+     * @see ACCESS_TOKEN_EXPIRED_DURATION_MILLIS access token 만료 기한
      */
     fun createAccessToken(userId: Long, userRoles: Set<UserRoleType>): JwtInfo =
-        createToken(userId, userRoles, ACCESS_TOKEN_EXPIRED_DURATION)
+        createToken(userId, userRoles, ACCESS_TOKEN_EXPIRED_DURATION_MILLIS)
 
     /**
      * Refresh token 생성
@@ -57,10 +57,10 @@ class JwtManager(@Value("\${routebox.jwt.secret-key}") private val salt: String)
      * @param userId PK of user
      * @param userRoles roles of user
      * @return 생성된 refresh token 정보(토큰 값, 만료 시각)
-     * @see REFRESH_TOKEN_EXPIRED_DURATION refresh token 만료 기한
+     * @see REFRESH_TOKEN_EXPIRED_DURATION_MILLIS refresh token 만료 기한
      */
     fun createRefreshToken(userId: Long, userRoles: Set<UserRoleType>): JwtInfo =
-        createToken(userId, userRoles, REFRESH_TOKEN_EXPIRED_DURATION)
+        createToken(userId, userRoles, REFRESH_TOKEN_EXPIRED_DURATION_MILLIS)
 
     /**
      * JWT 생성
@@ -93,7 +93,7 @@ class JwtManager(@Value("\${routebox.jwt.secret-key}") private val salt: String)
      * @param token subject를 추출할 token
      * @return 추출한 subject(userId)
      */
-    fun getSubjectFromToken(token: String): String = getClaimsFromToken(token).subject
+    fun getUserIdFromToken(token: String): String = getClaimsFromToken(token).subject
 
     private fun getClaimsFromToken(token: String): Claims = getJwsFromToken(token).body
 

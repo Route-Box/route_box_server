@@ -48,8 +48,8 @@ class KakaoLoginUseCaseTest {
         given(authService.getUserInfo(LoginType.KAKAO, kakaoAccessToken))
             .willReturn(OAuthUserInfo(uid = kakaoUid))
         given(userService.createNewUser(LoginType.KAKAO, kakaoUid)).willReturn(newUser)
-        given(jwtManager.createAccessToken(newUser.id, newUser.roles)).willReturn(expectedAccessTokenResult)
-        given(jwtManager.createRefreshToken(newUser.id, newUser.roles)).willReturn(expectedRefreshTokenResult)
+        given(authService.issueAccessToken(newUser)).willReturn(expectedAccessTokenResult)
+        given(authService.issueRefreshToken(newUser)).willReturn(expectedRefreshTokenResult)
 
         // when
         val result = sut.invoke(KakaoLoginCommand(kakaoAccessToken))
@@ -57,8 +57,8 @@ class KakaoLoginUseCaseTest {
         // then
         then(authService).should().getUserInfo(LoginType.KAKAO, kakaoAccessToken)
         then(userService).should().createNewUser(LoginType.KAKAO, kakaoUid)
-        then(jwtManager).should().createAccessToken(newUser.id, newUser.roles)
-        then(jwtManager).should().createRefreshToken(newUser.id, newUser.roles)
+        then(authService).should().issueAccessToken(newUser)
+        then(authService).should().issueRefreshToken(newUser)
         verifyEveryMocksShouldHaveNoMoreInteractions()
         assertThat(result.isNew).isTrue()
         assertThat(result.accessToken).isEqualTo(expectedAccessTokenResult)
@@ -82,8 +82,8 @@ class KakaoLoginUseCaseTest {
         given(userService.createNewUser(LoginType.KAKAO, kakaoUid))
             .willThrow(UserSocialLoginUidDuplicationException::class.java)
         given(userService.getUserBySocialLoginUid(kakaoUid)).willReturn(user)
-        given(jwtManager.createAccessToken(user.id, user.roles)).willReturn(expectedAccessTokenResult)
-        given(jwtManager.createRefreshToken(user.id, user.roles)).willReturn(expectedRefreshTokenResult)
+        given(authService.issueAccessToken(user)).willReturn(expectedAccessTokenResult)
+        given(authService.issueRefreshToken(user)).willReturn(expectedRefreshTokenResult)
 
         // when
         val result = sut.invoke(KakaoLoginCommand(kakaoAccessToken))
@@ -92,8 +92,8 @@ class KakaoLoginUseCaseTest {
         then(authService).should().getUserInfo(LoginType.KAKAO, kakaoAccessToken)
         then(userService).should().createNewUser(LoginType.KAKAO, kakaoUid)
         then(userService).should().getUserBySocialLoginUid(kakaoUid)
-        then(jwtManager).should().createAccessToken(user.id, user.roles)
-        then(jwtManager).should().createRefreshToken(user.id, user.roles)
+        then(authService).should().issueAccessToken(user)
+        then(authService).should().issueRefreshToken(user)
         verifyEveryMocksShouldHaveNoMoreInteractions()
         assertThat(result.isNew).isFalse()
         assertThat(result.accessToken).isEqualTo(expectedAccessTokenResult)
