@@ -8,6 +8,7 @@ import com.routebox.routebox.domain.user.constant.LoginType
 import com.routebox.routebox.exception.user.UserSocialLoginUidDuplicationException
 import jakarta.validation.Valid
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class AppleLoginUseCase(
@@ -26,6 +27,7 @@ class AppleLoginUseCase(
      * @param command
      * @return 로그인 결과로 신규 유저인지에 대한 정보, access token 정보, refresh token 정보를 응답한다.
      */
+    @Transactional
     operator fun invoke(@Valid command: AppleLoginCommand): LoginResult {
         val appleUserInfo = authService.getUserInfo(LoginType.APPLE, command.idToken)
 
