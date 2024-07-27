@@ -28,6 +28,10 @@ spring:
                 format_sql: false
                 default_batch_fetch_size: 100
         defer-datasource-initialization: false
+    data:
+        redis:
+            host: ${REDIS_HOST}
+            port: ${REDIS_PORT}
 
 logging:
     level:
