@@ -107,6 +107,16 @@ class AuthService(
             .getOrElse { ex -> throw RequestAppleAuthKeysException(ex.message, ex) }
 
     /**
+     * DB에서 관리하고 있는, 유저가 토큰 재발급에 이용 가능한 refresh token을 조회한다.
+     *
+     * @param userId id of user
+     * @return refresh token
+     */
+    @Transactional(readOnly = true)
+    fun findAvailableRefreshToken(userId: Long): String? =
+        refreshTokenRepository.findRefreshToken(userId)?.token
+
+    /**
      * Access token을 발행한다.
      *
      * @param user access token 발행에 필요한 유저 정보가 담긴 user entity

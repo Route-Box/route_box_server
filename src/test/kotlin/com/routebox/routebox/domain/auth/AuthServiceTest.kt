@@ -127,6 +127,39 @@ class AuthServiceTest {
     }
 
     @Test
+    fun `유저 id가 주어지고, 주어진 유저 id에 해당하는 이용 가능한 refresh token을 조회한다`() {
+        // given
+        val userId = Random.nextLong()
+        val expectedResult = RandomStringUtils.random(10)
+        given(refreshTokenRepository.findRefreshToken(userId))
+            .willReturn(RefreshToken(userId = userId, token = expectedResult))
+
+        // when
+        val actualResult = sut.findAvailableRefreshToken(userId)
+
+        // then
+        then(refreshTokenRepository).should().findRefreshToken(userId)
+        verifyEveryMocksShouldHaveNoMoreInteractions()
+        assertThat(actualResult).isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `유저 id가 주어지고, 주어진 유저 id에 해당하는 이용 가능한 refresh token을 조회한다, 만약 이용 가능한 refresh token이 없다면 null이 반환된다`() {
+        // given
+        val userId = Random.nextLong()
+        val expectedResult = null
+        given(refreshTokenRepository.findRefreshToken(userId)).willReturn(expectedResult)
+
+        // when
+        val actualResult = sut.findAvailableRefreshToken(userId)
+
+        // then
+        then(refreshTokenRepository).should().findRefreshToken(userId)
+        verifyEveryMocksShouldHaveNoMoreInteractions()
+        assertThat(actualResult).isEqualTo(expectedResult)
+    }
+
+    @Test
     fun `유저 정보가 주어지고, 주어진 유저 정보로 access token을 발급한다`() {
         // given
         val user = createUser()
