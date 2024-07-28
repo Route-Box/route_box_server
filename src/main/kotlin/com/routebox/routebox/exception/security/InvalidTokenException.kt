@@ -4,7 +4,7 @@ import com.routebox.routebox.exception.CustomExceptionType
 import com.routebox.routebox.exception.common.UnauthorizedException
 
 class InvalidTokenException(
-    optionalMessage: String,
+    optionalMessage: String? = null,
     cause: Throwable? = null,
 ) : UnauthorizedException(
     exceptionType = CustomExceptionType.INVALID_TOKEN,

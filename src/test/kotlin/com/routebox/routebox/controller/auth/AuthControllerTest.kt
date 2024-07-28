@@ -3,12 +3,17 @@ package com.routebox.routebox.controller.auth
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.routebox.routebox.application.auth.AppleLoginUseCase
 import com.routebox.routebox.application.auth.KakaoLoginUseCase
+import com.routebox.routebox.application.auth.RefreshTokensUseCase
 import com.routebox.routebox.application.auth.dto.AppleLoginCommand
 import com.routebox.routebox.application.auth.dto.KakaoLoginCommand
 import com.routebox.routebox.application.auth.dto.LoginResult
 import com.routebox.routebox.config.ControllerTestConfig
+import com.routebox.routebox.controller.auth.dto.AppleLoginRequest
+import com.routebox.routebox.controller.auth.dto.KakaoLoginRequest
+import com.routebox.routebox.controller.auth.dto.RefreshTokensRequest
 import com.routebox.routebox.domain.user.constant.LoginType
 import com.routebox.routebox.security.JwtInfo
+import org.apache.commons.lang3.RandomStringUtils
 import org.mockito.kotlin.given
 import org.mockito.kotlin.then
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,6 +40,9 @@ class AuthControllerTest @Autowired constructor(
 
     @MockBean
     lateinit var appleLoginUseCase: AppleLoginUseCase
+
+    @MockBean
+    lateinit var refreshTokensUseCase: RefreshTokensUseCase
 
     @Test
     fun `카카오에서 발급받은 access token이 주어지고, 주어진 token으로 로그인한다`() {
@@ -86,6 +94,25 @@ class AuthControllerTest @Autowired constructor(
             .andExpect(jsonPath("$.refreshToken.token").value(expectedResult.refreshToken.token))
         then(appleLoginUseCase).should().invoke(AppleLoginCommand(appleIdToken))
         verifyEveryMocksShouldHaveNoMoreInteractions()
+    }
+
+    @Test
+    fun `refresh token이 주어지고, 주어진 refresh token으로 새로운 access token과 refresh token을 발급한다`() {
+        // given
+        val refreshToken = RandomStringUtils.random(30)
+        val expectedAccessTokenResult = JwtInfo(token = RandomStringUtils.random(10), expiresAt = LocalDateTime.now())
+        val expectedRefreshTokenResult = JwtInfo(token = RandomStringUtils.random(10), expiresAt = LocalDateTime.now())
+        given(refreshTokensUseCase.invoke(refreshToken))
+            .willReturn(Pair(expectedAccessTokenResult, expectedRefreshTokenResult))
+
+        // when & then
+        mvc.perform(
+            post("/api/v1/auth/tokens/refresh")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(RefreshTokensRequest(refreshToken))),
+        ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.accessToken.token").value(expectedAccessTokenResult.token))
+            .andExpect(jsonPath("$.refreshToken.token").value(expectedRefreshTokenResult.token))
     }
 
     private fun verifyEveryMocksShouldHaveNoMoreInteractions() {

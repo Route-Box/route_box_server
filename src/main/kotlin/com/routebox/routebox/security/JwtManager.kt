@@ -93,9 +93,11 @@ class JwtManager(@Value("\${routebox.jwt.secret-key}") private val salt: String)
      * @param token subject를 추출할 token
      * @return 추출한 subject(userId)
      */
-    fun getUserIdFromToken(token: String): String = getClaimsFromToken(token).subject
+    fun getUserIdFromToken(token: String): Long =
+        getClaimsFromToken(token).subject.toLong()
 
-    private fun getClaimsFromToken(token: String): Claims = getJwsFromToken(token).body
+    private fun getClaimsFromToken(token: String): Claims =
+        getJwsFromToken(token).body
 
     private fun getJwsFromToken(token: String): Jws<Claims> =
         Jwts.parserBuilder()
