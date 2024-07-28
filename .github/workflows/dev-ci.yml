@@ -31,3 +31,10 @@ jobs:
 
             -   name: Build with Gradle
                 run: ./gradlew build
+
+            -   name: Upload Jacoco Report
+                if: ${{ !cancelled() }}
+                uses: actions/upload-artifact@v3
+                with:
+                    name: jacoco-report
+                    path: build/reports/jacoco/test/html
