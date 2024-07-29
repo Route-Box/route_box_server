@@ -48,8 +48,8 @@ class AppleLoginUseCaseTest {
         given(authService.getUserInfo(LoginType.APPLE, appleIdToken))
             .willReturn(OAuthUserInfo(uid = appleUid))
         given(userService.createNewUser(LoginType.APPLE, appleUid)).willReturn(newUser)
-        given(jwtManager.createAccessToken(newUser.id, newUser.roles)).willReturn(expectedAccessTokenResult)
-        given(jwtManager.createRefreshToken(newUser.id, newUser.roles)).willReturn(expectedRefreshTokenResult)
+        given(authService.issueAccessToken(newUser)).willReturn(expectedAccessTokenResult)
+        given(authService.issueRefreshToken(newUser)).willReturn(expectedRefreshTokenResult)
 
         // when
         val result = sut.invoke(AppleLoginCommand(appleIdToken))
@@ -57,8 +57,8 @@ class AppleLoginUseCaseTest {
         // then
         then(authService).should().getUserInfo(LoginType.APPLE, appleIdToken)
         then(userService).should().createNewUser(LoginType.APPLE, appleUid)
-        then(jwtManager).should().createAccessToken(newUser.id, newUser.roles)
-        then(jwtManager).should().createRefreshToken(newUser.id, newUser.roles)
+        then(authService).should().issueAccessToken(newUser)
+        then(authService).should().issueRefreshToken(newUser)
         verifyEveryMocksShouldHaveNoMoreInteractions()
         assertThat(result.isNew).isTrue()
         assertThat(result.accessToken).isEqualTo(expectedAccessTokenResult)
@@ -82,8 +82,8 @@ class AppleLoginUseCaseTest {
         given(userService.createNewUser(LoginType.APPLE, appleUid))
             .willThrow(UserSocialLoginUidDuplicationException::class.java)
         given(userService.getUserBySocialLoginUid(appleUid)).willReturn(user)
-        given(jwtManager.createAccessToken(user.id, user.roles)).willReturn(expectedAccessTokenResult)
-        given(jwtManager.createRefreshToken(user.id, user.roles)).willReturn(expectedRefreshTokenResult)
+        given(authService.issueAccessToken(user)).willReturn(expectedAccessTokenResult)
+        given(authService.issueRefreshToken(user)).willReturn(expectedRefreshTokenResult)
 
         // when
         val result = sut.invoke(AppleLoginCommand(appleIdToken))
@@ -92,8 +92,8 @@ class AppleLoginUseCaseTest {
         then(authService).should().getUserInfo(LoginType.APPLE, appleIdToken)
         then(userService).should().createNewUser(LoginType.APPLE, appleUid)
         then(userService).should().getUserBySocialLoginUid(appleUid)
-        then(jwtManager).should().createAccessToken(user.id, user.roles)
-        then(jwtManager).should().createRefreshToken(user.id, user.roles)
+        then(authService).should().issueAccessToken(user)
+        then(authService).should().issueRefreshToken(user)
         verifyEveryMocksShouldHaveNoMoreInteractions()
         assertThat(result.isNew).isFalse()
         assertThat(result.accessToken).isEqualTo(expectedAccessTokenResult)

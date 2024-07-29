@@ -5,6 +5,7 @@ import com.routebox.routebox.application.user.dto.UpdateUserInfoResult
 import com.routebox.routebox.domain.user.UserService
 import com.routebox.routebox.exception.user.UserNicknameDuplicationException
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class UpdateUserInfoUseCase(
@@ -18,6 +19,7 @@ class UpdateUserInfoUseCase(
      * @return 변경된 유저 정보
      * @throws UserNicknameDuplicationException 변경하려고 하는 닉네임이 이미 사용중인 경우
      */
+    @Transactional
     operator fun invoke(command: UpdateUserInfoCommand): UpdateUserInfoResult {
         val updatedUser = userService.updateUser(
             id = command.id,

@@ -1,4 +1,4 @@
-package com.routebox.routebox.controller.auth
+package com.routebox.routebox.controller.auth.dto
 
 import com.routebox.routebox.application.auth.dto.LoginResult
 import com.routebox.routebox.domain.user.constant.LoginType

@@ -235,8 +235,8 @@ class UserServiceTest {
     private fun createUser(id: Long) = User(
         id = id,
         loginType = LoginType.KAKAO,
-        socialLoginUid = Random.toString(),
-        nickname = Random.toString(),
+        socialLoginUid = RandomStringUtils.random(10),
+        nickname = RandomStringUtils.random(5),
         gender = Gender.PRIVATE,
         birthDay = LocalDate.of(2024, 1, 1),
     )

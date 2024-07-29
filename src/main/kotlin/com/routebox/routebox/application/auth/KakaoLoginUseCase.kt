@@ -6,15 +6,14 @@ import com.routebox.routebox.domain.auth.AuthService
 import com.routebox.routebox.domain.user.UserService
 import com.routebox.routebox.domain.user.constant.LoginType
 import com.routebox.routebox.exception.user.UserSocialLoginUidDuplicationException
-import com.routebox.routebox.security.JwtManager
 import jakarta.validation.Valid
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class KakaoLoginUseCase(
     private val userService: UserService,
     private val authService: AuthService,
-    private val jwtManager: JwtManager,
 ) {
     /**
      * 카카오 로그인.
@@ -28,6 +27,7 @@ class KakaoLoginUseCase(
      * @param command
      * @return 로그인 결과로 신규 유저인지에 대한 정보, access token 정보, refresh token 정보를 응답한다.
      */
+    @Transactional
     operator fun invoke(@Valid command: KakaoLoginCommand): LoginResult {
         val kakaoUserInfo = authService.getUserInfo(LoginType.KAKAO, command.kakaoAccessToken)
 
@@ -44,8 +44,8 @@ class KakaoLoginUseCase(
         return LoginResult(
             isNew = user.createdAt == user.updatedAt,
             loginType = LoginType.KAKAO,
-            accessToken = jwtManager.createAccessToken(user.id, user.roles),
-            refreshToken = jwtManager.createRefreshToken(user.id, user.roles),
+            accessToken = authService.issueAccessToken(user),
+            refreshToken = authService.issueRefreshToken(user),
         )
     }
 }
