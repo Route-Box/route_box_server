@@ -19,6 +19,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.given
 import org.mockito.kotlin.then
+import org.mockito.kotlin.times
 import java.time.LocalDate
 import java.util.Optional
 import kotlin.random.Random
@@ -71,7 +72,7 @@ class UserServiceTest {
         given(userRepository.findBySocialLoginUid(socialLoginUid)).willReturn(expectedResult)
 
         // when
-        val actualResult = sut.getUserBySocialLoginUid(socialLoginUid)
+        val actualResult = sut.findUserBySocialLoginUid(socialLoginUid)
 
         // then
         then(userRepository).should().findBySocialLoginUid(socialLoginUid)
@@ -80,17 +81,18 @@ class UserServiceTest {
     }
 
     @Test
-    fun `존재하지 않는 유저의 social login uid로 일치하는 유저를 조회하면, 예외가 발생한다`() {
+    fun `존재하지 않는 유저의 social login uid로 일치하는 유저를 조회하면, null이 반환된다`() {
         // given
         val socialLoginUid = Random.toString()
-        given(userRepository.findBySocialLoginUid(socialLoginUid)).willReturn(null)
+        val expectedResult = null
+        given(userRepository.findBySocialLoginUid(socialLoginUid)).willReturn(expectedResult)
 
         // when
-        val ex = catchThrowable { sut.getUserBySocialLoginUid(socialLoginUid) }
+        val actualResult = sut.findUserBySocialLoginUid(socialLoginUid)
         // then
         then(userRepository).should().findBySocialLoginUid(socialLoginUid)
         verifyEveryMocksShouldHaveNoMoreInteractions()
-        assertThat(ex).isInstanceOf(UserNotFoundException::class.java)
+        assertThat(actualResult).isEqualTo(expectedResult)
     }
 
     @Test
@@ -99,7 +101,8 @@ class UserServiceTest {
         val socialLoginUid = Random.toString()
         val expectedResult = createUser(id = Random.nextLong())
         given(userRepository.existsBySocialLoginUid(socialLoginUid)).willReturn(false)
-        given(userRepository.existsByNickname(anyString())).willReturn(false)
+        given(userRepository.existsByNickname(anyString()))
+            .willReturn(true).willReturn(false)
         given(userRepository.save(any(User::class.java))).willReturn(expectedResult)
 
         // when
@@ -107,7 +110,7 @@ class UserServiceTest {
 
         // then
         then(userRepository).should().existsBySocialLoginUid(socialLoginUid)
-        then(userRepository).should().existsByNickname(anyString())
+        then(userRepository).should(times(2)).existsByNickname(anyString())
         then(userRepository).should().save(any(User::class.java))
         verifyEveryMocksShouldHaveNoMoreInteractions()
         assertThat(actualResult).isEqualTo(expectedResult)
