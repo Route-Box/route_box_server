@@ -7,7 +7,6 @@ import com.routebox.routebox.domain.user.User
 import com.routebox.routebox.domain.user.UserService
 import com.routebox.routebox.domain.user.constant.Gender
 import com.routebox.routebox.domain.user.constant.LoginType
-import com.routebox.routebox.exception.user.UserSocialLoginUidDuplicationException
 import com.routebox.routebox.security.JwtInfo
 import com.routebox.routebox.security.JwtManager
 import org.assertj.core.api.Assertions.assertThat
@@ -45,8 +44,8 @@ class AppleLoginUseCaseTest {
         val newUser = createUser(id = Random.nextLong())
         val expectedAccessTokenResult = JwtInfo(token = Random.toString(), expiresAt = LocalDateTime.now())
         val expectedRefreshTokenResult = JwtInfo(token = Random.toString(), expiresAt = LocalDateTime.now())
-        given(authService.getUserInfo(LoginType.APPLE, appleIdToken))
-            .willReturn(OAuthUserInfo(uid = appleUid))
+        given(authService.getUserInfo(LoginType.APPLE, appleIdToken)).willReturn(OAuthUserInfo(uid = appleUid))
+        given(userService.findUserBySocialLoginUid(appleUid)).willReturn(null)
         given(userService.createNewUser(LoginType.APPLE, appleUid)).willReturn(newUser)
         given(authService.issueAccessToken(newUser)).willReturn(expectedAccessTokenResult)
         given(authService.issueRefreshToken(newUser)).willReturn(expectedRefreshTokenResult)
@@ -56,6 +55,7 @@ class AppleLoginUseCaseTest {
 
         // then
         then(authService).should().getUserInfo(LoginType.APPLE, appleIdToken)
+        then(userService).should().findUserBySocialLoginUid(appleUid)
         then(userService).should().createNewUser(LoginType.APPLE, appleUid)
         then(authService).should().issueAccessToken(newUser)
         then(authService).should().issueRefreshToken(newUser)
@@ -77,11 +77,8 @@ class AppleLoginUseCaseTest {
         // 기존 유저 데이터를 표현하기 위해 createdAt != updatedAt이 되게끔 set.
         ReflectionTestUtils.setField(user, "updatedAt", LocalDateTime.now().plusDays(1))
 
-        given(authService.getUserInfo(LoginType.APPLE, appleIdToken))
-            .willReturn(OAuthUserInfo(uid = appleUid))
-        given(userService.createNewUser(LoginType.APPLE, appleUid))
-            .willThrow(UserSocialLoginUidDuplicationException::class.java)
-        given(userService.getUserBySocialLoginUid(appleUid)).willReturn(user)
+        given(authService.getUserInfo(LoginType.APPLE, appleIdToken)).willReturn(OAuthUserInfo(uid = appleUid))
+        given(userService.findUserBySocialLoginUid(appleUid)).willReturn(user)
         given(authService.issueAccessToken(user)).willReturn(expectedAccessTokenResult)
         given(authService.issueRefreshToken(user)).willReturn(expectedRefreshTokenResult)
 
@@ -90,8 +87,7 @@ class AppleLoginUseCaseTest {
 
         // then
         then(authService).should().getUserInfo(LoginType.APPLE, appleIdToken)
-        then(userService).should().createNewUser(LoginType.APPLE, appleUid)
-        then(userService).should().getUserBySocialLoginUid(appleUid)
+        then(userService).should().findUserBySocialLoginUid(appleUid)
         then(authService).should().issueAccessToken(user)
         then(authService).should().issueRefreshToken(user)
         verifyEveryMocksShouldHaveNoMoreInteractions()

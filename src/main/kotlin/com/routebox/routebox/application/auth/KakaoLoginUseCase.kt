@@ -5,7 +5,6 @@ import com.routebox.routebox.application.auth.dto.LoginResult
 import com.routebox.routebox.domain.auth.AuthService
 import com.routebox.routebox.domain.user.UserService
 import com.routebox.routebox.domain.user.constant.LoginType
-import com.routebox.routebox.exception.user.UserSocialLoginUidDuplicationException
 import jakarta.validation.Valid
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -31,15 +30,8 @@ class KakaoLoginUseCase(
     operator fun invoke(@Valid command: KakaoLoginCommand): LoginResult {
         val kakaoUserInfo = authService.getUserInfo(LoginType.KAKAO, command.kakaoAccessToken)
 
-        val user = runCatching {
-            userService.createNewUser(LoginType.KAKAO, kakaoUserInfo.uid)
-        }.getOrElse { ex ->
-            if (ex is UserSocialLoginUidDuplicationException) {
-                userService.getUserBySocialLoginUid(kakaoUserInfo.uid)
-            } else {
-                throw ex
-            }
-        }
+        val user = userService.findUserBySocialLoginUid(kakaoUserInfo.uid)
+            ?: userService.createNewUser(LoginType.KAKAO, kakaoUserInfo.uid)
 
         return LoginResult(
             isNew = user.createdAt == user.updatedAt,

@@ -7,7 +7,6 @@ import com.routebox.routebox.domain.user.User
 import com.routebox.routebox.domain.user.UserService
 import com.routebox.routebox.domain.user.constant.Gender
 import com.routebox.routebox.domain.user.constant.LoginType
-import com.routebox.routebox.exception.user.UserSocialLoginUidDuplicationException
 import com.routebox.routebox.security.JwtInfo
 import com.routebox.routebox.security.JwtManager
 import org.assertj.core.api.Assertions.assertThat
@@ -45,8 +44,8 @@ class KakaoLoginUseCaseTest {
         val newUser = createUser(id = Random.nextLong())
         val expectedAccessTokenResult = JwtInfo(token = Random.toString(), expiresAt = LocalDateTime.now())
         val expectedRefreshTokenResult = JwtInfo(token = Random.toString(), expiresAt = LocalDateTime.now())
-        given(authService.getUserInfo(LoginType.KAKAO, kakaoAccessToken))
-            .willReturn(OAuthUserInfo(uid = kakaoUid))
+        given(authService.getUserInfo(LoginType.KAKAO, kakaoAccessToken)).willReturn(OAuthUserInfo(uid = kakaoUid))
+        given(userService.findUserBySocialLoginUid(kakaoUid)).willReturn(null)
         given(userService.createNewUser(LoginType.KAKAO, kakaoUid)).willReturn(newUser)
         given(authService.issueAccessToken(newUser)).willReturn(expectedAccessTokenResult)
         given(authService.issueRefreshToken(newUser)).willReturn(expectedRefreshTokenResult)
@@ -56,6 +55,7 @@ class KakaoLoginUseCaseTest {
 
         // then
         then(authService).should().getUserInfo(LoginType.KAKAO, kakaoAccessToken)
+        then(userService).should().findUserBySocialLoginUid(kakaoUid)
         then(userService).should().createNewUser(LoginType.KAKAO, kakaoUid)
         then(authService).should().issueAccessToken(newUser)
         then(authService).should().issueRefreshToken(newUser)
@@ -77,11 +77,8 @@ class KakaoLoginUseCaseTest {
         // 기존 유저 데이터를 표현하기 위해 createdAt != updatedAt이 되게끔 set.
         ReflectionTestUtils.setField(user, "updatedAt", LocalDateTime.now().plusDays(1))
 
-        given(authService.getUserInfo(LoginType.KAKAO, kakaoAccessToken))
-            .willReturn(OAuthUserInfo(uid = kakaoUid))
-        given(userService.createNewUser(LoginType.KAKAO, kakaoUid))
-            .willThrow(UserSocialLoginUidDuplicationException::class.java)
-        given(userService.getUserBySocialLoginUid(kakaoUid)).willReturn(user)
+        given(authService.getUserInfo(LoginType.KAKAO, kakaoAccessToken)).willReturn(OAuthUserInfo(uid = kakaoUid))
+        given(userService.findUserBySocialLoginUid(kakaoUid)).willReturn(user)
         given(authService.issueAccessToken(user)).willReturn(expectedAccessTokenResult)
         given(authService.issueRefreshToken(user)).willReturn(expectedRefreshTokenResult)
 
@@ -90,8 +87,7 @@ class KakaoLoginUseCaseTest {
 
         // then
         then(authService).should().getUserInfo(LoginType.KAKAO, kakaoAccessToken)
-        then(userService).should().createNewUser(LoginType.KAKAO, kakaoUid)
-        then(userService).should().getUserBySocialLoginUid(kakaoUid)
+        then(userService).should().findUserBySocialLoginUid(kakaoUid)
         then(authService).should().issueAccessToken(user)
         then(authService).should().issueRefreshToken(user)
         verifyEveryMocksShouldHaveNoMoreInteractions()
