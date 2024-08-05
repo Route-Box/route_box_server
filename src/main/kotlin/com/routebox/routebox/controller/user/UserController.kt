@@ -1,10 +1,12 @@
 package com.routebox.routebox.controller.user
 
 import com.routebox.routebox.application.user.CheckNicknameAvailabilityUseCase
+import com.routebox.routebox.application.user.GetMyProfileUseCase
 import com.routebox.routebox.application.user.UpdateUserInfoUseCase
 import com.routebox.routebox.application.user.dto.UpdateUserInfoCommand
 import com.routebox.routebox.controller.user.dto.CheckNicknameAvailabilityResponse
 import com.routebox.routebox.controller.user.dto.UpdateUserInfoRequest
+import com.routebox.routebox.controller.user.dto.UserProfileResponse
 import com.routebox.routebox.controller.user.dto.UserResponse
 import com.routebox.routebox.domain.validation.Nickname
 import com.routebox.routebox.security.UserPrincipal
@@ -30,9 +32,28 @@ import org.springframework.web.bind.annotation.RestController
 @Validated
 @RequestMapping("/api")
 class UserController(
-    private val updateUserInfoUseCase: UpdateUserInfoUseCase,
+    private val getMyProfileUseCase: GetMyProfileUseCase,
     private val checkNicknameAvailabilityUseCase: CheckNicknameAvailabilityUseCase,
+    private val updateUserInfoUseCase: UpdateUserInfoUseCase,
 ) {
+    @Operation(
+        summary = "내 프로필 정보 조회",
+        description = "<p><strong>내 루트 개수, 취향 정보 등 추가 예정 (미구현)</strong>" +
+            "<p>내 프로필 정보를 조회합니다.",
+    )
+    @GetMapping("/v1/users/me/profile")
+    fun getMyProfile(@AuthenticationPrincipal principal: UserPrincipal): UserProfileResponse {
+        val myProfile = getMyProfileUseCase(userId = principal.userId)
+        return UserProfileResponse(
+            id = myProfile.id,
+            profileImageUrl = myProfile.profileImageUrl,
+            nickname = myProfile.nickname,
+            gender = myProfile.gender,
+            birthDay = myProfile.birthDay,
+            introduction = myProfile.introduction,
+        )
+    }
+
     @Operation(
         summary = "닉네임 이용 가능 여부 확인",
         description = "닉네임의 이용 가능 여부를 확인합니다. 현재 사용중인 유저가 없다면 이용 가능한 닉네임입니다.",

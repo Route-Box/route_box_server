@@ -47,7 +47,6 @@ class SecurityConfig {
                         val corsConfig = CorsConfiguration()
                         corsConfig.allowCredentials = true
                         corsConfig.allowedOrigins = listOf(
-                            // TODO: 웹 서비스 배포 후 CORS 정책 추가 필요
                             "http://localhost*",
                             "http://myroutebox.com",
                             "https://myroutebox.com",
