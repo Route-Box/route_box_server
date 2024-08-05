@@ -2,7 +2,9 @@ package com.routebox.routebox.controller.user
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.routebox.routebox.application.user.CheckNicknameAvailabilityUseCase
+import com.routebox.routebox.application.user.GetMyProfileUseCase
 import com.routebox.routebox.application.user.UpdateUserInfoUseCase
+import com.routebox.routebox.application.user.dto.GetMyProfileResult
 import com.routebox.routebox.application.user.dto.UpdateUserInfoCommand
 import com.routebox.routebox.application.user.dto.UpdateUserInfoResult
 import com.routebox.routebox.config.ControllerTestConfig
@@ -35,10 +37,42 @@ class UserControllerTest @Autowired constructor(
     private val mapper: ObjectMapper,
 ) {
     @MockBean
+    lateinit var getMyProfileUseCase: GetMyProfileUseCase
+
+    @MockBean
     lateinit var updateUserInfoUseCase: UpdateUserInfoUseCase
 
     @MockBean
     lateinit var checkNicknameAvailabilityUseCase: CheckNicknameAvailabilityUseCase
+
+    @Test
+    fun `내 프로필 정보를 조회한다`() {
+        // given
+        val userId = Random.nextLong()
+        val expectedResult = GetMyProfileResult(
+            id = userId,
+            profileImageUrl = "https://user-profile-image",
+            nickname = RandomStringUtils.random(5),
+            gender = Gender.PRIVATE,
+            birthDay = LocalDate.of(2024, 1, 1),
+            introduction = "I am...",
+        )
+        given(getMyProfileUseCase.invoke(userId)).willReturn(expectedResult)
+
+        // when & then
+        mvc.perform(
+            get("/api/v1/users/me/profile")
+                .with(user(createUserPrincipal(userId))),
+        ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.id").value(expectedResult.id))
+            .andExpect(jsonPath("$.profileImageUrl").value(expectedResult.profileImageUrl))
+            .andExpect(jsonPath("$.nickname").value(expectedResult.nickname))
+            .andExpect(jsonPath("$.gender").value(expectedResult.gender.toString()))
+            .andExpect(jsonPath("$.birthDay").value(expectedResult.birthDay.toString()))
+            .andExpect(jsonPath("$.introduction").value(expectedResult.introduction))
+        then(getMyProfileUseCase).should().invoke(userId)
+        then(getMyProfileUseCase).shouldHaveNoMoreInteractions()
+    }
 
     @Test
     fun `닉네임이 주어지고, 주어진 닉네임이 이용 가능한지 확인한다`() {
