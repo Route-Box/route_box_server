@@ -109,7 +109,6 @@ class LogApiInfoFilter : OncePerRequestFilter() {
         }
 
         val contentString = String(content)
-        // TODO: 추가적인 content-type case에 대한 로그 출력도 고민할 필요 있음.
         payloadInfo += if (type == MediaType.APPLICATION_JSON_VALUE) {
             contentString.replace("\n *".toRegex(), "").replace(",".toRegex(), ", ")
         } else {
