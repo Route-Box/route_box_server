@@ -48,11 +48,11 @@ class Route(
 
     var endTime: LocalDateTime = endTime
 
-    var whoWith: String = whoWith
+    var whoWith: String? = whoWith
 
-    var numberOfPeople: Int = numberOfPeople
+    var numberOfPeople: Int? = numberOfPeople
 
-    var numberOfDays: String = numberOfDays
+    var numberOfDays: String? = numberOfDays
 
     @Convert(converter = StringArrayConverter::class)
     @Column(columnDefinition = "json")

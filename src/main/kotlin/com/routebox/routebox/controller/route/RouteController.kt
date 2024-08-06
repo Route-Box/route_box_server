@@ -29,14 +29,12 @@ class RouteController(
     @Operation(
         summary = "루트 탐색",
         description = "최신순으로 루트 목록 조회",
-        security = [SecurityRequirement(name = "access-token")],
     )
     @ApiResponses(
         ApiResponse(responseCode = "200"),
     )
     @GetMapping("/v1/routes")
     fun getLatestRoutes(
-        @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
     ): GetLatestRoutesResponse {
@@ -47,7 +45,6 @@ class RouteController(
     @Operation(
         summary = "루트 상세 조회",
         description = "루트 상세정보 조회",
-        security = [SecurityRequirement(name = "access-token")],
     )
     @ApiResponses(
         ApiResponse(responseCode = "200"),
@@ -55,7 +52,6 @@ class RouteController(
     )
     @GetMapping("/v1/routes/{routeId}")
     fun getRouteDetail(
-        @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @RequestParam routeId: Long,
     ): RouteResponse {
         val routeResponse = getRouteDetailUseCase(routeId)
