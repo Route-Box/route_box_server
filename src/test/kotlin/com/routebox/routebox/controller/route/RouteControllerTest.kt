@@ -110,7 +110,7 @@ class RouteControllerTest @Autowired constructor(
 
         // when & then
         mvc.perform(
-            get("/api/v1/routes/$routeId")
+            get("/api/v1/routes/{routeId}", routeId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.user(createUserPrincipal(routeId))),
         ).andExpect(status().isOk)

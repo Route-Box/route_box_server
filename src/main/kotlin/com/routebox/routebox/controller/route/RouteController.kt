@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -49,7 +50,7 @@ class RouteController(
     )
     @GetMapping("/v1/routes/{routeId}")
     fun getRouteDetail(
-        @RequestParam routeId: Long,
+        @PathVariable routeId: Long,
     ): RouteResponse {
         val routeResponse = getRouteDetailUseCase(routeId)
         return RouteResponse.from(routeResponse)
