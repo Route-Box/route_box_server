@@ -27,6 +27,8 @@ class SecurityConfig {
             "/api/v1/auth/login/apple" to HttpMethod.POST,
             "/api/v1/auth/tokens/refresh" to HttpMethod.POST,
             "/api/v1/users/nickname/*/availability" to HttpMethod.GET,
+            "/api/v1/routes" to HttpMethod.GET,
+            "/api/v1/routes/*" to HttpMethod.GET,
         )
 
         @Bean
