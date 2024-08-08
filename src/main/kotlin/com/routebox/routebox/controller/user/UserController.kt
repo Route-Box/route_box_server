@@ -1,7 +1,7 @@
 package com.routebox.routebox.controller.user
 
 import com.routebox.routebox.application.user.CheckNicknameAvailabilityUseCase
-import com.routebox.routebox.application.user.GetMyProfileUseCase
+import com.routebox.routebox.application.user.GetUserProfileUseCase
 import com.routebox.routebox.application.user.UpdateUserInfoUseCase
 import com.routebox.routebox.application.user.dto.UpdateUserInfoCommand
 import com.routebox.routebox.controller.user.dto.CheckNicknameAvailabilityResponse
@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController
 @Validated
 @RequestMapping("/api")
 class UserController(
-    private val getMyProfileUseCase: GetMyProfileUseCase,
+    private val getUserProfileUseCase: GetUserProfileUseCase,
     private val checkNicknameAvailabilityUseCase: CheckNicknameAvailabilityUseCase,
     private val updateUserInfoUseCase: UpdateUserInfoUseCase,
 ) {
@@ -40,10 +40,11 @@ class UserController(
         summary = "내 프로필 정보 조회",
         description = "<p><strong>내 루트 개수, 취향 정보 등 추가 예정 (미구현)</strong>" +
             "<p>내 프로필 정보를 조회합니다.",
+        security = [SecurityRequirement(name = "access-token")],
     )
     @GetMapping("/v1/users/me/profile")
     fun getMyProfile(@AuthenticationPrincipal principal: UserPrincipal): UserProfileResponse {
-        val myProfile = getMyProfileUseCase(userId = principal.userId)
+        val myProfile = getUserProfileUseCase(userId = principal.userId)
         return UserProfileResponse(
             id = myProfile.id,
             profileImageUrl = myProfile.profileImageUrl,
@@ -51,6 +52,27 @@ class UserController(
             gender = myProfile.gender,
             birthDay = myProfile.birthDay,
             introduction = myProfile.introduction,
+        )
+    }
+
+    @Operation(
+        summary = "유저 프로필 정보 조회",
+        description = "<p><strong>유저가 작성한 루트 개수, 취향 정보 등 추가 예정 (미구현)</strong>" +
+            "<p>특정 유저의 프로필 정보를 조회합니다.",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @GetMapping("/v1/users/{userId}/profile")
+    fun getUserProfile(
+        @Parameter(description = "프로필 정보를 조회할 유저의 id", example = "5") @PathVariable userId: Long,
+    ): UserProfileResponse {
+        val userProfile = getUserProfileUseCase(userId)
+        return UserProfileResponse(
+            id = userProfile.id,
+            profileImageUrl = userProfile.profileImageUrl,
+            nickname = userProfile.nickname,
+            gender = userProfile.gender,
+            birthDay = userProfile.birthDay,
+            introduction = userProfile.introduction,
         )
     }
 
