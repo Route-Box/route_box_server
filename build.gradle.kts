@@ -50,6 +50,8 @@ dependencies {
 
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.3")
 
+    implementation("com.amazonaws:aws-java-sdk-s3:1.12.767")
+
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
