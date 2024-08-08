@@ -10,6 +10,7 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 class SecurityConfig {
@@ -44,33 +45,8 @@ class SecurityConfig {
                 .httpBasic { it.disable() }
                 .formLogin { it.disable() }
                 .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-                .cors { corsConfigurer ->
-                    val corsConfigSrc = CorsConfigurationSource {
-                        val corsConfig = CorsConfiguration()
-                        corsConfig.allowCredentials = true
-                        corsConfig.allowedOrigins = listOf(
-                            "http://localhost*",
-                            "http://myroutebox.com",
-                            "https://myroutebox.com",
-                            "http://api-dev.myroutebox.com",
-                            "https://api-dev.myroutebox.com",
-                            "http://*.myroutebox.com",
-                            "https://*.myroutebox.com",
-                        )
-                        corsConfig.allowedMethods = listOf(
-                            HttpMethod.GET.name(),
-                            HttpMethod.POST.name(),
-                            HttpMethod.PUT.name(),
-                            HttpMethod.DELETE.name(),
-                            HttpMethod.PATCH.name(),
-                            HttpMethod.OPTIONS.name(),
-                        )
-                        corsConfig.allowedHeaders = listOf("*")
-                        corsConfig.exposedHeaders = listOf("*")
-                        corsConfig.allowCredentials = true
-                        return@CorsConfigurationSource corsConfig
-                    }
-                    corsConfigurer.configurationSource(corsConfigSrc)
+                .cors {
+                    it.configurationSource(corsConfigurationSource())
                 }
                 .authorizeHttpRequests { auth ->
                     auth.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
@@ -88,6 +64,28 @@ class SecurityConfig {
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 }
                 .build()
+        }
+
+        @Bean
+        fun corsConfigurationSource(): CorsConfigurationSource {
+            val corsConfig = CorsConfiguration()
+            corsConfig.allowedOrigins = listOf("https://api-dev.myroutebox.com", "https://*.myroutebox.com")
+            corsConfig.allowedMethods = listOf(
+                HttpMethod.GET.name(),
+                HttpMethod.POST.name(),
+                HttpMethod.PUT.name(),
+                HttpMethod.DELETE.name(),
+                HttpMethod.PATCH.name(),
+                HttpMethod.OPTIONS.name(),
+            )
+            corsConfig.allowedHeaders = listOf("*")
+            corsConfig.exposedHeaders = listOf("*")
+            corsConfig.allowCredentials = true
+            corsConfig.maxAge = 3600L
+
+            val source = UrlBasedCorsConfigurationSource()
+            source.registerCorsConfiguration("/**", corsConfig)
+            return source
         }
     }
 }
