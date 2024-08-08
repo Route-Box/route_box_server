@@ -30,7 +30,7 @@ jobs:
                 run: echo $CREATE_SECRET | base64 --decode > $CREATE_SECRET_DIR/$CREATE_SECRET_DIR_FILE_NAME
 
             -   name: Build with Gradle
-                run: ./gradlew build
+                run: ./gradlew build -Dspring.profiles.active=dev
 
             -   name: Upload Jacoco Report
                 if: ${{ !cancelled() }}
