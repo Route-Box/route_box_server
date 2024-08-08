@@ -47,6 +47,9 @@ springdoc:
     swagger-ui:
         operations-sorter: method
 
+swagger:
+    server-url: ${SWAGGER_SERVER_URL}
+
 ---
 spring:
     config:
@@ -56,9 +59,6 @@ spring:
         properties:
             hibernate:
                 format_sql: false
-
-swagger:
-    server-url: https://api.myroutebox.com
 
 ---
 spring:
@@ -70,8 +70,6 @@ spring:
             hibernate:
                 format_sql: false
 
-swagger:
-    server-url: https://api-dev.myroutebox.com
 
 ---
 spring:
@@ -86,8 +84,6 @@ spring:
             hibernate:
                 format_sql: true
 
-swagger:
-    server-url: http://localhost:8080
 
 logging:
     level:
@@ -134,6 +130,3 @@ logging:
             springframework:
                 jdbc: debug
                 web.client.RestTemplate: debug
-
-swagger:
-    server-url: http://localhost:8080
