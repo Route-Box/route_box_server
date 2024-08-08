@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS inquiry;
 DROP TABLE IF EXISTS user_profile_image;
 DROP TABLE IF EXISTS user_point_history;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS routes;
 
 CREATE TABLE users
 (
@@ -100,20 +101,22 @@ CREATE TABLE inquiry_response
 );
 CREATE INDEX idx__inquiry_response__inquiry_id ON inquiry_response (inquiry_id);
 
-CREATE TABLE routes (
-                        route_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                        user_id BIGINT,
-                        name VARCHAR(255) NOT NULL,
-                        description TEXT NOT NULL,
-                        start_time TIMESTAMP NOT NULL,
-                        end_time TIMESTAMP NOT NULL,
-                        who_with VARCHAR(255) NOT NULL,
-                        number_of_people INT NOT NULL,
-                        number_of_days VARCHAR(255) NOT NULL,
-                        style json,
-                        transportation json,
-                        is_public BOOLEAN NOT NULL DEFAULT FALSE,
-                        created_at TIMESTAMP NOT NULL,
-                        updated_at TIMESTAMP NOT NULL,
-                        CONSTRAINT FK_user_route FOREIGN KEY (user_id) REFERENCES users(user_id)
+CREATE TABLE routes
+(
+    route_id         BIGINT AUTO_INCREMENT,
+    user_id          BIGINT,
+    name             VARCHAR(255) NOT NULL,
+    description      TEXT         NOT NULL,
+    start_time       TIMESTAMP    NOT NULL,
+    end_time         TIMESTAMP    NOT NULL,
+    who_with         VARCHAR(255) NOT NULL,
+    number_of_people INT          NOT NULL,
+    number_of_days   VARCHAR(255) NOT NULL,
+    style            JSON,
+    transportation   JSON,
+    is_public        BOOLEAN      NOT NULL DEFAULT FALSE,
+    created_at       TIMESTAMP    NOT NULL,
+    updated_at       TIMESTAMP    NOT NULL,
+    PRIMARY KEY (route_id)
 );
+CREATE INDEX idx__routes__user_id ON routes (user_id);
