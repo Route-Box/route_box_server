@@ -17,10 +17,10 @@ import kotlin.random.Random
 import kotlin.test.Test
 
 @ExtendWith(MockitoExtension::class)
-class GetMyProfileUseCaseTest {
+class GetUserProfileUseCaseTest {
 
     @InjectMocks
-    lateinit var sut: GetMyProfileUseCase
+    lateinit var sut: GetUserProfileUseCase
 
     @Mock
     lateinit var userService: UserService

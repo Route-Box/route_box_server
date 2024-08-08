@@ -5,7 +5,7 @@ import com.routebox.routebox.domain.user.constant.Gender
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 
-data class GetMyProfileResult(
+data class GetUserProfileResult(
     @Schema(description = "Id(PK) of user", example = "1")
     val id: Long,
 
@@ -25,7 +25,7 @@ data class GetMyProfileResult(
     val introduction: String,
 ) {
     companion object {
-        fun from(user: User) = GetMyProfileResult(
+        fun from(user: User) = GetUserProfileResult(
             id = user.id,
             profileImageUrl = user.profileImageUrl,
             nickname = user.nickname,
