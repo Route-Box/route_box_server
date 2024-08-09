@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-@Tag(name = "루트 관련 API")
+@Tag(name = "루트 탐색 관련 API")
 @RestController
 @Validated
 @RequestMapping("/api")
