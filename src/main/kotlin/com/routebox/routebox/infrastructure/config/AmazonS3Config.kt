@@ -5,12 +5,12 @@ import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
-import com.routebox.routebox.properties.AWSProperties
+import com.routebox.routebox.properties.AwsProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class AmazonS3Config(private val awsProperties: AWSProperties) {
+class AmazonS3Config(private val awsProperties: AwsProperties) {
     @Bean
     fun amazonS3Client(): AmazonS3 =
         AmazonS3ClientBuilder.standard()
