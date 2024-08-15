@@ -5,7 +5,6 @@ import com.routebox.routebox.application.user.CheckNicknameAvailabilityUseCase
 import com.routebox.routebox.application.user.GetUserProfileUseCase
 import com.routebox.routebox.application.user.UpdateUserInfoUseCase
 import com.routebox.routebox.application.user.dto.GetUserProfileResult
-import com.routebox.routebox.application.user.dto.UpdateUserInfoCommand
 import com.routebox.routebox.application.user.dto.UpdateUserInfoResult
 import com.routebox.routebox.config.ControllerTestConfig
 import com.routebox.routebox.controller.user.dto.UpdateUserInfoRequest
@@ -13,17 +12,19 @@ import com.routebox.routebox.domain.user.constant.Gender
 import com.routebox.routebox.domain.user.constant.UserRoleType
 import com.routebox.routebox.security.UserPrincipal
 import org.apache.commons.lang3.RandomStringUtils
+import org.mockito.kotlin.any
 import org.mockito.kotlin.given
 import org.mockito.kotlin.then
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
-import org.springframework.http.MediaType
+import org.springframework.http.HttpMethod
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDate
@@ -129,13 +130,7 @@ class UserControllerTest @Autowired constructor(
             gender = Gender.MALE,
             birthDay = LocalDate.now(),
             introduction = RandomStringUtils.random(25, true, true),
-        )
-        val command = UpdateUserInfoCommand(
-            id = userId,
-            nickname = request.nickname,
-            gender = request.gender,
-            birthDay = request.birthDay,
-            introduction = request.introduction,
+            profileImage = createMockImageFile(),
         )
         val expectedResult = UpdateUserInfoResult(
             id = userId,
@@ -146,20 +141,23 @@ class UserControllerTest @Autowired constructor(
             introduction = request.introduction!!,
             point = Random.nextInt(),
         )
-        given(updateUserInfoUseCase.invoke(command)).willReturn(expectedResult)
+        given(updateUserInfoUseCase.invoke(any())).willReturn(expectedResult)
 
         // when & then
         mvc.perform(
-            patch("/api/v1/users/me")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request))
+            multipart(HttpMethod.PATCH, "/api/v1/users/me")
+                .file("profileImage", request.profileImage!!.bytes)
+                .param("nickname", request.nickname)
+                .param("gender", request.gender!!.name)
+                .param("birthDay", request.birthDay.toString())
+                .param("introduction", request.introduction)
                 .with(user(createUserPrincipal(userId))),
         ).andExpect(status().isOk)
             .andExpect(jsonPath("$.id").value(expectedResult.id))
             .andExpect(jsonPath("$.nickname").value(expectedResult.nickname))
             .andExpect(jsonPath("$.gender").value(expectedResult.gender.toString()))
             .andExpect(jsonPath("$.birthDay").value(expectedResult.birthDay.toString()))
-        then(updateUserInfoUseCase).should().invoke(command)
+        then(updateUserInfoUseCase).should().invoke(any())
         verifyEveryMocksShouldHaveNoMoreInteractions()
     }
 
@@ -167,6 +165,13 @@ class UserControllerTest @Autowired constructor(
         then(updateUserInfoUseCase).shouldHaveNoMoreInteractions()
         then(checkNicknameAvailabilityUseCase).shouldHaveNoMoreInteractions()
     }
+
+    private fun createMockImageFile() = MockMultipartFile(
+        "file",
+        "newImage.jpg",
+        "image/jpeg",
+        "new image content".toByteArray(),
+    )
 
     private fun createUserPrincipal(userId: Long) = UserPrincipal(
         userId = userId,

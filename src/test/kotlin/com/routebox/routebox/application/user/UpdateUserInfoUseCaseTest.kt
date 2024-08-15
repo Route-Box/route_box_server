@@ -13,6 +13,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.given
 import org.mockito.kotlin.then
+import org.springframework.mock.web.MockMultipartFile
 import java.time.LocalDate
 import kotlin.random.Random
 import kotlin.test.Test
@@ -34,6 +35,7 @@ class UpdateUserInfoUseCaseTest {
             gender = Gender.MALE,
             birthDay = LocalDate.now(),
             introduction = RandomStringUtils.random(25, true, true),
+            profileImage = createMockImageFile(),
         )
         val expectedResult = createUser(
             id = command.id,
@@ -49,6 +51,7 @@ class UpdateUserInfoUseCaseTest {
                 gender = command.gender,
                 birthDay = command.birthDay,
                 introduction = command.introduction,
+                profileImage = command.profileImage,
             ),
         ).willReturn(expectedResult)
 
@@ -56,8 +59,14 @@ class UpdateUserInfoUseCaseTest {
         val actualResult = sut.invoke(command)
 
         // then
-        then(userService).should()
-            .updateUser(command.id, command.nickname, command.gender, command.birthDay, command.introduction)
+        then(userService).should().updateUser(
+            command.id,
+            command.nickname,
+            command.gender,
+            command.birthDay,
+            command.introduction,
+            command.profileImage,
+        )
         verifyEveryMocksShouldHaveNoMoreInteractions()
         assertThat(actualResult.id).isEqualTo(expectedResult.id)
         assertThat(actualResult.nickname).isEqualTo(expectedResult.nickname)
@@ -69,6 +78,13 @@ class UpdateUserInfoUseCaseTest {
     private fun verifyEveryMocksShouldHaveNoMoreInteractions() {
         then(userService).shouldHaveNoMoreInteractions()
     }
+
+    private fun createMockImageFile() = MockMultipartFile(
+        "file",
+        "newImage.jpg",
+        "image/jpeg",
+        "new image content".toByteArray(),
+    )
 
     private fun createUser(
         id: Long,

@@ -27,6 +27,7 @@ class UpdateUserInfoUseCase(
             gender = command.gender,
             birthDay = command.birthDay,
             introduction = command.introduction,
+            profileImage = command.profileImage,
         )
         return UpdateUserInfoResult.from(updatedUser)
     }

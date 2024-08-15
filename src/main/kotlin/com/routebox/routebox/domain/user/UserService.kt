@@ -1,18 +1,29 @@
 package com.routebox.routebox.domain.user
 
+import com.routebox.routebox.domain.common.FileManager
 import com.routebox.routebox.domain.user.constant.Gender
 import com.routebox.routebox.domain.user.constant.LoginType
 import com.routebox.routebox.exception.user.UserNicknameDuplicationException
 import com.routebox.routebox.exception.user.UserNotFoundException
 import com.routebox.routebox.exception.user.UserSocialLoginUidDuplicationException
+import com.routebox.routebox.infrastructure.user.UserProfileImageRepository
 import com.routebox.routebox.infrastructure.user.UserRepository
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDate
 
 @Service
-class UserService(private val userRepository: UserRepository) {
+class UserService(
+    private val userRepository: UserRepository,
+    private val userProfileImageRepository: UserProfileImageRepository,
+    private val fileManager: FileManager,
+) {
+    companion object {
+        const val USER_PROFILE_IMAGE_UPLOAD_PATH = "user-profile-images/"
+    }
+
     /**
      * Id(PK)로 유저를 조회한다.
      *
@@ -87,6 +98,7 @@ class UserService(private val userRepository: UserRepository) {
         gender: Gender? = null,
         birthDay: LocalDate? = null,
         introduction: String? = null,
+        profileImage: MultipartFile? = null,
     ): User {
         val user = getUserById(id)
 
@@ -99,6 +111,20 @@ class UserService(private val userRepository: UserRepository) {
         gender?.let { user.updateGender(it) }
         birthDay?.let { user.updateBirthDay(it) }
         introduction?.let { user.updateIntroduction(it) }
+        profileImage?.let { image ->
+            val currentUserProfileImage = userProfileImageRepository.findByUserId(userId = id)
+            currentUserProfileImage?.delete()
+
+            val (profileImageName, profileImageUrl) = fileManager.upload(image, USER_PROFILE_IMAGE_UPLOAD_PATH)
+            userProfileImageRepository.save(
+                UserProfileImage(
+                    userId = id,
+                    storedFileName = profileImageName,
+                    fileUrl = profileImageUrl,
+                ),
+            )
+            user.updateProfileImageUrl(profileImageUrl)
+        }
 
         return user
     }

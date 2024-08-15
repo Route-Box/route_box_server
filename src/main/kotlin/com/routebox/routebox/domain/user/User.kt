@@ -95,4 +95,8 @@ class User(
     fun updateIntroduction(introduction: String) {
         this.introduction = introduction
     }
+
+    fun updateProfileImageUrl(profileImageUrl: String) {
+        this.profileImageUrl = profileImageUrl
+    }
 }

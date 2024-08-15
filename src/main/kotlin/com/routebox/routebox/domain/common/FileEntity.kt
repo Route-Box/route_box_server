@@ -17,4 +17,8 @@ abstract class FileEntity protected constructor(
 
     var deletedAt: LocalDateTime? = deletedAt
         protected set
+
+    fun delete() {
+        this.deletedAt = LocalDateTime.now()
+    }
 }
