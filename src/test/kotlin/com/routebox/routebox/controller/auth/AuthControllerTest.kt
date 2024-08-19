@@ -1,12 +1,10 @@
 package com.routebox.routebox.controller.auth
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.routebox.routebox.application.auth.AppleLoginUseCase
-import com.routebox.routebox.application.auth.KakaoLoginUseCase
+import com.routebox.routebox.application.auth.OAuthLoginUseCase
 import com.routebox.routebox.application.auth.RefreshTokensUseCase
-import com.routebox.routebox.application.auth.dto.AppleLoginCommand
-import com.routebox.routebox.application.auth.dto.KakaoLoginCommand
 import com.routebox.routebox.application.auth.dto.LoginResult
+import com.routebox.routebox.application.auth.dto.OAuthLoginCommand
 import com.routebox.routebox.config.ControllerTestConfig
 import com.routebox.routebox.controller.auth.dto.AppleLoginRequest
 import com.routebox.routebox.controller.auth.dto.KakaoLoginRequest
@@ -36,10 +34,7 @@ class AuthControllerTest @Autowired constructor(
     private val mapper: ObjectMapper,
 ) {
     @MockBean
-    lateinit var kakaoLoginUseCase: KakaoLoginUseCase
-
-    @MockBean
-    lateinit var appleLoginUseCase: AppleLoginUseCase
+    lateinit var oAuthLoginUseCase: OAuthLoginUseCase
 
     @MockBean
     lateinit var refreshTokensUseCase: RefreshTokensUseCase
@@ -54,7 +49,7 @@ class AuthControllerTest @Autowired constructor(
             accessToken = JwtInfo(token = toString(), expiresAt = LocalDateTime.now()),
             refreshToken = JwtInfo(token = toString(), expiresAt = LocalDateTime.now()),
         )
-        given(kakaoLoginUseCase.invoke(KakaoLoginCommand(kakaoAccessToken))).willReturn(expectedResult)
+        given(oAuthLoginUseCase.invoke(OAuthLoginCommand(LoginType.KAKAO, kakaoAccessToken))).willReturn(expectedResult)
 
         // when & then
         mvc.perform(
@@ -66,7 +61,7 @@ class AuthControllerTest @Autowired constructor(
             .andExpect(jsonPath("$.loginType").value(expectedResult.loginType.toString()))
             .andExpect(jsonPath("$.accessToken.token").value(expectedResult.accessToken.token))
             .andExpect(jsonPath("$.refreshToken.token").value(expectedResult.refreshToken.token))
-        then(kakaoLoginUseCase).should().invoke(KakaoLoginCommand(kakaoAccessToken))
+        then(oAuthLoginUseCase).should().invoke(OAuthLoginCommand(LoginType.KAKAO, kakaoAccessToken))
         verifyEveryMocksShouldHaveNoMoreInteractions()
     }
 
@@ -80,7 +75,7 @@ class AuthControllerTest @Autowired constructor(
             accessToken = JwtInfo(token = toString(), expiresAt = LocalDateTime.now()),
             refreshToken = JwtInfo(token = toString(), expiresAt = LocalDateTime.now()),
         )
-        given(appleLoginUseCase.invoke(AppleLoginCommand(appleIdToken))).willReturn(expectedResult)
+        given(oAuthLoginUseCase.invoke(OAuthLoginCommand(LoginType.APPLE, appleIdToken))).willReturn(expectedResult)
 
         // when & then
         mvc.perform(
@@ -92,7 +87,7 @@ class AuthControllerTest @Autowired constructor(
             .andExpect(jsonPath("$.loginType").value(expectedResult.loginType.toString()))
             .andExpect(jsonPath("$.accessToken.token").value(expectedResult.accessToken.token))
             .andExpect(jsonPath("$.refreshToken.token").value(expectedResult.refreshToken.token))
-        then(appleLoginUseCase).should().invoke(AppleLoginCommand(appleIdToken))
+        then(oAuthLoginUseCase).should().invoke(OAuthLoginCommand(LoginType.APPLE, appleIdToken))
         verifyEveryMocksShouldHaveNoMoreInteractions()
     }
 
@@ -116,7 +111,7 @@ class AuthControllerTest @Autowired constructor(
     }
 
     private fun verifyEveryMocksShouldHaveNoMoreInteractions() {
-        then(kakaoLoginUseCase).shouldHaveNoMoreInteractions()
-        then(appleLoginUseCase).shouldHaveNoMoreInteractions()
+        then(oAuthLoginUseCase).shouldHaveNoMoreInteractions()
+        then(refreshTokensUseCase).shouldHaveNoMoreInteractions()
     }
 }
