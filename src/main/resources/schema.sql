@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS notification;
 DROP TABLE IF EXISTS inquiry_response;
 DROP TABLE IF EXISTS inquiry_image;
 DROP TABLE IF EXISTS inquiry;
+DROP TABLE IF EXISTS coupon;
 DROP TABLE IF EXISTS user_profile_image;
 DROP TABLE IF EXISTS user_point_history;
 DROP TABLE IF EXISTS users;
@@ -52,6 +53,22 @@ CREATE TABLE user_point_history
     PRIMARY KEY (user_point_history_id)
 );
 CREATE INDEX idx__user_point_history__user_id ON user_point_history (user_id);
+
+CREATE TABLE coupon
+(
+    coupon_id  BIGINT       NOT NULL AUTO_INCREMENT,
+    user_id    BIGINT       NOT NULL,
+    title      VARCHAR(255) NOT NULL,
+    type       VARCHAR(10)  NOT NULL,
+    status     VARCHAR(10)  NOT NULL,
+    started_at DATETIME     NOT NULL COMMENT '쿠폰 이용 시작 시각',
+    ended_at   DATETIME COMMENT '쿠폰 이용 종료 시각. NULL인 경우 무제한',
+    expired_at DATETIME COMMENT '쿠폰 만료 시각',
+    created_at DATETIME     NOT NULL,
+    updated_at DATETIME     NOT NULL,
+    PRIMARY KEY (coupon_id)
+);
+CREATE INDEX idx__coupon__user_id ON coupon (user_id);
 
 CREATE TABLE notification
 (
