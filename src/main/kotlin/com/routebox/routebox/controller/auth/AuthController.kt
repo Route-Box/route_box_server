@@ -1,15 +1,14 @@
 package com.routebox.routebox.controller.auth
 
-import com.routebox.routebox.application.auth.AppleLoginUseCase
-import com.routebox.routebox.application.auth.KakaoLoginUseCase
+import com.routebox.routebox.application.auth.OAuthLoginUseCase
 import com.routebox.routebox.application.auth.RefreshTokensUseCase
-import com.routebox.routebox.application.auth.dto.AppleLoginCommand
-import com.routebox.routebox.application.auth.dto.KakaoLoginCommand
+import com.routebox.routebox.application.auth.dto.OAuthLoginCommand
 import com.routebox.routebox.controller.auth.dto.AppleLoginRequest
 import com.routebox.routebox.controller.auth.dto.KakaoLoginRequest
 import com.routebox.routebox.controller.auth.dto.LoginResponse
 import com.routebox.routebox.controller.auth.dto.RefreshTokensRequest
 import com.routebox.routebox.controller.auth.dto.RefreshTokensResponse
+import com.routebox.routebox.domain.user.constant.LoginType
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -25,8 +24,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api")
 @RestController
 class AuthController(
-    private val kakaoLoginUseCase: KakaoLoginUseCase,
-    private val appleLoginUseCase: AppleLoginUseCase,
+    private val oAuthLoginUseCase: OAuthLoginUseCase,
     private val refreshTokensUseCase: RefreshTokensUseCase,
 ) {
     @Operation(
@@ -39,7 +37,7 @@ class AuthController(
     )
     @PostMapping("/v1/auth/login/kakao")
     fun kakaoLoginV1(@RequestBody @Valid request: KakaoLoginRequest): LoginResponse {
-        val result = kakaoLoginUseCase(KakaoLoginCommand(request.kakaoAccessToken))
+        val result = oAuthLoginUseCase(OAuthLoginCommand(loginType = LoginType.KAKAO, token = request.kakaoAccessToken))
         return LoginResponse.from(result)
     }
 
@@ -54,7 +52,7 @@ class AuthController(
     )
     @PostMapping("/v1/auth/login/apple")
     fun appleLoginV1(@RequestBody @Valid request: AppleLoginRequest): LoginResponse {
-        val result = appleLoginUseCase(AppleLoginCommand(request.idToken))
+        val result = oAuthLoginUseCase(OAuthLoginCommand(loginType = LoginType.APPLE, token = request.idToken))
         return LoginResponse.from(result)
     }
 

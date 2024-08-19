@@ -80,6 +80,16 @@ class User(
     var deletedAt: LocalDateTime? = deletedAt
         private set
 
+    /**
+     * 유저가 온보딩 과정을 완료했는지 확인한다.
+     * 온보딩 과정이란 회원가입 후 사용자로부터 닉네임, 생일, 성별을 입력받는 과정을 의미한다.
+     * `User` entity가 수정된 적이 없거나 `birthDay`가 기본값(0001-01-01)으로 설정되어 있다면 온보딩 과정이 아직 진행되지 않은 것으로 간주한다.
+     *
+     * @return 유저가 온보딩 과정을 완료했는지 여부
+     */
+    fun isOnboardingComplete(): Boolean =
+        this.createdAt == this.updatedAt || this.birthDay == LocalDate.of(1, 1, 1)
+
     fun updateNickname(nickname: String) {
         this.nickname = nickname
     }
