@@ -46,6 +46,8 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-aop")
 
+    implementation("org.springframework.retry:spring-retry")
+
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.3")
