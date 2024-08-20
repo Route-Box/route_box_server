@@ -1,6 +1,5 @@
 package com.routebox.routebox.controller.user
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.routebox.routebox.application.user.CheckNicknameAvailabilityUseCase
 import com.routebox.routebox.application.user.GetUserProfileUseCase
 import com.routebox.routebox.application.user.UpdateUserInfoUseCase
@@ -33,10 +32,7 @@ import kotlin.test.Test
 
 @Import(ControllerTestConfig::class)
 @WebMvcTest(controllers = [UserController::class])
-class UserControllerTest @Autowired constructor(
-    private val mvc: MockMvc,
-    private val mapper: ObjectMapper,
-) {
+class UserControllerTest @Autowired constructor(private val mvc: MockMvc) {
     @MockBean
     lateinit var getUserProfileUseCase: GetUserProfileUseCase
 
