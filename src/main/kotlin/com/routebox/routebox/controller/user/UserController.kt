@@ -17,7 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import org.springdoc.core.annotations.ParameterObject
+import org.springframework.http.MediaType
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
@@ -45,14 +45,7 @@ class UserController(
     @GetMapping("/v1/users/me/profile")
     fun getMyProfile(@AuthenticationPrincipal principal: UserPrincipal): UserProfileResponse {
         val myProfile = getUserProfileUseCase(userId = principal.userId)
-        return UserProfileResponse(
-            id = myProfile.id,
-            profileImageUrl = myProfile.profileImageUrl,
-            nickname = myProfile.nickname,
-            gender = myProfile.gender,
-            birthDay = myProfile.birthDay,
-            introduction = myProfile.introduction,
-        )
+        return UserProfileResponse.fromResult(myProfile)
     }
 
     @Operation(
@@ -66,14 +59,7 @@ class UserController(
         @Parameter(description = "프로필 정보를 조회할 유저의 id", example = "5") @PathVariable userId: Long,
     ): UserProfileResponse {
         val userProfile = getUserProfileUseCase(userId)
-        return UserProfileResponse(
-            id = userProfile.id,
-            profileImageUrl = userProfile.profileImageUrl,
-            nickname = userProfile.nickname,
-            gender = userProfile.gender,
-            birthDay = userProfile.birthDay,
-            introduction = userProfile.introduction,
-        )
+        return UserProfileResponse.fromResult(userProfile)
     }
 
     @Operation(
@@ -102,12 +88,12 @@ class UserController(
         ApiResponse(responseCode = "200"),
         ApiResponse(responseCode = "409", description = "[3002] 변경하려고 하는 닉네임이 이미 사용중인 경우", content = [Content()]),
     )
-    @PatchMapping("/v1/users/me")
+    @PatchMapping("/v1/users/me", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun updateUserInfo(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
-        @ParameterObject @ModelAttribute @Valid request: UpdateUserInfoRequest,
+        @ModelAttribute @Valid request: UpdateUserInfoRequest,
     ): UserResponse {
-        val updateUserInfo = updateUserInfoUseCase(request.toCommand(userId = userPrincipal.userId))
+        val updateUserInfo = updateUserInfoUseCase(request.toCommand(userPrincipal.userId))
         return UserResponse.from(updateUserInfo)
     }
 }

@@ -53,6 +53,9 @@ class UserControllerTest @Autowired constructor(private val mvc: MockMvc) {
             gender = Gender.PRIVATE,
             birthDay = LocalDate.of(2024, 1, 1),
             introduction = "I am...",
+            numOfRoutes = Random.nextInt(),
+            mostVisitedLocation = RandomStringUtils.random(10),
+            mostTaggedRouteStyles = RandomStringUtils.random(10),
         )
         given(getUserProfileUseCase.invoke(userId)).willReturn(expectedResult)
 
@@ -67,6 +70,9 @@ class UserControllerTest @Autowired constructor(private val mvc: MockMvc) {
             .andExpect(jsonPath("$.gender").value(expectedResult.gender.toString()))
             .andExpect(jsonPath("$.birthDay").value(expectedResult.birthDay.toString()))
             .andExpect(jsonPath("$.introduction").value(expectedResult.introduction))
+            .andExpect(jsonPath("$.numOfRoutes").value(expectedResult.numOfRoutes))
+            .andExpect(jsonPath("$.mostVisitedLocation").value(expectedResult.mostVisitedLocation))
+            .andExpect(jsonPath("$.mostTaggedRouteStyles").value(expectedResult.mostTaggedRouteStyles))
         then(getUserProfileUseCase).should().invoke(userId)
         then(getUserProfileUseCase).shouldHaveNoMoreInteractions()
     }
@@ -82,6 +88,9 @@ class UserControllerTest @Autowired constructor(private val mvc: MockMvc) {
             gender = Gender.PRIVATE,
             birthDay = LocalDate.of(2024, 1, 1),
             introduction = "I am...",
+            numOfRoutes = Random.nextInt(),
+            mostVisitedLocation = RandomStringUtils.random(10),
+            mostTaggedRouteStyles = RandomStringUtils.random(10),
         )
         given(getUserProfileUseCase.invoke(targetUserId)).willReturn(expectedResult)
 
@@ -96,6 +105,9 @@ class UserControllerTest @Autowired constructor(private val mvc: MockMvc) {
             .andExpect(jsonPath("$.gender").value(expectedResult.gender.toString()))
             .andExpect(jsonPath("$.birthDay").value(expectedResult.birthDay.toString()))
             .andExpect(jsonPath("$.introduction").value(expectedResult.introduction))
+            .andExpect(jsonPath("$.numOfRoutes").value(expectedResult.numOfRoutes))
+            .andExpect(jsonPath("$.mostVisitedLocation").value(expectedResult.mostVisitedLocation))
+            .andExpect(jsonPath("$.mostTaggedRouteStyles").value(expectedResult.mostTaggedRouteStyles))
         then(getUserProfileUseCase).should().invoke(targetUserId)
         then(getUserProfileUseCase).shouldHaveNoMoreInteractions()
     }

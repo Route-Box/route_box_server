@@ -6,7 +6,10 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
+@Suppress("ktlint:standard:function-naming")
 @Repository
 interface RouteRepository : JpaRepository<Route, Long> {
     fun findAllByOrderByCreatedAtDesc(pageable: Pageable): Page<Route>
+
+    fun countByUser_Id(userId: Long): Int
 }

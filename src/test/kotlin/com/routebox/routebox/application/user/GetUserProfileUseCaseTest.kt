@@ -1,5 +1,6 @@
 package com.routebox.routebox.application.user
 
+import com.routebox.routebox.domain.route.RouteService
 import com.routebox.routebox.domain.user.User
 import com.routebox.routebox.domain.user.UserService
 import com.routebox.routebox.domain.user.constant.Gender
@@ -25,26 +26,36 @@ class GetUserProfileUseCaseTest {
     @Mock
     lateinit var userService: UserService
 
+    @Mock
+    lateinit var routeService: RouteService
+
     @Test
     fun `유저 프로필 정보를 조회한다`() {
         // given
         val userId = Random.nextLong()
-        val expectedResult = createUser(id = userId)
-        given(userService.getUserById(userId)).willReturn(expectedResult)
+        val expectedUser = createUser(id = userId)
+        val expectedNumOfRoutes = Random.nextInt()
+        given(userService.getUserById(userId)).willReturn(expectedUser)
+        given(routeService.countRoutesByUserId(userId)).willReturn(expectedNumOfRoutes)
 
         // when
         val actualResult = sut.invoke(userId)
 
         // then
         then(userService).should().getUserById(userId)
+        then(routeService).should().countRoutesByUserId(userId)
         then(userService).shouldHaveNoMoreInteractions()
+        then(routeService).shouldHaveNoMoreInteractions()
         assertThat(actualResult)
-            .hasFieldOrPropertyWithValue("id", expectedResult.id)
-            .hasFieldOrPropertyWithValue("profileImageUrl", expectedResult.profileImageUrl)
-            .hasFieldOrPropertyWithValue("nickname", expectedResult.nickname)
-            .hasFieldOrPropertyWithValue("gender", expectedResult.gender)
-            .hasFieldOrPropertyWithValue("birthDay", expectedResult.birthDay)
-            .hasFieldOrPropertyWithValue("introduction", expectedResult.introduction)
+            .hasFieldOrPropertyWithValue("id", expectedUser.id)
+            .hasFieldOrPropertyWithValue("profileImageUrl", expectedUser.profileImageUrl)
+            .hasFieldOrPropertyWithValue("nickname", expectedUser.nickname)
+            .hasFieldOrPropertyWithValue("gender", expectedUser.gender)
+            .hasFieldOrPropertyWithValue("birthDay", expectedUser.birthDay)
+            .hasFieldOrPropertyWithValue("introduction", expectedUser.introduction)
+            .hasFieldOrPropertyWithValue("numOfRoutes", expectedNumOfRoutes)
+            .hasFieldOrProperty("mostVisitedLocation")
+            .hasFieldOrProperty("mostTaggedRouteStyles")
     }
 
     private fun createUser(id: Long) = User(

@@ -20,6 +20,7 @@ import java.time.LocalDateTime
 @Entity
 class Route(
     id: Long = 0,
+    user: User,
     name: String?,
     description: String?,
     startTime: LocalDateTime,
@@ -30,7 +31,6 @@ class Route(
     style: Array<String>,
     transportation: Array<String>,
     isPublic: Boolean = false,
-    user: User? = null,
 ) : TimeTrackedBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,32 +39,43 @@ class Route(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    val user: User? = user
+    val user: User = user
 
     var name: String? = name
+        private set
 
     var description: String? = description
+        private set
 
     var startTime: LocalDateTime = startTime
+        private set
 
     var endTime: LocalDateTime = endTime
+        private set
 
     var whoWith: String? = whoWith
+        private set
 
     var numberOfPeople: Int? = numberOfPeople
+        private set
 
     var numberOfDays: String? = numberOfDays
+        private set
 
     @Convert(converter = StringArrayConverter::class)
     @Column(columnDefinition = "json")
     var style: Array<String> = style
+        private set
 
     @Convert(converter = StringArrayConverter::class)
     @Column(columnDefinition = "json")
     var transportation: Array<String> = transportation
+        private set
 
     var isPublic: Boolean = isPublic
+        private set
 
     @OneToMany(mappedBy = "route")
     var routePoints: List<RoutePoint> = mutableListOf()
+        private set
 }
