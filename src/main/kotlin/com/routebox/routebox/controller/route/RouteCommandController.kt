@@ -3,13 +3,16 @@ package com.routebox.routebox.controller.route
 import com.routebox.routebox.application.route.CreateRouteActivityUseCase
 import com.routebox.routebox.application.route.CreateRoutePointUseCase
 import com.routebox.routebox.application.route.CreateRouteUseCase
+import com.routebox.routebox.application.route.DeleteRouteActivityUseCase
 import com.routebox.routebox.application.route.UpdateRouteActivityUseCase
+import com.routebox.routebox.application.route.dto.DeleteRouteActivityCommand
 import com.routebox.routebox.controller.route.dto.CreateRouteActivityRequest
 import com.routebox.routebox.controller.route.dto.CreateRouteActivityResponse
 import com.routebox.routebox.controller.route.dto.CreateRoutePointRequest
 import com.routebox.routebox.controller.route.dto.CreateRoutePointResponse
 import com.routebox.routebox.controller.route.dto.CreateRouteRequest
 import com.routebox.routebox.controller.route.dto.CreateRouteResponse
+import com.routebox.routebox.controller.route.dto.DeleteRouteActivityResponse
 import com.routebox.routebox.controller.route.dto.UpdateRouteActivityRequest
 import com.routebox.routebox.controller.route.dto.UpdateRouteActivityResponse
 import com.routebox.routebox.security.UserPrincipal
@@ -20,6 +23,7 @@ import jakarta.validation.Valid
 import org.springframework.http.MediaType
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -37,6 +41,7 @@ class RouteCommandController(
     private val createRoutePointUseCase: CreateRoutePointUseCase,
     private val createRouteActivityUseCase: CreateRouteActivityUseCase,
     private val updateRouteActivityUseCase: UpdateRouteActivityUseCase,
+    private val deleteRouteActivityUseCase: DeleteRouteActivityUseCase,
 ) {
     @Operation(
         summary = "루트 생성 (루트 기록 시작)",
@@ -98,5 +103,19 @@ class RouteCommandController(
         val routeActivityResponse =
             updateRouteActivityUseCase(request.toCommand(activityId = activityId))
         return UpdateRouteActivityResponse.from(routeActivityResponse)
+    }
+
+    @Operation(
+        summary = "루트 활동 삭제",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @DeleteMapping("/v1/routes/{routeId}/activity/{activityId}")
+    fun deleteRouteActivity(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @PathVariable routeId: Long,
+        @PathVariable activityId: Long,
+    ): DeleteRouteActivityResponse {
+        val deleteRouteActivityResult = deleteRouteActivityUseCase(DeleteRouteActivityCommand(activityId))
+        return DeleteRouteActivityResponse.from(deleteRouteActivityResult)
     }
 }
