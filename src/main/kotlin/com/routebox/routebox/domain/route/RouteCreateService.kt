@@ -126,7 +126,7 @@ class RouteCreateService(
                     fileUrl = fileUrl,
                 )
                 // 이미지 저장
-                savedActivity.activityImages.add(activityImage)
+                savedActivity.addActivityImage(activityImage)
                 routeActivityImageRepository.save(activityImage)
             } catch (e: IOException) {
                 throw RuntimeException("Failed to upload image", e)

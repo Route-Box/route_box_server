@@ -68,5 +68,38 @@ class RouteActivity(
     var description: String? = description
 
     @OneToMany(mappedBy = "activity", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val activityImages: MutableList<RouteActivityImage> = mutableListOf()
+    private val _activityImages: MutableList<RouteActivityImage> = mutableListOf()
+
+    val activityImages: List<RouteActivityImage>
+        get() = _activityImages.filter { it.deletedAt == null }
+
+    fun update(
+        locationName: String,
+        address: String,
+        latitude: String?,
+        longitude: String?,
+        visitDate: LocalDate,
+        startTime: LocalTime,
+        endTime: LocalTime,
+        category: String,
+        description: String?,
+    ) {
+        this.locationName = locationName
+        this.address = address
+        this.latitude = latitude
+        this.longitude = longitude
+        this.visitDate = visitDate
+        this.startTime = startTime
+        this.endTime = endTime
+        this.category = category
+        this.description = description
+    }
+
+    fun addActivityImage(activityImage: RouteActivityImage) {
+        _activityImages.add(activityImage)
+    }
+
+    fun removeActivityImage(activityImage: RouteActivityImage) {
+        activityImage.delete()
+    }
 }

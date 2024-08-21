@@ -2,7 +2,7 @@ package com.routebox.routebox.application.route.dto
 
 import com.routebox.routebox.domain.route.RouteActivity
 
-data class CreateRouteActivityResult(
+data class UpdateRouteActivityResult(
     val activityId: Long,
     val locationName: String,
     val address: String,
@@ -16,9 +16,9 @@ data class CreateRouteActivityResult(
     val activityImages: List<ActivityImageDto>,
 ) {
     companion object {
-        fun from(activity: RouteActivity): CreateRouteActivityResult {
+        fun from(activity: RouteActivity): UpdateRouteActivityResult {
             val images = activity.activityImages.map { ActivityImageDto(it.id, it.fileUrl) }
-            return CreateRouteActivityResult(
+            return UpdateRouteActivityResult(
                 activityId = activity.id,
                 locationName = activity.locationName,
                 address = activity.address,

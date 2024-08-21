@@ -140,7 +140,7 @@ class RouteService(
                     fileUrl = fileUrl,
                 )
                 // 이미지 저장
-                savedActivity.activityImages.add(activityImage)
+                savedActivity.addActivityImage(activityImage)
                 routeActivityImageRepository.save(activityImage)
             } catch (e: IOException) {
                 throw RuntimeException("Failed to upload image", e)
@@ -148,5 +148,76 @@ class RouteService(
         }
 
         return savedActivity
+    }
+
+    /**
+     * 루트 활동 수정
+     */
+    @Transactional
+    fun updateRouteActivity(
+        activityId: Long,
+        locationName: String,
+        address: String,
+        latitude: String?,
+        longitude: String?,
+        visitDate: LocalDate,
+        startTime: LocalTime,
+        endTime: LocalTime,
+        category: String,
+        description: String?,
+        addedImages: List<MultipartFile>,
+        deletedImageIds: List<Long>,
+    ): RouteActivity {
+        // 루트 활동 조회
+        val routeActivity = routeActivityRepository.findById(activityId)
+            .orElseThrow { IllegalArgumentException("Route activity not found") }
+
+        // 루트 활동 수정
+        routeActivity.update(
+            locationName = locationName,
+            address = address,
+            latitude = latitude,
+            longitude = longitude,
+            visitDate = visitDate,
+            startTime = startTime,
+            endTime = endTime,
+            category = category,
+            description = description,
+        )
+
+        // 추가된 이미지 처리
+        addedImages.forEach { image ->
+            try {
+                // 이미지 업로드
+                val (storedFileName, fileUrl) = fileManager.upload(
+                    image,
+                    ROUTE_ACTIVITY_IMAGE_UPLOAD_PATH,
+                )
+
+                // 이미지 엔티티 생성
+                val activityImage = RouteActivityImage(
+                    activity = routeActivity,
+                    storedFileName = storedFileName,
+                    fileUrl = fileUrl,
+                )
+
+                // 이미지 저장
+                routeActivity.addActivityImage(activityImage)
+                routeActivityImageRepository.save(activityImage)
+            } catch (e: IOException) {
+                throw RuntimeException("Failed to upload image", e)
+            }
+        }
+
+        // 삭제된 이미지 처리
+        deletedImageIds.forEach { imageId ->
+            val image = routeActivity.activityImages.find { it.id == imageId }
+                ?: throw IllegalArgumentException("Image not found")
+            image.delete()
+        }
+
+        // TODO: s3 이미지 삭제
+
+        return routeActivityRepository.save(routeActivity)
     }
 }
