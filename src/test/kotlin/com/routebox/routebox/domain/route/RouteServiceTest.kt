@@ -127,5 +127,6 @@ class RouteServiceTest {
         numberOfDays = "2박3일",
         style = arrayOf("힐링"),
         transportation = arrayOf("뚜벅뚜벅"),
+        transportations = "뚜벅뚜벅",
     )
 }

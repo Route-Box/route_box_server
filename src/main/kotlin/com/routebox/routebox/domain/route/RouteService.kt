@@ -69,6 +69,7 @@ class RouteService(
             numberOfDays = null,
             style = emptyArray(),
             transportation = emptyArray(),
+            transportations = null,
             isPublic = false,
         )
         return routeRepository.save(route)
@@ -229,5 +230,62 @@ class RouteService(
         val routeActivity = routeActivityRepository.findById(activityId)
             .orElseThrow { IllegalArgumentException("Route activity not found") }
         routeActivityRepository.delete(routeActivity)
+    }
+
+    /**
+     * 루트 수정
+     */
+    @Transactional
+    fun updateRoute(
+        routeId: Long,
+        name: String?,
+        description: String?,
+        whoWith: String?,
+        numberOfPeople: Int?,
+        numberOfDays: String?,
+        style: Array<String>,
+        transportation: String?,
+    ): Route {
+        val route = getRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
+        route.update(
+            name = name,
+            description = description,
+            whoWith = whoWith,
+            numberOfPeople = numberOfPeople,
+            numberOfDays = numberOfDays,
+            style = style,
+            transportation = transportation,
+        )
+        return routeRepository.save(route)
+    }
+
+    /**
+     * 루트 삭제
+     */
+    @Transactional
+    fun deleteRoute(routeId: Long) {
+        val route = getRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
+
+        // 루트 위치 삭제
+        routePointRepository.deleteAll(route.routePoints)
+
+        // 루트 활동 이미지 삭제
+        routeActivityImageRepository.deleteAll(route.routeActivities.flatMap { it.activityImages })
+
+        // 루트 활동 삭제
+        routeActivityRepository.deleteAll(route.routeActivities)
+
+        // 루트 삭제
+        routeRepository.delete(route)
+    }
+
+    /**
+     * 루트 공개 여부 수정
+     */
+    @Transactional
+    fun updateRoutePublic(routeId: Long, isPublic: Boolean): Route {
+        val route = getRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
+        route.updatePublic(isPublic)
+        return routeRepository.save(route)
     }
 }

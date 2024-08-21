@@ -4,8 +4,12 @@ import com.routebox.routebox.application.route.CreateRouteActivityUseCase
 import com.routebox.routebox.application.route.CreateRoutePointUseCase
 import com.routebox.routebox.application.route.CreateRouteUseCase
 import com.routebox.routebox.application.route.DeleteRouteActivityUseCase
+import com.routebox.routebox.application.route.DeleteRouteUseCase
 import com.routebox.routebox.application.route.UpdateRouteActivityUseCase
+import com.routebox.routebox.application.route.UpdateRoutePublicUseCase
+import com.routebox.routebox.application.route.UpdateRouteUseCase
 import com.routebox.routebox.application.route.dto.DeleteRouteActivityCommand
+import com.routebox.routebox.application.route.dto.DeleteRouteCommand
 import com.routebox.routebox.controller.route.dto.CreateRouteActivityRequest
 import com.routebox.routebox.controller.route.dto.CreateRouteActivityResponse
 import com.routebox.routebox.controller.route.dto.CreateRoutePointRequest
@@ -13,8 +17,13 @@ import com.routebox.routebox.controller.route.dto.CreateRoutePointResponse
 import com.routebox.routebox.controller.route.dto.CreateRouteRequest
 import com.routebox.routebox.controller.route.dto.CreateRouteResponse
 import com.routebox.routebox.controller.route.dto.DeleteRouteActivityResponse
+import com.routebox.routebox.controller.route.dto.DeleteRouteResponse
 import com.routebox.routebox.controller.route.dto.UpdateRouteActivityRequest
 import com.routebox.routebox.controller.route.dto.UpdateRouteActivityResponse
+import com.routebox.routebox.controller.route.dto.UpdateRoutePublicRequest
+import com.routebox.routebox.controller.route.dto.UpdateRoutePublicResponse
+import com.routebox.routebox.controller.route.dto.UpdateRouteRequest
+import com.routebox.routebox.controller.route.dto.UpdateRouteResponse
 import com.routebox.routebox.security.UserPrincipal
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -25,6 +34,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -42,6 +52,9 @@ class RouteCommandController(
     private val createRouteActivityUseCase: CreateRouteActivityUseCase,
     private val updateRouteActivityUseCase: UpdateRouteActivityUseCase,
     private val deleteRouteActivityUseCase: DeleteRouteActivityUseCase,
+    private val updateRouteUseCase: UpdateRouteUseCase,
+    private val deleteRouteUseCase: DeleteRouteUseCase,
+    private val updateRoutePublicUseCase: UpdateRoutePublicUseCase,
 ) {
     @Operation(
         summary = "루트 생성 (루트 기록 시작)",
@@ -117,5 +130,47 @@ class RouteCommandController(
     ): DeleteRouteActivityResponse {
         val deleteRouteActivityResult = deleteRouteActivityUseCase(DeleteRouteActivityCommand(activityId))
         return DeleteRouteActivityResponse.from(deleteRouteActivityResult)
+    }
+
+    @Operation(
+        summary = "루트 수정",
+        description = "루트 마무리, 루트 수정에서 사용",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @PutMapping("/v1/routes/{routeId}")
+    fun updateRoute(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @PathVariable routeId: Long,
+        @RequestBody @Valid request: UpdateRouteRequest,
+    ): UpdateRouteResponse {
+        val routeResponse = updateRouteUseCase(request.toCommand(userId = userPrincipal.userId, routeId = routeId))
+        return UpdateRouteResponse.from(routeResponse)
+    }
+
+    @Operation(
+        summary = "루트 삭제",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @DeleteMapping("/v1/routes/{routeId}")
+    fun deleteRoute(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @PathVariable routeId: Long,
+    ): DeleteRouteResponse {
+        val routeResponse = deleteRouteUseCase(DeleteRouteCommand(userId = userPrincipal.userId, routeId = routeId))
+        return DeleteRouteResponse.from(routeResponse)
+    }
+
+    @Operation(
+        summary = "루트 공개여부 수정",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @PatchMapping("/v1/routes/{routeId}/public")
+    fun updateRoutePublic(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @PathVariable routeId: Long,
+        @RequestBody @Valid request: UpdateRoutePublicRequest,
+    ): UpdateRoutePublicResponse {
+        val routeResponse = updateRoutePublicUseCase(request.toCommand(userId = userPrincipal.userId, routeId = routeId))
+        return UpdateRoutePublicResponse.from(routeResponse)
     }
 }

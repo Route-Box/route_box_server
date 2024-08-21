@@ -102,6 +102,7 @@ class GetLatestRouteUseCaseTest {
         numberOfDays = numberOfDays,
         style = style,
         transportation = transportation,
+        transportations = null,
         user = user,
     )
 
