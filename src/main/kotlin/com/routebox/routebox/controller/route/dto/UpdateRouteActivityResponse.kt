@@ -1,10 +1,10 @@
 package com.routebox.routebox.controller.route.dto
 
 import com.routebox.routebox.application.route.dto.ActivityImageDto
-import com.routebox.routebox.application.route.dto.CreateRouteActivityResult
+import com.routebox.routebox.application.route.dto.UpdateRouteActivityResult
 import io.swagger.v3.oas.annotations.media.Schema
 
-data class CreateRouteActivityResponse(
+data class UpdateRouteActivityResponse(
     @Schema(description = "활동 ID", example = "1")
     val activityId: Long,
     @Schema(description = "위치 이름", example = "강릉 해파랑물회")
@@ -30,8 +30,8 @@ data class CreateRouteActivityResponse(
 ) {
     companion object {
         fun from(
-            result: CreateRouteActivityResult,
-        ): CreateRouteActivityResponse = CreateRouteActivityResponse(
+            result: UpdateRouteActivityResult,
+        ): UpdateRouteActivityResponse = UpdateRouteActivityResponse(
             activityId = result.activityId,
             locationName = result.locationName,
             address = result.address,
