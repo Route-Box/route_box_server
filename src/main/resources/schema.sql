@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS user_profile_image;
 DROP TABLE IF EXISTS user_point_history;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS routes;
+DROP TABLE IF EXISTS route_points;
 
 CREATE TABLE users
 (
@@ -131,21 +132,21 @@ CREATE TABLE routes
     number_of_days   VARCHAR(255),
     style            JSON,
     transportation   JSON,
-    is_public        BOOLEAN      NOT NULL DEFAULT FALSE,
-    created_at       TIMESTAMP    NOT NULL,
-    updated_at       TIMESTAMP    NOT NULL,
+    is_public        BOOLEAN  NOT NULL DEFAULT FALSE,
+    created_at       DATETIME NOT NULL,
+    updated_at       DATETIME NOT NULL,
     PRIMARY KEY (route_id)
 );
 CREATE INDEX idx__routes__user_id ON routes (user_id);
 
-CREATE TABLE route_points (
-                              point_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                              route_id BIGINT NOT NULL,
-                              latitude VARCHAR(255) NOT NULL,
-                              longitude VARCHAR(255) NOT NULL,
-                              point_order INT NOT NULL,
-                              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-                              FOREIGN KEY (route_id) REFERENCES routes(route_id)
+CREATE TABLE route_points
+(
+    point_id    BIGINT AUTO_INCREMENT PRIMARY KEY,
+    route_id    BIGINT       NOT NULL,
+    latitude    VARCHAR(255) NOT NULL,
+    longitude   VARCHAR(255) NOT NULL,
+    point_order INT          NOT NULL,
+    created_at  DATETIME     NOT NULL,
+    updated_at  DATETIME     NOT NULL
 );
-
+CREATE INDEX idx__route_points__route_id ON routes (route_id);
