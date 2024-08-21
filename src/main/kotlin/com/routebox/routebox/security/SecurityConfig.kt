@@ -76,7 +76,8 @@ class SecurityConfig {
                 "https://*.myroutebox.com",
                 "https://myroutebox.com",
                 "http://localhost:8080",
-                "http://localhost:5173", // web
+                // For web local development
+                "http://localhost:5173",
             )
             corsConfig.allowedMethods = listOf(
                 HttpMethod.GET.name(),
