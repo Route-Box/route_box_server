@@ -18,10 +18,10 @@ data class RouteResponse(
     val nickname: String,
 
     @Schema(description = "루트 제목", example = "서울의 작가들")
-    val routeName: String,
+    val routeName: String?,
 
     @Schema(description = "루트 설명", example = "서울의 작가들을 만나보세요.")
-    val routeDescription: String,
+    val routeDescription: String?,
 
     @Schema(description = "루트 이미지들", example = "[\"https://route-image1\", \"https://route-image2\"]")
     val routeImageUrls: List<String>,

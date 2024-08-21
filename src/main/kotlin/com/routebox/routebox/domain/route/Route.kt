@@ -19,13 +19,13 @@ import java.time.LocalDateTime
 @Entity
 class Route(
     id: Long = 0,
-    name: String,
-    description: String,
+    name: String?,
+    description: String?,
     startTime: LocalDateTime,
     endTime: LocalDateTime,
-    whoWith: String,
-    numberOfPeople: Int,
-    numberOfDays: String,
+    whoWith: String?,
+    numberOfPeople: Int?,
+    numberOfDays: String?,
     style: Array<String>,
     transportation: Array<String>,
     isPublic: Boolean = false,
@@ -40,9 +40,9 @@ class Route(
     @JoinColumn(name = "user_id")
     val user: User? = user
 
-    var name: String = name
+    var name: String? = name
 
-    var description: String = description
+    var description: String? = description
 
     var startTime: LocalDateTime = startTime
 
