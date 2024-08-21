@@ -278,4 +278,14 @@ class RouteService(
         // 루트 삭제
         routeRepository.delete(route)
     }
+
+    /**
+     * 루트 공개 여부 수정
+     */
+    @Transactional
+    fun updateRoutePublic(routeId: Long, isPublic: Boolean): Route {
+        val route = getRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
+        route.updatePublic(isPublic)
+        return routeRepository.save(route)
+    }
 }

@@ -105,4 +105,8 @@ class Route(
         this.style = style
         this.transportations = transportation
     }
+
+    fun updatePublic(isPublic: Boolean) {
+        this.isPublic = isPublic
+    }
 }
