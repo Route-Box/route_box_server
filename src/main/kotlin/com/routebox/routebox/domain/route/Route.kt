@@ -29,7 +29,9 @@ class Route(
     numberOfPeople: Int?,
     numberOfDays: String?,
     style: Array<String>,
+    // TODO: remove
     transportation: Array<String>,
+    transportations: String?,
     isPublic: Boolean = false,
 ) : TimeTrackedBaseEntity() {
     @Id
@@ -72,10 +74,31 @@ class Route(
     var transportation: Array<String> = transportation
         private set
 
+    var transportations: String? = transportations
+        private set
+
     var isPublic: Boolean = isPublic
         private set
 
     @OneToMany(mappedBy = "route")
     var routePoints: List<RoutePoint> = mutableListOf()
         private set
+
+    fun update(
+        name: String?,
+        description: String?,
+        whoWith: String?,
+        numberOfPeople: Int?,
+        numberOfDays: String?,
+        style: Array<String>,
+        transportation: String?,
+    ) {
+        this.name = name
+        this.description = description
+        this.whoWith = whoWith
+        this.numberOfPeople = numberOfPeople
+        this.numberOfDays = numberOfDays
+        this.style = style
+        this.transportations = transportation
+    }
 }

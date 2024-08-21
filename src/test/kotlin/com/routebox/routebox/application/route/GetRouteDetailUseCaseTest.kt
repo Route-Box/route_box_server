@@ -81,6 +81,7 @@ class GetRouteDetailUseCaseTest {
             numberOfDays = numberOfDays,
             style = style,
             transportation = transportation,
+            transportations = null,
             user = user,
         )
     }

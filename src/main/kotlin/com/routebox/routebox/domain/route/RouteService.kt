@@ -69,6 +69,7 @@ class RouteService(
             numberOfDays = null,
             style = emptyArray(),
             transportation = emptyArray(),
+            transportations = null,
             isPublic = false,
         )
         return routeRepository.save(route)
@@ -229,5 +230,32 @@ class RouteService(
         val routeActivity = routeActivityRepository.findById(activityId)
             .orElseThrow { IllegalArgumentException("Route activity not found") }
         routeActivityRepository.delete(routeActivity)
+    }
+
+    /**
+     * 루트 수정
+     */
+    @Transactional
+    fun updateRoute(
+        routeId: Long,
+        name: String?,
+        description: String?,
+        whoWith: String?,
+        numberOfPeople: Int?,
+        numberOfDays: String?,
+        style: Array<String>,
+        transportation: String?,
+    ): Route {
+        val route = getRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
+        route.update(
+            name = name,
+            description = description,
+            whoWith = whoWith,
+            numberOfPeople = numberOfPeople,
+            numberOfDays = numberOfDays,
+            style = style,
+            transportation = transportation,
+        )
+        return routeRepository.save(route)
     }
 }

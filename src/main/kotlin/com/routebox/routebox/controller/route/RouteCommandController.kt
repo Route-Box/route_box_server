@@ -5,6 +5,7 @@ import com.routebox.routebox.application.route.CreateRoutePointUseCase
 import com.routebox.routebox.application.route.CreateRouteUseCase
 import com.routebox.routebox.application.route.DeleteRouteActivityUseCase
 import com.routebox.routebox.application.route.UpdateRouteActivityUseCase
+import com.routebox.routebox.application.route.UpdateRouteUseCase
 import com.routebox.routebox.application.route.dto.DeleteRouteActivityCommand
 import com.routebox.routebox.controller.route.dto.CreateRouteActivityRequest
 import com.routebox.routebox.controller.route.dto.CreateRouteActivityResponse
@@ -15,6 +16,8 @@ import com.routebox.routebox.controller.route.dto.CreateRouteResponse
 import com.routebox.routebox.controller.route.dto.DeleteRouteActivityResponse
 import com.routebox.routebox.controller.route.dto.UpdateRouteActivityRequest
 import com.routebox.routebox.controller.route.dto.UpdateRouteActivityResponse
+import com.routebox.routebox.controller.route.dto.UpdateRouteRequest
+import com.routebox.routebox.controller.route.dto.UpdateRouteResponse
 import com.routebox.routebox.security.UserPrincipal
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -42,6 +45,7 @@ class RouteCommandController(
     private val createRouteActivityUseCase: CreateRouteActivityUseCase,
     private val updateRouteActivityUseCase: UpdateRouteActivityUseCase,
     private val deleteRouteActivityUseCase: DeleteRouteActivityUseCase,
+    private val updateRouteUseCase: UpdateRouteUseCase,
 ) {
     @Operation(
         summary = "루트 생성 (루트 기록 시작)",
@@ -117,5 +121,20 @@ class RouteCommandController(
     ): DeleteRouteActivityResponse {
         val deleteRouteActivityResult = deleteRouteActivityUseCase(DeleteRouteActivityCommand(activityId))
         return DeleteRouteActivityResponse.from(deleteRouteActivityResult)
+    }
+
+    @Operation(
+        summary = "루트 수정",
+        description = "루트 마무리, 루트 수정에서 사용",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @PutMapping("/v1/routes/{routeId}")
+    fun updateRoute(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @PathVariable routeId: Long,
+        @RequestBody @Valid request: UpdateRouteRequest,
+    ): UpdateRouteResponse {
+        val routeResponse = updateRouteUseCase(request.toCommand(userId = userPrincipal.userId, routeId = routeId))
+        return UpdateRouteResponse.from(routeResponse)
     }
 }
