@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import java.time.LocalDateTime
 
@@ -19,13 +20,13 @@ import java.time.LocalDateTime
 @Entity
 class Route(
     id: Long = 0,
-    name: String,
-    description: String,
+    name: String?,
+    description: String?,
     startTime: LocalDateTime,
     endTime: LocalDateTime,
-    whoWith: String,
-    numberOfPeople: Int,
-    numberOfDays: String,
+    whoWith: String?,
+    numberOfPeople: Int?,
+    numberOfDays: String?,
     style: Array<String>,
     transportation: Array<String>,
     isPublic: Boolean = false,
@@ -40,9 +41,9 @@ class Route(
     @JoinColumn(name = "user_id")
     val user: User? = user
 
-    var name: String = name
+    var name: String? = name
 
-    var description: String = description
+    var description: String? = description
 
     var startTime: LocalDateTime = startTime
 
@@ -63,4 +64,7 @@ class Route(
     var transportation: Array<String> = transportation
 
     var isPublic: Boolean = isPublic
+
+    @OneToMany(mappedBy = "route")
+    var routePoints: List<RoutePoint> = mutableListOf()
 }
