@@ -3,6 +3,7 @@ package com.routebox.routebox.application.route
 import com.routebox.routebox.application.route.dto.GetRouteDetailResult
 import com.routebox.routebox.domain.route.RouteService
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class GetRouteDetailUseCase(
@@ -15,6 +16,7 @@ class GetRouteDetailUseCase(
      * @return 루트 상세 정보
      * @throws // TODO
      */
+    @Transactional(readOnly = true)
     operator fun invoke(id: Long): GetRouteDetailResult {
         val route = routeService.getRouteById(id).let {
             it ?: throw IllegalArgumentException("Route not found")

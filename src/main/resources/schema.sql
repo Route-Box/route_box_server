@@ -7,6 +7,8 @@ DROP TABLE IF EXISTS user_profile_image;
 DROP TABLE IF EXISTS user_point_history;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS routes;
+DROP TABLE IF EXISTS route_activities;
+DROP TABLE IF EXISTS route_activity_image;
 DROP TABLE IF EXISTS route_points;
 
 CREATE TABLE users
@@ -28,7 +30,6 @@ CREATE TABLE users
     deleted_at                      DATETIME,
     PRIMARY KEY (user_id)
 );
--- CREATE UNIQUE INDEX idx__users__nickname ON users (nickname);
 
 CREATE TABLE user_profile_image
 (
@@ -132,12 +133,42 @@ CREATE TABLE routes
     number_of_days   VARCHAR(255),
     style            JSON,
     transportation   JSON,
-    is_public        BOOLEAN  NOT NULL DEFAULT FALSE,
-    created_at       DATETIME NOT NULL,
-    updated_at       DATETIME NOT NULL,
+    is_public        BOOLEAN      NOT NULL DEFAULT FALSE,
+    created_at       DATETIME     NOT NULL,
+    updated_at       DATETIME     NOT NULL,
     PRIMARY KEY (route_id)
 );
 CREATE INDEX idx__routes__user_id ON routes (user_id);
+
+CREATE TABLE route_activities
+(
+    route_activity_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    route_id          BIGINT       NOT NULL,
+    location_name     VARCHAR(255) NOT NULL,
+    address           VARCHAR(255) NOT NULL,
+    latitude          VARCHAR(255) NULL,
+    longitude         VARCHAR(255) NULL,
+    visit_date        DATE         NOT NULL,
+    start_time        TIME         NOT NULL,
+    end_time          TIME         NOT NULL,
+    category          VARCHAR(100) NOT NULL,
+    description       TEXT         NULL,
+    created_at        DATETIME     NOT NULL,
+    updated_at        DATETIME     NOT NULL
+);
+CREATE INDEX idx__route_activities__route_id ON route_activities (route_id);
+
+CREATE TABLE route_activity_image
+(
+    route_activity_image_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    route_activity_id       BIGINT       NOT NULL,
+    stored_file_name        VARCHAR(255) NOT NULL,
+    file_url                VARCHAR(255) NOT NULL,
+    created_at              DATETIME     NOT NULL,
+    updated_at              DATETIME     NOT NULL,
+    deleted_at              DATETIME     NULL
+);
+CREATE INDEX idx__route_activity_image__route_activity_id ON route_activity_image (route_activity_id);
 
 CREATE TABLE route_points
 (
@@ -149,4 +180,4 @@ CREATE TABLE route_points
     created_at  DATETIME     NOT NULL,
     updated_at  DATETIME     NOT NULL
 );
-CREATE INDEX idx__route_points__route_id ON routes (route_id);
+CREATE INDEX idx__route_points__route_id ON route_points (route_id);
