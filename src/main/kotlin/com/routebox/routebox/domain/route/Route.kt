@@ -84,6 +84,10 @@ class Route(
     var routePoints: List<RoutePoint> = mutableListOf()
         private set
 
+    @OneToMany(mappedBy = "route")
+    var routeActivities: List<RouteActivity> = mutableListOf()
+        private set
+
     fun update(
         name: String?,
         description: String?,

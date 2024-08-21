@@ -258,4 +258,24 @@ class RouteService(
         )
         return routeRepository.save(route)
     }
+
+    /**
+     * 루트 삭제
+     */
+    @Transactional
+    fun deleteRoute(routeId: Long) {
+        val route = getRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
+
+        // 루트 위치 삭제
+        routePointRepository.deleteAll(route.routePoints)
+
+        // 루트 활동 이미지 삭제
+        routeActivityImageRepository.deleteAll(route.routeActivities.flatMap { it.activityImages })
+
+        // 루트 활동 삭제
+        routeActivityRepository.deleteAll(route.routeActivities)
+
+        // 루트 삭제
+        routeRepository.delete(route)
+    }
 }

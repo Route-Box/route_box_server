@@ -4,9 +4,11 @@ import com.routebox.routebox.application.route.CreateRouteActivityUseCase
 import com.routebox.routebox.application.route.CreateRoutePointUseCase
 import com.routebox.routebox.application.route.CreateRouteUseCase
 import com.routebox.routebox.application.route.DeleteRouteActivityUseCase
+import com.routebox.routebox.application.route.DeleteRouteUseCase
 import com.routebox.routebox.application.route.UpdateRouteActivityUseCase
 import com.routebox.routebox.application.route.UpdateRouteUseCase
 import com.routebox.routebox.application.route.dto.DeleteRouteActivityCommand
+import com.routebox.routebox.application.route.dto.DeleteRouteCommand
 import com.routebox.routebox.controller.route.dto.CreateRouteActivityRequest
 import com.routebox.routebox.controller.route.dto.CreateRouteActivityResponse
 import com.routebox.routebox.controller.route.dto.CreateRoutePointRequest
@@ -14,6 +16,7 @@ import com.routebox.routebox.controller.route.dto.CreateRoutePointResponse
 import com.routebox.routebox.controller.route.dto.CreateRouteRequest
 import com.routebox.routebox.controller.route.dto.CreateRouteResponse
 import com.routebox.routebox.controller.route.dto.DeleteRouteActivityResponse
+import com.routebox.routebox.controller.route.dto.DeleteRouteResponse
 import com.routebox.routebox.controller.route.dto.UpdateRouteActivityRequest
 import com.routebox.routebox.controller.route.dto.UpdateRouteActivityResponse
 import com.routebox.routebox.controller.route.dto.UpdateRouteRequest
@@ -46,6 +49,7 @@ class RouteCommandController(
     private val updateRouteActivityUseCase: UpdateRouteActivityUseCase,
     private val deleteRouteActivityUseCase: DeleteRouteActivityUseCase,
     private val updateRouteUseCase: UpdateRouteUseCase,
+    private val deleteRouteUseCase: DeleteRouteUseCase,
 ) {
     @Operation(
         summary = "루트 생성 (루트 기록 시작)",
@@ -136,5 +140,18 @@ class RouteCommandController(
     ): UpdateRouteResponse {
         val routeResponse = updateRouteUseCase(request.toCommand(userId = userPrincipal.userId, routeId = routeId))
         return UpdateRouteResponse.from(routeResponse)
+    }
+
+    @Operation(
+        summary = "루트 삭제",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @DeleteMapping("/v1/routes/{routeId}")
+    fun deleteRoute(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @PathVariable routeId: Long,
+    ): DeleteRouteResponse {
+        val routeResponse = deleteRouteUseCase(DeleteRouteCommand(userId = userPrincipal.userId, routeId = routeId))
+        return DeleteRouteResponse.from(routeResponse)
     }
 }
