@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 
 @Service
-class RouteService(
+class RouteCreateService(
     private val routeRepository: RouteRepository,
     private val routePointRepository: RoutePointRepository,
     private val routeActivityRepository: RouteActivityRepository,
@@ -40,18 +40,7 @@ class RouteService(
      * 루트 상세 조회
      */
     @Transactional(readOnly = true)
-    fun getRouteById(id: Long): Route? =
-        routeRepository.findById(id).orElse(null)
-
-    /**
-     * 유저 id로 유저가 작성한 루트 개수 조회하기
-     *
-     * @param userId id of user
-     * @return userId에 해당하는 유저가 작성한 루트 개수
-     */
-    @Transactional(readOnly = true)
-    fun countRoutesByUserId(userId: Long) =
-        routeRepository.countByUser_Id(userId)
+    fun getRouteById(id: Long): Route? = routeRepository.findById(id).orElse(null)
 
     /**
      * 루트 생성
@@ -128,10 +117,7 @@ class RouteService(
         images.forEach { image ->
             try {
                 // 이미지 업로드
-                val (storedFileName, fileUrl) = fileManager.upload(
-                    image,
-                    ROUTE_ACTIVITY_IMAGE_UPLOAD_PATH,
-                )
+                val (storedFileName, fileUrl) = fileManager.upload(image, ROUTE_ACTIVITY_IMAGE_UPLOAD_PATH)
 
                 // 이미지 엔티티 생성
                 val activityImage = RouteActivityImage(

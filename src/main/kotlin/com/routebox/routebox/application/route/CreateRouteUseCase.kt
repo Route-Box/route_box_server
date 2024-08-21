@@ -5,6 +5,7 @@ import com.routebox.routebox.application.route.dto.CreateRouteResult
 import com.routebox.routebox.domain.route.RouteService
 import com.routebox.routebox.domain.user.UserService
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class CreateRouteUseCase(
@@ -18,6 +19,7 @@ class CreateRouteUseCase(
      * @return 루트 id
      * @throws
      */
+    @Transactional
     operator fun invoke(command: CreateRouteCommand): CreateRouteResult {
         val user = userService.getUserById(command.userId)
         val route = routeService.createRoute(user = user, startTime = command.startTime, endTime = command.endTime)

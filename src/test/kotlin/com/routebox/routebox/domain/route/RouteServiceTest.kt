@@ -1,8 +1,11 @@
 package com.routebox.routebox.domain.route
 
+import com.routebox.routebox.domain.common.FileManager
 import com.routebox.routebox.domain.user.User
 import com.routebox.routebox.domain.user.constant.Gender
 import com.routebox.routebox.domain.user.constant.LoginType
+import com.routebox.routebox.infrastructure.route.RouteActivityImageRepository
+import com.routebox.routebox.infrastructure.route.RouteActivityRepository
 import com.routebox.routebox.infrastructure.route.RoutePointRepository
 import com.routebox.routebox.infrastructure.route.RouteRepository
 import org.apache.commons.lang3.RandomStringUtils
@@ -32,6 +35,15 @@ class RouteServiceTest {
 
     @Mock
     private lateinit var routePointRepository: RoutePointRepository
+
+    @Mock
+    private lateinit var routeActivityRepository: RouteActivityRepository
+
+    @Mock
+    private lateinit var routeActivityImageRepository: RouteActivityImageRepository
+
+    @Mock
+    private lateinit var fileManager: FileManager
 
     @Test
     fun `루트를 최신순으로 반환한다`() {
