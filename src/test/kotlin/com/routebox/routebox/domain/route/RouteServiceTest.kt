@@ -1,5 +1,6 @@
 package com.routebox.routebox.domain.route
 
+import com.routebox.routebox.infrastructure.route.RoutePointRepository
 import com.routebox.routebox.infrastructure.route.RouteRepository
 import org.apache.commons.lang3.RandomStringUtils
 import org.assertj.core.api.Assertions
@@ -24,6 +25,9 @@ class RouteServiceTest {
 
     @Mock
     private lateinit var routeRepository: RouteRepository
+
+    @Mock
+    private lateinit var routePointRepository: RoutePointRepository
 
     @Test
     fun `루트를 최신순으로 반환한다`() {

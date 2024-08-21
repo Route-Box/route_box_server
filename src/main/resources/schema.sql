@@ -137,3 +137,15 @@ CREATE TABLE routes
     PRIMARY KEY (route_id)
 );
 CREATE INDEX idx__routes__user_id ON routes (user_id);
+
+CREATE TABLE route_points (
+                              point_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                              route_id BIGINT NOT NULL,
+                              latitude VARCHAR(255) NOT NULL,
+                              longitude VARCHAR(255) NOT NULL,
+                              point_order INT NOT NULL,
+                              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+                              FOREIGN KEY (route_id) REFERENCES routes(route_id)
+);
+
