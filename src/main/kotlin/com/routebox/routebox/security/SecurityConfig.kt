@@ -71,7 +71,14 @@ class SecurityConfig {
         @Bean
         fun corsConfigurationSource(): CorsConfigurationSource {
             val corsConfig = CorsConfiguration()
-            corsConfig.allowedOrigins = listOf("https://api-dev.myroutebox.com", "https://*.myroutebox.com")
+            corsConfig.allowedOrigins = listOf(
+                "https://api-dev.myroutebox.com",
+                "https://*.myroutebox.com",
+                "https://myroutebox.com",
+                "http://localhost:8080",
+                // For web local development
+                "http://localhost:5173",
+            )
             corsConfig.allowedMethods = listOf(
                 HttpMethod.GET.name(),
                 HttpMethod.POST.name(),
