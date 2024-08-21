@@ -78,8 +78,8 @@ class SecurityConfig {
                 "http://localhost:8080",
                 // For web
                 "http://localhost:5173",
-                "https://myroutebox.com",
-                "https://dev.d1a0dmxvzr7an0.amplifyapp.com"
+                "https://www.dev.myroutebox.com",
+                "https://dev.d1a0dmxvzr7an0.amplifyapp.com",
             )
             corsConfig.allowedMethods = listOf(
                 HttpMethod.GET.name(),
