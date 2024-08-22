@@ -1,5 +1,6 @@
 package com.routebox.routebox.controller.route
 
+import com.routebox.routebox.application.route.CheckProgressRouteUseCase
 import com.routebox.routebox.application.route.CreateRouteActivityUseCase
 import com.routebox.routebox.application.route.CreateRoutePointUseCase
 import com.routebox.routebox.application.route.CreateRouteUseCase
@@ -8,8 +9,11 @@ import com.routebox.routebox.application.route.DeleteRouteUseCase
 import com.routebox.routebox.application.route.UpdateRouteActivityUseCase
 import com.routebox.routebox.application.route.UpdateRoutePublicUseCase
 import com.routebox.routebox.application.route.UpdateRouteUseCase
+import com.routebox.routebox.application.route.dto.CheckProgressRouteCommand
 import com.routebox.routebox.application.route.dto.DeleteRouteActivityCommand
 import com.routebox.routebox.application.route.dto.DeleteRouteCommand
+import com.routebox.routebox.controller.route.dto.CheckProgressRouteRequest
+import com.routebox.routebox.controller.route.dto.CheckProgressRouteResponse
 import com.routebox.routebox.controller.route.dto.CreateRouteActivityRequest
 import com.routebox.routebox.controller.route.dto.CreateRouteActivityResponse
 import com.routebox.routebox.controller.route.dto.CreateRoutePointRequest
@@ -32,6 +36,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.MediaType
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
@@ -45,6 +50,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
 import kotlin.random.Random
 
 @Tag(name = "내루트 관련 API")
@@ -60,6 +66,7 @@ class RouteCommandController(
     private val updateRouteUseCase: UpdateRouteUseCase,
     private val deleteRouteUseCase: DeleteRouteUseCase,
     private val updateRoutePublicUseCase: UpdateRoutePublicUseCase,
+    private val checkProgressRouteUseCase: CheckProgressRouteUseCase,
 ) {
     @Operation(
         summary = "루트 생성 (루트 기록 시작)",
@@ -240,18 +247,19 @@ class RouteCommandController(
         return GetMyRouteInsightResponse(routeCount, purchaseCount, commentCount)
     }
 
-    /*
     @Operation(
-        summary = "기록 진행중인 루트 존재여부 조회",
-        description = "기록 진행중인 루트가 존재하는 경우 routeId: Int 반환, 없는 경우 routeId : null 반환",
+        summary = "기록 진행중인 루트 여부 조회",
+        description = "<p>기록 진행중인 루트가 존재하는 경우 <code>routeId: Int</code>반환, 없는 경우 <code>routeId : null</code> 반환</p>" +
+            "<p>사용자 기기 기준 시간 = <code>userLocalTime: yyyy-MM-ddTHH:mm:ss</code> 형식의 문자열로 전달해야 함 (optional)</p>",
         security = [SecurityRequirement(name = "access-token")],
     )
     @GetMapping("/v1/routes/progress")
     fun checkProgressRoute(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @ParameterObject request: CheckProgressRouteRequest,
     ): CheckProgressRouteResponse {
-        // TODO: 구현
-        val routeId = if (Random.nextBoolean()) Random.nextLong(1, 100) else null
+        val localTime: LocalDateTime = LocalDateTime.parse(request.userLocalTime)
+        val routeId = checkProgressRouteUseCase(CheckProgressRouteCommand(userId = userPrincipal.userId, userLocalTime = localTime))
         return CheckProgressRouteResponse(routeId)
-    }*/
+    }
 }
