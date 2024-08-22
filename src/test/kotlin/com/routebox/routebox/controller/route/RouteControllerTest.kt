@@ -3,6 +3,7 @@ package com.routebox.routebox.controller.route
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.routebox.routebox.application.route.GetLatestRoutesUseCase
 import com.routebox.routebox.application.route.GetRouteDetailUseCase
+import com.routebox.routebox.application.route.GetRouteDetailWithActivitiesUseCase
 import com.routebox.routebox.application.route.dto.GetRouteDetailResult
 import com.routebox.routebox.config.ControllerTestConfig
 import com.routebox.routebox.domain.user.constant.UserRoleType
@@ -33,6 +34,9 @@ class RouteControllerTest @Autowired constructor(
 
     @MockBean
     lateinit var getRouteDetailUseCase: GetRouteDetailUseCase
+
+    @MockBean
+    lateinit var getRouteDetailWithActivitiesUseCase: GetRouteDetailWithActivitiesUseCase
 
     @Test
     fun `최신순으로 정렬된 루트 목록을 반환한다`() {

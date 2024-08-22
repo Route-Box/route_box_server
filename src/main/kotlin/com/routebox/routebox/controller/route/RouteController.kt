@@ -2,12 +2,15 @@ package com.routebox.routebox.controller.route
 
 import com.routebox.routebox.application.route.GetLatestRoutesUseCase
 import com.routebox.routebox.application.route.GetRouteDetailUseCase
+import com.routebox.routebox.application.route.GetRouteDetailWithActivitiesUseCase
 import com.routebox.routebox.controller.route.dto.GetLatestRoutesResponse
+import com.routebox.routebox.controller.route.dto.RouteDetailResponse
 import com.routebox.routebox.controller.route.dto.RouteResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController
 class RouteController(
     private val getLatestRoutesUseCase: GetLatestRoutesUseCase,
     private val getRouteDetailUseCase: GetRouteDetailUseCase,
+    private val getRouteDetailWithActivitiesUseCase: GetRouteDetailWithActivitiesUseCase,
 ) {
     @Operation(
         summary = "루트 탐색",
@@ -54,5 +58,22 @@ class RouteController(
     ): RouteResponse {
         val routeResponse = getRouteDetailUseCase(routeId)
         return RouteResponse.from(routeResponse)
+    }
+
+    @Operation(
+        summary = "구매한루트/내루트 상세 조회",
+        description = "루트 경로, 활동이 포함된 상세 정보",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200"),
+        ApiResponse(responseCode = "400", description = "[3002] 존재하지 않는 루트 id", content = [Content()]),
+    )
+    @GetMapping("/v1/routes/{routeId}/detail")
+    fun getRouteDetailWithActivities(
+        @PathVariable routeId: Long,
+    ): RouteDetailResponse {
+        val routeResponse = getRouteDetailWithActivitiesUseCase(routeId)
+        return RouteDetailResponse.from(routeResponse)
     }
 }
