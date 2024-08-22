@@ -288,4 +288,11 @@ class RouteService(
         route.updatePublic(isPublic)
         return routeRepository.save(route)
     }
+
+    /**
+     * 기록중인 루트 조회
+     */
+    @Transactional(readOnly = true)
+    fun getProgressRouteByUserId(now: LocalDateTime, userId: Long): Route? =
+        routeRepository.findByEndTimeIsAfterAndUser_Id(now, userId)
 }
