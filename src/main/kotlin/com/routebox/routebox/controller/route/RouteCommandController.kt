@@ -18,6 +18,9 @@ import com.routebox.routebox.controller.route.dto.CreateRouteRequest
 import com.routebox.routebox.controller.route.dto.CreateRouteResponse
 import com.routebox.routebox.controller.route.dto.DeleteRouteActivityResponse
 import com.routebox.routebox.controller.route.dto.DeleteRouteResponse
+import com.routebox.routebox.controller.route.dto.GetMyRouteInsightResponse
+import com.routebox.routebox.controller.route.dto.GetMyRouteResponse
+import com.routebox.routebox.controller.route.dto.RouteSimpleResponse
 import com.routebox.routebox.controller.route.dto.UpdateRouteActivityRequest
 import com.routebox.routebox.controller.route.dto.UpdateRouteActivityResponse
 import com.routebox.routebox.controller.route.dto.UpdateRoutePublicRequest
@@ -33,6 +36,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -41,6 +45,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import kotlin.random.Random
 
 @Tag(name = "내루트 관련 API")
 @RestController
@@ -170,7 +175,83 @@ class RouteCommandController(
         @PathVariable routeId: Long,
         @RequestBody @Valid request: UpdateRoutePublicRequest,
     ): UpdateRoutePublicResponse {
-        val routeResponse = updateRoutePublicUseCase(request.toCommand(userId = userPrincipal.userId, routeId = routeId))
+        val routeResponse =
+            updateRoutePublicUseCase(request.toCommand(userId = userPrincipal.userId, routeId = routeId))
         return UpdateRoutePublicResponse.from(routeResponse)
     }
+
+    @Operation(
+        summary = "내루트 목록 조회 (더미데이터)",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @GetMapping("/v1/routes/my")
+    fun getMyRouteList(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+    ): GetMyRouteResponse {
+        // TODO: 구현
+        val routeResponses = listOf(
+            RouteSimpleResponse(
+                routeId = 1,
+                routeName = "루트1",
+                routeDescription = "루트1 설명",
+                routeImageUrl = "https://routebox-resources.s3.ap-northeast-2.amazonaws.com/image/1.jpg",
+                isPublic = true,
+                createdAt = "2024-08-01T00:00:00",
+                purchaseCount = 15,
+                commentCount = 30,
+            ),
+            RouteSimpleResponse(
+                routeId = 2,
+                routeName = "루트2",
+                routeDescription = "루트2 설명",
+                routeImageUrl = "https://routebox-resources.s3.ap-northeast-2.amazonaws.com/image/1.jpg",
+                isPublic = true,
+                createdAt = "2024-08-02T00:00:00",
+                purchaseCount = 1,
+                commentCount = 2,
+            ),
+            RouteSimpleResponse(
+                routeId = 3,
+                routeName = null,
+                routeDescription = null,
+                routeImageUrl = null,
+                isPublic = false,
+                createdAt = "2024-08-01T00:00:00",
+                purchaseCount = 0,
+                commentCount = 0,
+            ),
+        )
+        return GetMyRouteResponse.from(routeResponses)
+    }
+
+    @Operation(
+        summary = "인사이트 조회 (더미데이터)",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @GetMapping("/v1/routes/insight")
+    fun getMyRouteInsight(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+    ): GetMyRouteInsightResponse {
+        // TODO: 구현
+        val routeCount = Random.nextInt(0, 21)
+        val purchaseCount = Random.nextInt(0, 101)
+        val commentCount = Random.nextInt(0, 101)
+
+        return GetMyRouteInsightResponse(routeCount, purchaseCount, commentCount)
+    }
+
+    /*
+    @Operation(
+        summary = "기록 진행중인 루트 존재여부 조회",
+        description = "기록 진행중인 루트가 존재하는 경우 routeId: Int 반환, 없는 경우 routeId : null 반환",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @GetMapping("/v1/routes/progress")
+    fun checkProgressRoute(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+    ): CheckProgressRouteResponse {
+        // TODO: 구현
+        val routeId = if (Random.nextBoolean()) Random.nextLong(1, 100) else null
+        return CheckProgressRouteResponse(routeId)
+    }*/
 }
