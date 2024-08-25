@@ -6,6 +6,7 @@ import com.routebox.routebox.application.route.CreateRoutePointUseCase
 import com.routebox.routebox.application.route.CreateRouteUseCase
 import com.routebox.routebox.application.route.DeleteRouteActivityUseCase
 import com.routebox.routebox.application.route.DeleteRouteUseCase
+import com.routebox.routebox.application.route.GetMyRouteListUseCase
 import com.routebox.routebox.application.route.UpdateRouteActivityUseCase
 import com.routebox.routebox.application.route.UpdateRoutePublicUseCase
 import com.routebox.routebox.application.route.UpdateRouteUseCase
@@ -67,6 +68,7 @@ class RouteCommandController(
     private val deleteRouteUseCase: DeleteRouteUseCase,
     private val updateRoutePublicUseCase: UpdateRoutePublicUseCase,
     private val checkProgressRouteUseCase: CheckProgressRouteUseCase,
+    private val getMyRouteListUseCase: GetMyRouteListUseCase,
 ) {
     @Operation(
         summary = "루트 생성 (루트 기록 시작)",
@@ -188,47 +190,15 @@ class RouteCommandController(
     }
 
     @Operation(
-        summary = "내루트 목록 조회 (더미데이터)",
+        summary = "내루트 목록 조회",
         security = [SecurityRequirement(name = "access-token")],
     )
     @GetMapping("/v1/routes/my")
     fun getMyRouteList(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
     ): GetMyRouteResponse {
-        // TODO: 구현
-        val routeResponses = listOf(
-            RouteSimpleResponse(
-                routeId = 1,
-                routeName = "루트1",
-                routeDescription = "루트1 설명",
-                routeImageUrl = "https://routebox-resources.s3.ap-northeast-2.amazonaws.com/image/1.jpg",
-                isPublic = true,
-                createdAt = "2024-08-01T00:00:00",
-                purchaseCount = 15,
-                commentCount = 30,
-            ),
-            RouteSimpleResponse(
-                routeId = 2,
-                routeName = "루트2",
-                routeDescription = "루트2 설명",
-                routeImageUrl = "https://routebox-resources.s3.ap-northeast-2.amazonaws.com/image/1.jpg",
-                isPublic = true,
-                createdAt = "2024-08-02T00:00:00",
-                purchaseCount = 1,
-                commentCount = 2,
-            ),
-            RouteSimpleResponse(
-                routeId = 3,
-                routeName = null,
-                routeDescription = null,
-                routeImageUrl = null,
-                isPublic = false,
-                createdAt = "2024-08-01T00:00:00",
-                purchaseCount = 0,
-                commentCount = 0,
-            ),
-        )
-        return GetMyRouteResponse.from(routeResponses)
+        val routeResponses = getMyRouteListUseCase.invoke(userPrincipal.userId)
+        return GetMyRouteResponse.from(routeResponses.map { RouteSimpleResponse.from(it) })
     }
 
     @Operation(
@@ -259,7 +229,12 @@ class RouteCommandController(
         @ParameterObject request: CheckProgressRouteRequest,
     ): CheckProgressRouteResponse {
         val localTime: LocalDateTime = LocalDateTime.parse(request.userLocalTime)
-        val routeId = checkProgressRouteUseCase(CheckProgressRouteCommand(userId = userPrincipal.userId, userLocalTime = localTime))
+        val routeId = checkProgressRouteUseCase(
+            CheckProgressRouteCommand(
+                userId = userPrincipal.userId,
+                userLocalTime = localTime,
+            ),
+        )
         return CheckProgressRouteResponse(routeId)
     }
 }

@@ -23,16 +23,17 @@ data class GetRouteDetailResult(
             route: Route,
         ): GetRouteDetailResult = GetRouteDetailResult(
             routeId = route.id,
-            userId = route.user!!.id,
+            userId = route.user.id,
             nickname = route.user.nickname,
             profileImageUrl = route.user.profileImageUrl,
             routeName = route.name,
             routeDescription = route.description,
-            routeImageUrls = listOf(),
+            routeImageUrls = route.routeActivities.map { r -> r.activityImages.map { image -> image.fileUrl } }
+                .flatten(),
             isPurchased = false,
             purchaseCount = 0,
             commentCount = 0,
-            routeStyles = listOf("뚜벅뚜벅"),
+            routeStyles = route.style.toList(),
             createdAt = route.createdAt,
         )
     }
