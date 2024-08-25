@@ -1,5 +1,6 @@
 package com.routebox.routebox.controller.route.dto
 
+import com.routebox.routebox.application.route.dto.GetMyRouteResult
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class RouteSimpleResponse(
@@ -19,4 +20,20 @@ data class RouteSimpleResponse(
     val commentCount: Int,
     @Schema(description = "루트 생성일", example = "2021-08-01T00:00:00")
     val createdAt: String,
-)
+) {
+    companion object {
+        fun from(
+            route: GetMyRouteResult,
+        ) =
+            RouteSimpleResponse(
+                routeId = route.routeId,
+                routeName = route.routeName,
+                routeDescription = route.routeDescription,
+                routeImageUrl = route.routeImageUrls.firstOrNull(),
+                isPublic = true,
+                purchaseCount = route.purchaseCount,
+                commentCount = route.commentCount,
+                createdAt = route.createdAt.toString(),
+            )
+    }
+}

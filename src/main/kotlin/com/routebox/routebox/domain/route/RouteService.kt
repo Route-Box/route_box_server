@@ -295,4 +295,11 @@ class RouteService(
     @Transactional(readOnly = true)
     fun getProgressRouteByUserId(now: LocalDateTime, userId: Long): Route? =
         routeRepository.findByEndTimeIsAfterAndUser_Id(now, userId)
+
+    /**
+     * 내 루트 목록조회
+     */
+    @Transactional(readOnly = true)
+    fun getMyRoutes(userId: Long): List<Route> =
+        routeRepository.findByUser_IdOrderByCreatedAtDesc(userId)
 }

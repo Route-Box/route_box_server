@@ -14,4 +14,5 @@ interface RouteRepository : JpaRepository<Route, Long> {
 
     fun countByUser_Id(userId: Long): Int
     fun findByEndTimeIsAfterAndUser_Id(endTime: LocalDateTime, userId: Long): Route?
+    fun findByUser_IdOrderByCreatedAtDesc(userId: Long): List<Route>
 }
