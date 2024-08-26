@@ -43,7 +43,7 @@ class GetLatestRouteUseCaseTest {
             numberOfPeople = 2,
             numberOfDays = "3 days",
             style = arrayOf("Hiking"),
-            transportation = arrayOf("Car"),
+            transportation = "Car",
             user,
         )
         val route2 = createRoute(
@@ -56,7 +56,7 @@ class GetLatestRouteUseCaseTest {
             numberOfPeople = 4,
             numberOfDays = "1 day",
             style = arrayOf("Sightseeing"),
-            transportation = arrayOf("Bus"),
+            transportation = "Bus",
             user,
         )
         val page = 0
@@ -89,7 +89,7 @@ class GetLatestRouteUseCaseTest {
         numberOfPeople: Int,
         numberOfDays: String,
         style: Array<String>,
-        transportation: Array<String>,
+        transportation: String,
         user: User,
     ) = Route(
         id = id,
@@ -101,8 +101,7 @@ class GetLatestRouteUseCaseTest {
         numberOfPeople = numberOfPeople,
         numberOfDays = numberOfDays,
         style = style,
-        transportation = transportation,
-        transportations = null,
+        transportations = transportation,
         user = user,
     )
 

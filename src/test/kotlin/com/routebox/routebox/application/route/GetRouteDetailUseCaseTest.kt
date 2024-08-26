@@ -43,7 +43,7 @@ class GetRouteDetailUseCaseTest {
             numberOfPeople = 2,
             numberOfDays = "3 days",
             style = arrayOf("Hiking"),
-            transportation = arrayOf("Car"),
+            transportation = "Car",
             user = user,
         )
         given(routeService.getRouteById(routeId)).willReturn(route)
@@ -67,7 +67,7 @@ class GetRouteDetailUseCaseTest {
         numberOfPeople: Int,
         numberOfDays: String,
         style: Array<String>,
-        transportation: Array<String>,
+        transportation: String,
         user: User,
     ): Route {
         return Route(
@@ -80,8 +80,7 @@ class GetRouteDetailUseCaseTest {
             numberOfPeople = numberOfPeople,
             numberOfDays = numberOfDays,
             style = style,
-            transportation = transportation,
-            transportations = null,
+            transportations = transportation,
             user = user,
         )
     }

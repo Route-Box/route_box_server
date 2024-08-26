@@ -15,9 +15,9 @@ data class CreateRouteActivityRequest(
     @field:NotNull
     val address: String,
     @Schema(description = "위치 위도", example = "37.751007", required = false)
-    val latitude: String,
+    val latitude: String?,
     @Schema(description = "위치 경도", example = "128.876614", required = false)
-    val longitude: String,
+    val longitude: String?,
     @Schema(description = "방문 날짜", example = "2021-08-01")
     @field:NotNull
     val visitDate: String,
@@ -32,7 +32,7 @@ data class CreateRouteActivityRequest(
     val category: String,
     @Schema(description = "설명", example = "해파랑물회는 강릉에서 유명한 음식점입니다.")
     @field:Length(max = 40)
-    val description: String,
+    val description: String?,
     @Schema(description = "루트 활동 이미지")
     var activityImages: List<MultipartFile>?,
 ) {

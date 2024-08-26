@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 @Suppress("ktlint:standard:function-naming")
 @Repository
 interface RouteRepository : JpaRepository<Route, Long> {
-    fun findAllByOrderByCreatedAtDesc(pageable: Pageable): Page<Route>
+    fun findAllByIsPublicOrderByCreatedAtDesc(isPublic: Boolean, pageable: Pageable): Page<Route>
 
     fun countByUser_Id(userId: Long): Int
     fun findByEndTimeIsAfterAndUser_Id(endTime: LocalDateTime, userId: Long): Route?
