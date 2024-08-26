@@ -7,7 +7,7 @@ data class UpdateRouteRequest(
     @Schema(description = "루트 이름", example = "제주도 여행")
     val routeName: String,
     @Schema(description = "루트 설명", example = "제주도 여행을 즐기자")
-    val routeDescription: String,
+    val routeDescription: String?,
     @Schema(description = "함께 여행한 사람", example = "친구")
     val whoWith: String,
     @Schema(description = "여행 인원", example = "4")
