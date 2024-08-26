@@ -8,13 +8,17 @@ import com.routebox.routebox.controller.auth.dto.KakaoLoginRequest
 import com.routebox.routebox.controller.auth.dto.LoginResponse
 import com.routebox.routebox.controller.auth.dto.RefreshTokensRequest
 import com.routebox.routebox.controller.auth.dto.RefreshTokensResponse
+import com.routebox.routebox.controller.auth.dto.WithdrawResponse
 import com.routebox.routebox.domain.user.constant.LoginType
+import com.routebox.routebox.security.UserPrincipal
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -69,5 +73,20 @@ class AuthController(
     fun refreshTokensV1(@RequestBody @Valid request: RefreshTokensRequest): RefreshTokensResponse {
         val (accessToken, refreshToken) = refreshTokensUseCase(request.refreshToken)
         return RefreshTokensResponse(accessToken, refreshToken)
+    }
+
+    @Operation(
+        summary = "회원 탈퇴",
+        description = "<p>회원 탈퇴를 진행합니다." +
+            "<p>탈퇴 시, 회원의 모든 정보가 삭제되며, 복구가 불가능합니다. (미구현)",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200"),
+        ApiResponse(responseCode = "401", description = "[2002] 토큰이 만료되었거나 유효하지 않은 경우", content = [Content()]),
+    )
+    @PostMapping("/v1/auth/withdraw")
+    fun withdraw(@AuthenticationPrincipal principal: UserPrincipal): WithdrawResponse {
+        return WithdrawResponse(principal.userId)
     }
 }

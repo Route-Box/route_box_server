@@ -18,7 +18,7 @@ import kotlin.random.Random
 import kotlin.test.Test
 
 @ExtendWith(MockitoExtension::class)
-class GetUserProfileUseCaseTest {
+class GetUserRoutesResponseUserProfileUseCaseTest {
 
     @InjectMocks
     lateinit var sut: GetUserProfileUseCase

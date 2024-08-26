@@ -301,4 +301,11 @@ class RouteService(
     @Transactional(readOnly = true)
     fun getMyRoutes(userId: Long): List<Route> =
         routeRepository.findByUser_IdOrderByCreatedAtDesc(userId)
+
+    /**
+     * 사용자 루트 목록 조회
+     */
+    @Transactional(readOnly = true)
+    fun getRoutesByUserId(userId: Long): List<Route> =
+        routeRepository.findByUser_IdAndIsPublicOrderByCreatedAtDesc(userId, true)
 }

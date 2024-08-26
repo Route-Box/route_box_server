@@ -20,7 +20,7 @@ import kotlin.random.Random
 import kotlin.test.Test
 
 @ExtendWith(MockitoExtension::class)
-class GetRouteDetailUseCaseTest {
+class GetUserRoutesResponseRouteDetailUseCaseTest {
 
     @InjectMocks
     lateinit var sut: GetRouteDetailUseCase
