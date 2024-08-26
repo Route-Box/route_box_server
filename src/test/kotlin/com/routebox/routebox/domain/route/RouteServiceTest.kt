@@ -57,13 +57,13 @@ class RouteServiceTest {
         val routeList = listOf(route1, route2)
 
         val page: Page<Route> = PageImpl(routeList, pageable, routeList.size.toLong())
-        given(routeRepository.findAllByOrderByCreatedAtDesc(pageable)).willReturn(page)
+        given(routeRepository.findAllByIsPublicOrderByCreatedAtDesc(true, pageable)).willReturn(page)
 
         // when
         val actualResult = sut.getLatestRoutes(0, 10)
 
         // then
-        then(routeRepository).should().findAllByOrderByCreatedAtDesc(pageable)
+        then(routeRepository).should().findAllByIsPublicOrderByCreatedAtDesc(true, pageable)
         verifyEveryMocksShouldHaveNoMoreInteractions()
         assertThat(actualResult).isEqualTo(routeList)
     }
@@ -126,7 +126,6 @@ class RouteServiceTest {
         numberOfPeople = 2,
         numberOfDays = "2박3일",
         style = arrayOf("힐링"),
-        transportation = arrayOf("뚜벅뚜벅"),
         transportations = "뚜벅뚜벅",
     )
 }

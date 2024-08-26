@@ -53,6 +53,10 @@ class RouteControllerTest @Autowired constructor(
             purchaseCount = 0,
             commentCount = 0,
             routeStyles = listOf("Hiking"),
+            whoWith = "Friend",
+            transportation = "Car",
+            numberOfPeople = 2,
+            numberOfDays = "3 days",
             createdAt = LocalDateTime.now(),
         )
 
@@ -68,6 +72,10 @@ class RouteControllerTest @Autowired constructor(
             purchaseCount = 0,
             commentCount = 0,
             routeStyles = listOf("Sightseeing"),
+            whoWith = "Friend",
+            transportation = "Car",
+            numberOfPeople = 2,
+            numberOfDays = "3 days",
             createdAt = LocalDateTime.now().minusDays(1),
         )
 
@@ -107,6 +115,10 @@ class RouteControllerTest @Autowired constructor(
             purchaseCount = 0,
             commentCount = 0,
             routeStyles = listOf("Hiking"),
+            whoWith = "Friend",
+            transportation = "Car",
+            numberOfPeople = 2,
+            numberOfDays = "3 days",
             createdAt = LocalDateTime.now(),
         )
 

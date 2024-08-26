@@ -29,8 +29,6 @@ class Route(
     numberOfPeople: Int?,
     numberOfDays: String?,
     style: Array<String>,
-    // TODO: remove
-    transportation: Array<String>,
     transportations: String?,
     isPublic: Boolean = false,
 ) : TimeTrackedBaseEntity() {
@@ -67,11 +65,6 @@ class Route(
     @Convert(converter = StringArrayConverter::class)
     @Column(columnDefinition = "json")
     var style: Array<String> = style
-        private set
-
-    @Convert(converter = StringArrayConverter::class)
-    @Column(columnDefinition = "json")
-    var transportation: Array<String> = transportation
         private set
 
     var transportations: String? = transportations

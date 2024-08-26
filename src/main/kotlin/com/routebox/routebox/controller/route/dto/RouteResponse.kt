@@ -38,6 +38,18 @@ data class RouteResponse(
     @Schema(description = "루트 스타일들", example = "[\"뚜벅뚜벅\"]")
     val routeStyles: List<String>,
 
+    @Schema(description = "함께한 사람들", example = "혼자")
+    val whoWith: String?,
+
+    @Schema(description = "이동수단", example = "도보")
+    val transportation: String?,
+
+    @Schema(description = "인원 수", example = "1")
+    val numberOfPeople: Int?,
+
+    @Schema(description = "일 수", example = "1박 2일")
+    val numberOfDays: String?,
+
     @Schema(description = "루트 생성일", example = "2021-08-01T00:00:00")
     val createdAt: LocalDateTime,
 ) {
@@ -56,6 +68,10 @@ data class RouteResponse(
             purchaseCount = getRouteDetailResult.purchaseCount,
             commentCount = getRouteDetailResult.commentCount,
             routeStyles = getRouteDetailResult.routeStyles,
+            whoWith = getRouteDetailResult.whoWith,
+            transportation = getRouteDetailResult.transportation,
+            numberOfPeople = getRouteDetailResult.numberOfPeople,
+            numberOfDays = getRouteDetailResult.numberOfDays,
             createdAt = getRouteDetailResult.createdAt,
         )
     }

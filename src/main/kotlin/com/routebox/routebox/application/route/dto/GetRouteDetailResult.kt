@@ -15,10 +15,14 @@ data class GetRouteDetailResult(
     val purchaseCount: Int,
     val commentCount: Int,
     val routeStyles: List<String>,
+    val whoWith: String?,
+    val transportation: String?,
+    val numberOfPeople: Int?,
+    val numberOfDays: String?,
     val createdAt: LocalDateTime,
 ) {
     companion object {
-        // TODO: 실제 로직 적용
+        // TODO: 구매여부, 구매수, 댓글 수 - 실제 로직 적용 필요
         fun from(
             route: Route,
         ): GetRouteDetailResult = GetRouteDetailResult(
@@ -34,6 +38,10 @@ data class GetRouteDetailResult(
             purchaseCount = 0,
             commentCount = 0,
             routeStyles = route.style.toList(),
+            whoWith = route.whoWith,
+            transportation = route.transportations,
+            numberOfPeople = route.numberOfPeople,
+            numberOfDays = route.numberOfDays,
             createdAt = route.createdAt,
         )
     }
