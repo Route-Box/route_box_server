@@ -2,6 +2,7 @@ package com.routebox.routebox.domain.route
 
 import com.routebox.routebox.domain.common.FileManager
 import com.routebox.routebox.domain.user.User
+import com.routebox.routebox.exception.route.RouteNotFoundException
 import com.routebox.routebox.infrastructure.route.RouteActivityImageRepository
 import com.routebox.routebox.infrastructure.route.RouteActivityRepository
 import com.routebox.routebox.infrastructure.route.RoutePointRepository
@@ -40,8 +41,17 @@ class RouteService(
      * 루트 상세 조회
      */
     @Transactional(readOnly = true)
-    fun getRouteById(id: Long): Route? =
+    fun findRouteById(id: Long): Route? =
         routeRepository.findById(id).orElse(null)
+
+    /**
+     * 루트 단건 조회
+     *
+     * @throws RouteNotFoundException id와 일치하는 루트가 없는 경우
+     */
+    @Transactional(readOnly = true)
+    fun getRouteById(id: Long): Route =
+        this.findRouteById(id) ?: throw RouteNotFoundException()
 
     /**
      * 유저 id로 유저가 작성한 루트 개수 조회하기
@@ -79,7 +89,7 @@ class RouteService(
      */
     @Transactional
     fun createRoutePoint(routeId: Long, latitude: String, longitude: String, pointOrder: Int): RoutePoint {
-        val route = getRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
+        val route = findRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
         val routePoint = RoutePoint(
             route = route,
             latitude = latitude,
@@ -107,7 +117,7 @@ class RouteService(
         images: List<MultipartFile>,
     ): RouteActivity {
         // 루트 조회
-        val route = getRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
+        val route = findRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
 
         // 루트 활동 생성
         val routeActivity = RouteActivity(
@@ -245,7 +255,7 @@ class RouteService(
         style: Array<String>,
         transportation: String?,
     ): Route {
-        val route = getRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
+        val route = findRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
         route.update(
             name = name,
             description = description,
@@ -263,7 +273,7 @@ class RouteService(
      */
     @Transactional
     fun deleteRoute(routeId: Long) {
-        val route = getRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
+        val route = findRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
 
         // 루트 위치 삭제
         routePointRepository.deleteAll(route.routePoints)
@@ -283,7 +293,7 @@ class RouteService(
      */
     @Transactional
     fun updateRoutePublic(routeId: Long, isPublic: Boolean): Route {
-        val route = getRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
+        val route = findRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
         route.updatePublic(isPublic)
         return routeRepository.save(route)
     }

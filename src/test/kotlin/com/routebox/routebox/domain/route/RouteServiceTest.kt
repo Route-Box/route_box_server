@@ -76,7 +76,7 @@ class RouteServiceTest {
         given(routeRepository.findById(id)).willReturn(Optional.of(expectedResult))
 
         // when
-        val actualResult = sut.getRouteById(id)
+        val actualResult = sut.findRouteById(id)
 
         // then
         then(routeRepository).should().findById(id)
