@@ -44,6 +44,9 @@ data class RouteDetailResponse(
     @Schema(description = "교통수단")
     val transportation: String?,
 
+    @Schema(description = "공개 여부")
+    val isPublic: Boolean,
+
     @Schema(description = "루트 생성일", example = "2021-08-01T00:00:00")
     val createdAt: LocalDateTime,
 
@@ -54,25 +57,24 @@ data class RouteDetailResponse(
     val routeActivities: List<RouteActivityResponse>,
 ) {
     companion object {
-        fun from(
-            getRouteDetailWithActivitiesResult: GetRouteDetailWithActivitiesResult,
-        ): RouteDetailResponse = RouteDetailResponse(
-            routeId = getRouteDetailWithActivitiesResult.routeId,
-            userId = getRouteDetailWithActivitiesResult.userId,
-            profileImageUrl = getRouteDetailWithActivitiesResult.profileImageUrl,
-            nickname = getRouteDetailWithActivitiesResult.nickname,
-            routeName = getRouteDetailWithActivitiesResult.routeName,
-            routeDescription = getRouteDetailWithActivitiesResult.routeDescription,
-            startTime = LocalDateTime.parse(getRouteDetailWithActivitiesResult.startTime),
-            endTime = LocalDateTime.parse(getRouteDetailWithActivitiesResult.endTime),
-            whoWith = getRouteDetailWithActivitiesResult.whoWith,
-            routeStyles = getRouteDetailWithActivitiesResult.routeStyles,
-            numberOfPeople = getRouteDetailWithActivitiesResult.numberOfPeople,
-            numberOfDays = getRouteDetailWithActivitiesResult.numberOfDays,
-            transportation = getRouteDetailWithActivitiesResult.transportation,
-            createdAt = LocalDateTime.parse(getRouteDetailWithActivitiesResult.createdAt),
-            routePath = getRouteDetailWithActivitiesResult.routePath,
-            routeActivities = getRouteDetailWithActivitiesResult.routeActivities.map { RouteActivityResponse.from(it) },
+        fun from(result: GetRouteDetailWithActivitiesResult): RouteDetailResponse = RouteDetailResponse(
+            routeId = result.routeId,
+            userId = result.userId,
+            profileImageUrl = result.profileImageUrl,
+            nickname = result.nickname,
+            routeName = result.routeName,
+            routeDescription = result.routeDescription,
+            startTime = LocalDateTime.parse(result.startTime),
+            endTime = LocalDateTime.parse(result.endTime),
+            whoWith = result.whoWith,
+            routeStyles = result.routeStyles,
+            numberOfPeople = result.numberOfPeople,
+            numberOfDays = result.numberOfDays,
+            transportation = result.transportation,
+            isPublic = result.isPublic,
+            createdAt = LocalDateTime.parse(result.createdAt),
+            routePath = result.routePath,
+            routeActivities = result.routeActivities.map { RouteActivityResponse.from(it) },
         )
     }
 }
