@@ -54,8 +54,8 @@ class RouteController(
     }
 
     @Operation(
-        summary = "루트 상세 조회",
-        description = "루트 상세정보 조회",
+        summary = "루트 단건 조회",
+        description = "루트 단건 조회",
     )
     @ApiResponses(
         ApiResponse(responseCode = "200"),
