@@ -18,7 +18,7 @@ class GetRouteDetailUseCase(
      */
     @Transactional(readOnly = true)
     operator fun invoke(id: Long): GetRouteDetailResult {
-        val route = routeService.getRouteById(id).let {
+        val route = routeService.findRouteById(id).let {
             it ?: throw IllegalArgumentException("Route not found")
         }
 

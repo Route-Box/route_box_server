@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.routebox.routebox.application.route.GetLatestRoutesUseCase
 import com.routebox.routebox.application.route.GetRouteDetailUseCase
 import com.routebox.routebox.application.route.GetRouteDetailWithActivitiesUseCase
+import com.routebox.routebox.application.route.PurchaseRouteUseCase
 import com.routebox.routebox.application.route.dto.GetRouteDetailResult
 import com.routebox.routebox.config.ControllerTestConfig
 import com.routebox.routebox.domain.user.constant.UserRoleType
@@ -37,6 +38,9 @@ class RouteControllerTest @Autowired constructor(
 
     @MockBean
     lateinit var getRouteDetailWithActivitiesUseCase: GetRouteDetailWithActivitiesUseCase
+
+    @MockBean
+    lateinit var purchaseRouteUseCase: PurchaseRouteUseCase
 
     @Test
     fun `최신순으로 정렬된 루트 목록을 반환한다`() {
@@ -134,8 +138,12 @@ class RouteControllerTest @Autowired constructor(
         then(getRouteDetailUseCase).should().invoke(routeId)
         verifyEveryMocksShouldHaveNoMoreInteractions()
     }
+
     private fun verifyEveryMocksShouldHaveNoMoreInteractions() {
         then(getLatestRoutesUseCase).shouldHaveNoMoreInteractions()
+        then(getRouteDetailUseCase).shouldHaveNoMoreInteractions()
+        then(getRouteDetailWithActivitiesUseCase).shouldHaveNoMoreInteractions()
+        then(purchaseRouteUseCase).shouldHaveNoMoreInteractions()
     }
 
     private fun createUserPrincipal(userId: Long) = UserPrincipal(

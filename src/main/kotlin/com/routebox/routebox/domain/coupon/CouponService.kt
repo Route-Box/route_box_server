@@ -11,4 +11,9 @@ class CouponService(private val couponRepository: CouponRepository) {
     @Transactional(readOnly = true)
     fun findAvailableCoupons(userId: Long): List<Coupon> =
         couponRepository.findByUserIdAndStatus(userId, CouponStatus.AVAILABLE)
+
+    @Transactional
+    fun deleteCoupon(coupon: Coupon) {
+        couponRepository.delete(coupon)
+    }
 }

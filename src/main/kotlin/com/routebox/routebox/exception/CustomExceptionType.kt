@@ -25,6 +25,12 @@ enum class CustomExceptionType(
     USER_NOT_FOUND(3000, "일치하는 유저를 찾을 수 없습니다."),
     USER_SOCIAL_LOGIN_UID_DUPLICATION(3001, "이미 가입된 계정입니다."),
     USER_NICKNAME_DUPLICATION(3002, "이미 사용중인 닉네임입니다."),
+    NO_AVAILABLE_COUPON(3003, "이용 가능한 쿠폰이 없습니다."),
+
+    /**
+     * 루트 관련 예외
+     */
+    ROUTE_NOT_FOUND(3200, "일치하는 루트 정보를 찾을 수 없습니다."),
 
     /**
      * Kakao(kakao open api 등) 관련 예외

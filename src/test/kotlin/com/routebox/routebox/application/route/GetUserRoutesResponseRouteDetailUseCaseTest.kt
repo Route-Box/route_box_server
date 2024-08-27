@@ -46,7 +46,7 @@ class GetUserRoutesResponseRouteDetailUseCaseTest {
             transportation = "Car",
             user = user,
         )
-        given(routeService.getRouteById(routeId)).willReturn(route)
+        given(routeService.findRouteById(routeId)).willReturn(route)
 
         // when
         val actualResult = sut.invoke(routeId)
@@ -54,7 +54,7 @@ class GetUserRoutesResponseRouteDetailUseCaseTest {
         // then
         val expectedDtoResult = GetRouteDetailResult.from(route)
         assertThat(actualResult).isEqualTo(expectedDtoResult)
-        verify(routeService, times(1)).getRouteById(routeId)
+        verify(routeService, times(1)).findRouteById(routeId)
     }
 
     private fun createRoute(
@@ -69,32 +69,28 @@ class GetUserRoutesResponseRouteDetailUseCaseTest {
         style: Array<String>,
         transportation: String,
         user: User,
-    ): Route {
-        return Route(
-            id = id,
-            name = name,
-            description = description,
-            startTime = startTime,
-            endTime = endTime,
-            whoWith = whoWith,
-            numberOfPeople = numberOfPeople,
-            numberOfDays = numberOfDays,
-            style = style,
-            transportations = transportation,
-            user = user,
-        )
-    }
+    ): Route = Route(
+        id = id,
+        name = name,
+        description = description,
+        startTime = startTime,
+        endTime = endTime,
+        whoWith = whoWith,
+        numberOfPeople = numberOfPeople,
+        numberOfDays = numberOfDays,
+        style = style,
+        transportations = transportation,
+        user = user,
+    )
 
-    private fun createUser(id: Long): User {
-        return User(
-            id = id,
-            loginType = LoginType.KAKAO,
-            socialLoginUid = Random.nextInt().toString(),
-            nickname = Random.nextLong().toString(),
-            gender = Gender.FEMALE,
-            birthDay = LocalDate.now(),
-            introduction = Random.nextLong().toString(),
-            profileImageUrl = Random.nextLong().toString(),
-        )
-    }
+    private fun createUser(id: Long): User = User(
+        id = id,
+        loginType = LoginType.KAKAO,
+        socialLoginUid = Random.nextInt().toString(),
+        nickname = Random.nextLong().toString(),
+        gender = Gender.FEMALE,
+        birthDay = LocalDate.now(),
+        introduction = Random.nextLong().toString(),
+        profileImageUrl = Random.nextLong().toString(),
+    )
 }
