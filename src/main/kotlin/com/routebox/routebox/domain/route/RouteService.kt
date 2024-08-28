@@ -29,12 +29,12 @@ class RouteService(
     }
 
     /**
-     * 루트 탐색 - 최신순 루트 조회, 공개된 루트만
+     * 루트 탐색 - 최신순 루트 조회, 공개된 루트만, 신고된 루트 제외
      */
     @Transactional(readOnly = true)
-    fun getLatestRoutes(page: Int, size: Int): List<Route> {
+    fun getLatestRoutes(userId: Long, page: Int, size: Int): List<Route> {
         val pageable = PageRequest.of(page, size)
-        return routeRepository.findAllByIsPublicOrderByCreatedAtDesc(true, pageable).content
+        return routeRepository.findAllFiltered(userId, pageable).content
     }
 
     /**

@@ -11,6 +11,8 @@ DROP TABLE IF EXISTS route_activities;
 DROP TABLE IF EXISTS route_activity_image;
 DROP TABLE IF EXISTS route_points;
 DROP TABLE IF EXISTS purchased_route;
+DROP TABLE IF EXISTS user_report;
+DROP TABLE IF EXISTS route_report;
 
 CREATE TABLE users
 (
@@ -208,3 +210,29 @@ CREATE TABLE purchased_route
 CREATE INDEX idx__routes__route_id ON purchased_route (route_id);
 CREATE INDEX idx__routes__buyer_id ON purchased_route (buyer_id);
 CREATE INDEX idx__routes__writer_id ON purchased_route (writer_id);
+
+CREATE TABLE user_report
+(
+    user_report_id   BIGINT   NOT NULL AUTO_INCREMENT,
+    reporter_id      BIGINT   NOT NULL COMMENT '신고자 id',
+    reported_user_id BIGINT   NOT NULL COMMENT '신고 대상(유저)의 id',
+    created_at       DATETIME NOT NULL,
+    updated_at       DATETIME NOT NULL,
+    PRIMARY KEY (user_report_id)
+);
+-- CREATE INDEX idx__user_report__reporter_id ON user_report (reporter_id);
+-- CREATE INDEX idx__user_report__reported_user_id ON user_report (reported_user_id);
+
+CREATE TABLE route_report
+(
+    route_report_id   BIGINT       NOT NULL AUTO_INCREMENT,
+    reporter_id       BIGINT       NOT NULL COMMENT '신고자 id',
+    reported_route_id BIGINT       NOT NULL COMMENT '신고 대상(루트)의 id',
+    reason_type       VARCHAR(255) NOT NULL COMMENT '신고 사유',
+    reason_detail     VARCHAR(255) NOT NULL COMMENT '신고 상세 사유',
+    created_at        DATETIME     NOT NULL,
+    updated_at        DATETIME     NOT NULL,
+    PRIMARY KEY (route_report_id)
+)
+-- CREATE INDEX idx__route_report__reporter_id ON route_report (reporter_id);
+-- CREATE INDEX idx__route_report__reported_route_id ON route_report (reported_route_id);
