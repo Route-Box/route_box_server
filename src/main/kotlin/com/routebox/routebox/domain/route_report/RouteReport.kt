@@ -17,7 +17,7 @@ class RouteReport(
     id: Long = 0,
     reporterId: Long,
     reportedRouteId: Long,
-    reasonType: RouteReportReasonType,
+    reasonType: RouteReportReasonType?,
     reasonDetail: String?,
 ) : TimeTrackedBaseEntity() {
     @Id
@@ -30,7 +30,7 @@ class RouteReport(
     val reportedRouteId = reportedRouteId
 
     @Enumerated(EnumType.STRING)
-    var reasonType: RouteReportReasonType = reasonType
+    var reasonType: RouteReportReasonType? = reasonType
         private set
 
     var reasonDetail: String? = reasonDetail

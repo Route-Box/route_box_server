@@ -55,15 +55,16 @@ class RouteServiceTest {
         val route1 = createRoute(id1, user)
         val route2 = createRoute(id2, user)
         val routeList = listOf(route1, route2)
+        val userId = Random.nextLong()
 
         val page: Page<Route> = PageImpl(routeList, pageable, routeList.size.toLong())
-        given(routeRepository.findAllByIsPublicOrderByCreatedAtDesc(true, pageable)).willReturn(page)
+        given(routeRepository.findAllFiltered(userId, pageable)).willReturn(page)
 
         // when
-        val actualResult = sut.getLatestRoutes(0, 10)
+        val actualResult = sut.getLatestRoutes(userId, 0, 10)
 
         // then
-        then(routeRepository).should().findAllByIsPublicOrderByCreatedAtDesc(true, pageable)
+        then(routeRepository).should().findAllFiltered(userId, pageable)
         verifyEveryMocksShouldHaveNoMoreInteractions()
         assertThat(actualResult).isEqualTo(routeList)
     }

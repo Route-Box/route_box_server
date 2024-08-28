@@ -1,5 +1,6 @@
 package com.routebox.routebox.application.route
 
+import com.routebox.routebox.application.route.dto.GetLatestRoutesCommand
 import com.routebox.routebox.application.route.dto.GetRouteDetailResult
 import com.routebox.routebox.domain.route.RouteService
 import org.springframework.stereotype.Component
@@ -17,8 +18,8 @@ class GetLatestRoutesUseCase(
      * @return 루트 목록
      */
     @Transactional(readOnly = true)
-    operator fun invoke(page: Int, size: Int): List<GetRouteDetailResult> {
-        val routes = routeService.getLatestRoutes(page, size)
+    operator fun invoke(command: GetLatestRoutesCommand): List<GetRouteDetailResult> {
+        val routes = routeService.getLatestRoutes(command.userId, command.page, command.size)
         return routes.map { GetRouteDetailResult.from(it) }
     }
 }

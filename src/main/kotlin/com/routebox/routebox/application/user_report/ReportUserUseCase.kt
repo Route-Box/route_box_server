@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional
 @Component
 class ReportUserUseCase(
     private val userReportService: UserReportService,
-    // TODO: 유저 차단 기능 추가
 ) {
     @Transactional
     operator fun invoke(command: ReportUserCommand): Long {

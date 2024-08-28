@@ -1,5 +1,6 @@
 package com.routebox.routebox.application.route
 
+import com.routebox.routebox.application.route.dto.GetLatestRoutesCommand
 import com.routebox.routebox.application.route.dto.GetRouteDetailResult
 import com.routebox.routebox.domain.route.Route
 import com.routebox.routebox.domain.route.RouteService
@@ -61,15 +62,16 @@ class GetUserRoutesResponseLatestRouteUseCaseTest {
         )
         val page = 0
         val size = 10
+        val userId = Random.nextLong()
 
         val routeList = listOf(route1, route2)
         val expectedResult = routeList.map { GetRouteDetailResult.from(it) }
-        given(routeService.getLatestRoutes(page, size)).willReturn(routeList)
+        given(routeService.getLatestRoutes(userId, page, size)).willReturn(routeList)
         // when
-        val actualResult = sut.invoke(page, size)
+        val actualResult = sut.invoke(GetLatestRoutesCommand(userId, page, size))
 
         // then
-        then(routeService).should().getLatestRoutes(page, size)
+        then(routeService).should().getLatestRoutes(userId, page, size)
         then(routeService).shouldHaveNoMoreInteractions()
 
         assertThat(actualResult).isEqualTo(expectedResult)

@@ -13,7 +13,7 @@ class RouteReportService(
     fun report(
         reporterId: Long,
         reportedRouteId: Long,
-        reasonType: RouteReportReasonType,
+        reasonType: RouteReportReasonType?,
         reasonDetail: String?,
     ): RouteReport =
         routeReportRepository.save(

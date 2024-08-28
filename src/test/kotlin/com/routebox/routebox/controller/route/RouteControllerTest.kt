@@ -5,6 +5,7 @@ import com.routebox.routebox.application.route.GetLatestRoutesUseCase
 import com.routebox.routebox.application.route.GetRouteDetailUseCase
 import com.routebox.routebox.application.route.GetRouteDetailWithActivitiesUseCase
 import com.routebox.routebox.application.route.PurchaseRouteUseCase
+import com.routebox.routebox.application.route.dto.GetLatestRoutesCommand
 import com.routebox.routebox.application.route.dto.GetRouteDetailResult
 import com.routebox.routebox.config.ControllerTestConfig
 import com.routebox.routebox.domain.user.constant.UserRoleType
@@ -88,7 +89,7 @@ class RouteControllerTest @Autowired constructor(
         val userId = Random.nextLong()
 
         val expectedResult = listOf(route1, route2)
-        given(getLatestRoutesUseCase.invoke(page, size)).willReturn(expectedResult)
+        given(getLatestRoutesUseCase.invoke(GetLatestRoutesCommand(userId, page, size))).willReturn(expectedResult)
 
         // when & then
         mvc.perform(
@@ -99,7 +100,7 @@ class RouteControllerTest @Autowired constructor(
                 .with(SecurityMockMvcRequestPostProcessors.user(createUserPrincipal(userId))),
         ).andExpect(status().isOk)
 
-        then(getLatestRoutesUseCase).should().invoke(page, size)
+        then(getLatestRoutesUseCase).should().invoke(GetLatestRoutesCommand(userId, page, size))
         verifyEveryMocksShouldHaveNoMoreInteractions()
     }
 

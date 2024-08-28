@@ -5,6 +5,7 @@ import com.routebox.routebox.application.route_report.dto.ReportRouteCommand
 import com.routebox.routebox.application.user_report.ReportUserUseCase
 import com.routebox.routebox.application.user_report.dto.ReportUserCommand
 import com.routebox.routebox.controller.report.dto.ReportRouteRequest
+import com.routebox.routebox.controller.report.dto.ReportRouteResponse
 import com.routebox.routebox.controller.report.dto.ReportUserRequest
 import com.routebox.routebox.controller.report.dto.ReportUserResponse
 import com.routebox.routebox.security.UserPrincipal
@@ -37,7 +38,7 @@ class ReportController(
         val userReportId = reportUserUseCase(
             ReportUserCommand(
                 reporterId = userPrincipal.userId,
-                reportedUserId = request.reportedUserId,
+                reportedUserId = request.userId,
             ),
         )
         return ReportUserResponse(userReportId)
@@ -52,15 +53,15 @@ class ReportController(
     fun reportRoute(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @RequestBody request: ReportRouteRequest,
-    ): ReportUserResponse {
+    ): ReportRouteResponse {
         val routeReportId = reportRouteUseCase(
             ReportRouteCommand(
                 reporterId = userPrincipal.userId,
-                reportedRouteId = request.reportedRouteId,
+                reportedRouteId = request.routeId,
                 reasonType = request.reasonType,
                 reasonDetail = request.reasonDetail,
             ),
         )
-        return ReportUserResponse(routeReportId)
+        return ReportRouteResponse(routeReportId)
     }
 }
