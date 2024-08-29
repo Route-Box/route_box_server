@@ -103,7 +103,7 @@ class GetUserRoutesResponseLatestRouteUseCaseTest {
         numberOfPeople = numberOfPeople,
         numberOfDays = numberOfDays,
         style = style,
-        transportations = transportation,
+        transportation = transportation,
         user = user,
     )
 

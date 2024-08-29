@@ -39,7 +39,7 @@ data class GetRouteDetailResult(
             commentCount = 0,
             routeStyles = route.style.toList(),
             whoWith = route.whoWith,
-            transportation = route.transportations,
+            transportation = route.transportation,
             numberOfPeople = route.numberOfPeople,
             numberOfDays = route.numberOfDays,
             createdAt = route.createdAt,

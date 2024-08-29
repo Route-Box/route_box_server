@@ -22,7 +22,7 @@ data class UpdateRouteResult(
                 numberOfPeople = route.numberOfPeople,
                 numberOfDays = route.numberOfDays,
                 style = route.style,
-                transportation = route.transportations,
+                transportation = route.transportation,
             )
         }
     }

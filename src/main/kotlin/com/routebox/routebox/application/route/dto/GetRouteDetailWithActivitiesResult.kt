@@ -37,7 +37,7 @@ data class GetRouteDetailWithActivitiesResult(
             routeStyles = route.style.toList(),
             numberOfPeople = route.numberOfPeople,
             numberOfDays = route.numberOfDays,
-            transportation = route.transportations,
+            transportation = route.transportation,
             isPublic = route.isPublic,
             createdAt = route.createdAt.toString(),
             routePath = route.routePoints.map { mapOf("latitude" to it.latitude, "longitude" to it.longitude) },

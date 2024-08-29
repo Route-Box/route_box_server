@@ -113,7 +113,7 @@ class PurchaseRouteUseCaseTest {
         numberOfPeople = 2,
         numberOfDays = "2박3일",
         style = arrayOf("힐링"),
-        transportations = "뚜벅뚜벅",
+        transportation = "뚜벅뚜벅",
     )
 
     private fun createCoupon(userId: Long, endedAt: LocalDateTime?): Coupon = Coupon(

@@ -78,7 +78,7 @@ class RouteService(
             numberOfPeople = null,
             numberOfDays = null,
             style = emptyArray(),
-            transportations = null,
+            transportation = null,
             isPublic = false,
         )
         return routeRepository.save(route)
