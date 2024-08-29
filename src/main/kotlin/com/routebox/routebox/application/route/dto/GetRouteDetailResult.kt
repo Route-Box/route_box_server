@@ -19,7 +19,7 @@ data class GetRouteDetailResult(
     val transportation: String?,
     val numberOfPeople: Int?,
     val numberOfDays: String?,
-    val createdAt: LocalDateTime,
+    val recordFinishedAt: LocalDateTime?,
 ) {
     companion object {
         // TODO: 구매여부, 구매수, 댓글 수 - 실제 로직 적용 필요
@@ -42,7 +42,7 @@ data class GetRouteDetailResult(
             transportation = route.transportation,
             numberOfPeople = route.numberOfPeople,
             numberOfDays = route.numberOfDays,
-            createdAt = route.createdAt,
+            recordFinishedAt = route.recordFinishedAt,
         )
     }
 }

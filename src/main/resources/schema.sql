@@ -137,6 +137,7 @@ CREATE TABLE routes
     style            JSON,
     transportation   VARCHAR(255),
     is_public        BOOLEAN  NOT NULL DEFAULT FALSE,
+    record_finished_at DATETIME,
     created_at       DATETIME NOT NULL,
     updated_at       DATETIME NOT NULL,
     PRIMARY KEY (route_id)

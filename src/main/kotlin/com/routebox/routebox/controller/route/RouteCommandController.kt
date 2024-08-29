@@ -6,6 +6,7 @@ import com.routebox.routebox.application.route.CreateRoutePointUseCase
 import com.routebox.routebox.application.route.CreateRouteUseCase
 import com.routebox.routebox.application.route.DeleteRouteActivityUseCase
 import com.routebox.routebox.application.route.DeleteRouteUseCase
+import com.routebox.routebox.application.route.FinishRecordRouteUseCase
 import com.routebox.routebox.application.route.GetMyRouteListUseCase
 import com.routebox.routebox.application.route.UpdateRouteActivityUseCase
 import com.routebox.routebox.application.route.UpdateRoutePublicUseCase
@@ -23,6 +24,8 @@ import com.routebox.routebox.controller.route.dto.CreateRouteRequest
 import com.routebox.routebox.controller.route.dto.CreateRouteResponse
 import com.routebox.routebox.controller.route.dto.DeleteRouteActivityResponse
 import com.routebox.routebox.controller.route.dto.DeleteRouteResponse
+import com.routebox.routebox.controller.route.dto.FinishRecordRouteRequest
+import com.routebox.routebox.controller.route.dto.FinishRecordRouteResponse
 import com.routebox.routebox.controller.route.dto.GetMyRouteInsightResponse
 import com.routebox.routebox.controller.route.dto.GetMyRouteResponse
 import com.routebox.routebox.controller.route.dto.RouteSimpleResponse
@@ -69,6 +72,7 @@ class RouteCommandController(
     private val updateRoutePublicUseCase: UpdateRoutePublicUseCase,
     private val checkProgressRouteUseCase: CheckProgressRouteUseCase,
     private val getMyRouteListUseCase: GetMyRouteListUseCase,
+    private val finishRecordRouteUseCase: FinishRecordRouteUseCase,
 ) {
     @Operation(
         summary = "루트 생성 (루트 기록 시작)",
@@ -238,5 +242,25 @@ class RouteCommandController(
             ),
         )
         return CheckProgressRouteResponse(routeId)
+    }
+
+    @Operation(
+        summary = "루트 마무리",
+        description = "루트 제목, 설명 수정 및 루트 기록 마무리 처리됨",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @PatchMapping("/v1/routes/{routeId}/record-finish")
+    fun finishRecordRoute(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @PathVariable routeId: Long,
+        @RequestBody @Valid request: FinishRecordRouteRequest,
+    ): FinishRecordRouteResponse {
+        val routeResponse = finishRecordRouteUseCase(request.toCommand(routeId = routeId))
+        return FinishRecordRouteResponse.from(
+            routeId = routeResponse.routeId,
+            name = routeResponse.name,
+            description = routeResponse.description,
+            recordFinishedAt = routeResponse.recordFinishedAt,
+        )
     }
 }

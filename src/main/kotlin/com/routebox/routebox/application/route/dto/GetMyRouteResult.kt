@@ -19,7 +19,7 @@ data class GetMyRouteResult(
     val transportation: String?,
     val numberOfPeople: Int?,
     val numberOfDays: String?,
-    val createdAt: LocalDateTime,
+    val recordFinishedAt: LocalDateTime?,
 ) {
     companion object {
         fun from(route: Route) =
@@ -39,7 +39,7 @@ data class GetMyRouteResult(
                 transportation = route.transportation,
                 numberOfPeople = route.numberOfPeople,
                 numberOfDays = route.numberOfDays,
-                createdAt = route.createdAt,
+                recordFinishedAt = route.recordFinishedAt,
             )
     }
 }

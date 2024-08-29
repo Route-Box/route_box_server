@@ -16,8 +16,8 @@ data class UserRouteResponse(
     val purchaseCount: Int,
     @Schema(description = "댓글 수", example = "5")
     val commentCount: Int,
-    @Schema(description = "루트 생성일", example = "2021-08-01")
-    val createdAt: String,
+    @Schema(description = "루트 작성 완료일", example = "2021-08-01")
+    val createdAt: String?,
 ) {
     companion object {
         fun from(result: GetUserRouteResult) = UserRouteResponse(
@@ -28,7 +28,7 @@ data class UserRouteResponse(
             // TODO: 구매 수, 댓글 수
             purchaseCount = 0,
             commentCount = 0,
-            createdAt = result.createdAt,
+            createdAt = result.recordFinishedAt,
         )
     }
 }

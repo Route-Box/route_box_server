@@ -73,6 +73,9 @@ class Route(
     var isPublic: Boolean = isPublic
         private set
 
+    var recordFinishedAt: LocalDateTime? = null
+        private set
+
     @OneToMany(mappedBy = "route")
     var routePoints: List<RoutePoint> = mutableListOf()
         private set
@@ -86,6 +89,12 @@ class Route(
     }
 
     fun updateName(name: String) {
+        // TODO: 루트마무리 API 클라이언트에서 엮은 후 제거 (임시 코드)
+        if (this.name == null) {
+            // 루트 마무리 처리
+            this.recordFinishedAt = LocalDateTime.now()
+        }
+
         this.name = name
     }
 
@@ -111,5 +120,11 @@ class Route(
 
     fun updateTransportation(transportation: String) {
         this.transportation = transportation
+    }
+
+    fun finishRecord(name: String, description: String?) {
+        this.name = name
+        this.description = description
+        this.recordFinishedAt = LocalDateTime.now()
     }
 }

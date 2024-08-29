@@ -11,6 +11,6 @@ data class PurchasedRouteResponse(
     val routeDescription: String?,
     @Schema(description = "루트 대표 이미지")
     val routeImageUrl: String?,
-    @Schema(description = "루트 생성일", example = "2024-08-01")
-    val createdAt: String,
+    @Schema(description = "루트 작성 완료일", example = "2024-08-01")
+    val createdAt: String?,
 )

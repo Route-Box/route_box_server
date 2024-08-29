@@ -316,12 +316,22 @@ class RouteService(
      */
     @Transactional(readOnly = true)
     fun getMyRoutes(userId: Long): List<Route> =
-        routeRepository.findByUser_IdOrderByCreatedAtDesc(userId)
+        routeRepository.findByUser_IdAndRecordFinishedAtIsNotNullOrderByRecordFinishedAtDesc(userId)
 
     /**
      * 사용자 루트 목록 조회
      */
     @Transactional(readOnly = true)
     fun getRoutesByUserId(userId: Long): List<Route> =
-        routeRepository.findByUser_IdAndIsPublicOrderByCreatedAtDesc(userId, true)
+        routeRepository.findByUser_IdAndIsPublicOrderByRecordFinishedAtDesc(userId, true)
+
+    /**
+     * 루트 마무리
+     */
+    @Transactional
+    fun finishRecordRoute(routeId: Long, name: String, description: String?): Route {
+        val route = findRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
+        route.finishRecord(name, description)
+        return routeRepository.save(route)
+    }
 }
