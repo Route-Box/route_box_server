@@ -102,4 +102,32 @@ class Route(
     fun updatePublic(isPublic: Boolean) {
         this.isPublic = isPublic
     }
+
+    fun updateName(name: String) {
+        this.name = name
+    }
+
+    fun updateDescription(description: String) {
+        this.description = description
+    }
+
+    fun updateWhoWith(whoWith: String) {
+        this.whoWith = whoWith
+    }
+
+    fun updateNumberOfPeople(numberOfPeople: Int) {
+        this.numberOfPeople = numberOfPeople
+    }
+
+    fun updateNumberOfDays(numberOfDays: String) {
+        this.numberOfDays = numberOfDays
+    }
+
+    fun updateStyle(style: Array<String>) {
+        this.style = style
+    }
+
+    fun updateTransportation(transportation: String) {
+        this.transportations = transportation
+    }
 }

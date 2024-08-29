@@ -252,19 +252,25 @@ class RouteService(
         whoWith: String?,
         numberOfPeople: Int?,
         numberOfDays: String?,
-        style: Array<String>,
+        style: Array<String>?,
         transportation: String?,
     ): Route {
         val route = findRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
-        route.update(
-            name = name,
-            description = description,
-            whoWith = whoWith,
-            numberOfPeople = numberOfPeople,
-            numberOfDays = numberOfDays,
-            style = style,
-            transportation = transportation,
-        )
+
+        if (name != null) route.updateName(name)
+
+        if (description != null) route.updateDescription(description)
+
+        if (whoWith != null) route.updateWhoWith(whoWith)
+
+        if (numberOfPeople != null) route.updateNumberOfPeople(numberOfPeople)
+
+        if (numberOfDays != null) route.updateNumberOfDays(numberOfDays)
+
+        if (style !== null && style.isNotEmpty()) route.updateStyle(style)
+
+        if (transportation != null) route.updateTransportation(transportation)
+
         return routeRepository.save(route)
     }
 

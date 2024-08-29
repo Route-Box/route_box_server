@@ -148,7 +148,9 @@ class RouteCommandController(
 
     @Operation(
         summary = "루트 수정",
-        description = "루트 마무리, 루트 수정에서 사용",
+        description = "<p>루트 마무리 - 루트 스타일 입력, 루트 수정에서 사용</p>" +
+            "<p>null이 아닌 값들만 수정됨</p>" +
+            "<p>루트 제목, 설명 입력 후 최종 마무리하는 건 별도의 루트 마무리 API 사용</p>",
         security = [SecurityRequirement(name = "access-token")],
     )
     @PutMapping("/v1/routes/{routeId}")
