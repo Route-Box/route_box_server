@@ -17,13 +17,13 @@ interface RouteRepository : JpaRepository<Route, Long> {
         WHERE r.isPublic = true
         AND r.id NOT IN (SELECT rr.reportedRouteId FROM RouteReport rr WHERE rr.reporterId = :userId)
         AND r.user.id NOT IN (SELECT ur.reportedUserId FROM UserReport ur WHERE ur.reporterId = :userId)
-        ORDER BY r.createdAt DESC
+        ORDER BY r.recordFinishedAt DESC
     """,
     )
     fun findAllFiltered(userId: Long, pageable: Pageable): Page<Route>
 
     fun countByUser_Id(userId: Long): Int
     fun findByEndTimeIsAfterAndUser_Id(endTime: LocalDateTime, userId: Long): Route?
-    fun findByUser_IdOrderByCreatedAtDesc(userId: Long): List<Route>
-    fun findByUser_IdAndIsPublicOrderByCreatedAtDesc(userId: Long, isPublic: Boolean): List<Route>
+    fun findByUser_IdAndRecordFinishedAtIsNotNullOrderByRecordFinishedAtDesc(userId: Long): List<Route>
+    fun findByUser_IdAndIsPublicOrderByRecordFinishedAtDesc(userId: Long, isPublic: Boolean): List<Route>
 }

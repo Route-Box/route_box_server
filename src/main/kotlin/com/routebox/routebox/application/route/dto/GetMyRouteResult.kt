@@ -19,7 +19,8 @@ data class GetMyRouteResult(
     val transportation: String?,
     val numberOfPeople: Int?,
     val numberOfDays: String?,
-    val createdAt: LocalDateTime,
+    val isPublic: Boolean,
+    val recordFinishedAt: LocalDateTime?,
 ) {
     companion object {
         fun from(route: Route) =
@@ -36,10 +37,11 @@ data class GetMyRouteResult(
                 commentCount = 0,
                 routeStyles = route.style.toList(),
                 whoWith = route.whoWith,
-                transportation = route.transportations,
+                transportation = route.transportation,
                 numberOfPeople = route.numberOfPeople,
                 numberOfDays = route.numberOfDays,
-                createdAt = route.createdAt,
+                isPublic = route.isPublic,
+                recordFinishedAt = route.recordFinishedAt,
             )
     }
 }

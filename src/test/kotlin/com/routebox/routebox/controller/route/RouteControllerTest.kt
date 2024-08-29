@@ -62,7 +62,7 @@ class RouteControllerTest @Autowired constructor(
             transportation = "Car",
             numberOfPeople = 2,
             numberOfDays = "3 days",
-            createdAt = LocalDateTime.now(),
+            recordFinishedAt = LocalDateTime.now(),
         )
 
         val route2 = GetRouteDetailResult(
@@ -81,7 +81,7 @@ class RouteControllerTest @Autowired constructor(
             transportation = "Car",
             numberOfPeople = 2,
             numberOfDays = "3 days",
-            createdAt = LocalDateTime.now().minusDays(1),
+            recordFinishedAt = LocalDateTime.now().minusDays(1),
         )
 
         val page = 0
@@ -124,7 +124,7 @@ class RouteControllerTest @Autowired constructor(
             transportation = "Car",
             numberOfPeople = 2,
             numberOfDays = "3 days",
-            createdAt = LocalDateTime.now(),
+            recordFinishedAt = LocalDateTime.now(),
         )
 
         given(getRouteDetailUseCase(routeId)).willReturn(route)

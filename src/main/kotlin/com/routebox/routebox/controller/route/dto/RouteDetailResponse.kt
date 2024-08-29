@@ -47,8 +47,8 @@ data class RouteDetailResponse(
     @Schema(description = "공개 여부")
     val isPublic: Boolean,
 
-    @Schema(description = "루트 생성일", example = "2021-08-01T00:00:00")
-    val createdAt: LocalDateTime,
+    @Schema(description = "루트 작성 완료일", example = "2021-08-01T00:00:00")
+    val createdAt: String?,
 
     @Schema(description = "루트 경로", example = "[{\"latitude\": 37.1234, \"longitude\": 127.1234}]")
     val routePath: List<Map<String, String>>,
@@ -72,7 +72,7 @@ data class RouteDetailResponse(
             numberOfDays = result.numberOfDays,
             transportation = result.transportation,
             isPublic = result.isPublic,
-            createdAt = LocalDateTime.parse(result.createdAt),
+            createdAt = result.recordFinishedAt.toString(),
             routePath = result.routePath,
             routeActivities = result.routeActivities.map { RouteActivityResponse.from(it) },
         )

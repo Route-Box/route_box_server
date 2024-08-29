@@ -17,7 +17,7 @@ data class GetRouteDetailWithActivitiesResult(
     val numberOfDays: String?,
     val transportation: String?,
     val isPublic: Boolean,
-    val createdAt: String,
+    val recordFinishedAt: String? = null,
     val routePath: List<Map<String, String>>,
     val routeActivities: List<ActivityResult>,
 ) {
@@ -37,9 +37,9 @@ data class GetRouteDetailWithActivitiesResult(
             routeStyles = route.style.toList(),
             numberOfPeople = route.numberOfPeople,
             numberOfDays = route.numberOfDays,
-            transportation = route.transportations,
+            transportation = route.transportation,
             isPublic = route.isPublic,
-            createdAt = route.createdAt.toString(),
+            recordFinishedAt = route.recordFinishedAt.toString(),
             routePath = route.routePoints.map { mapOf("latitude" to it.latitude, "longitude" to it.longitude) },
             routeActivities = route.routeActivities.map { ActivityResult.from(it) },
         )

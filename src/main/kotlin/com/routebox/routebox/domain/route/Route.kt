@@ -29,7 +29,7 @@ class Route(
     numberOfPeople: Int?,
     numberOfDays: String?,
     style: Array<String>,
-    transportations: String?,
+    transportation: String?,
     isPublic: Boolean = false,
 ) : TimeTrackedBaseEntity() {
     @Id
@@ -67,10 +67,13 @@ class Route(
     var style: Array<String> = style
         private set
 
-    var transportations: String? = transportations
+    var transportation: String? = transportation
         private set
 
     var isPublic: Boolean = isPublic
+        private set
+
+    var recordFinishedAt: LocalDateTime? = null
         private set
 
     @OneToMany(mappedBy = "route")
@@ -81,25 +84,47 @@ class Route(
     var routeActivities: List<RouteActivity> = mutableListOf()
         private set
 
-    fun update(
-        name: String?,
-        description: String?,
-        whoWith: String?,
-        numberOfPeople: Int?,
-        numberOfDays: String?,
-        style: Array<String>,
-        transportation: String?,
-    ) {
-        this.name = name
-        this.description = description
-        this.whoWith = whoWith
-        this.numberOfPeople = numberOfPeople
-        this.numberOfDays = numberOfDays
-        this.style = style
-        this.transportations = transportation
-    }
-
     fun updatePublic(isPublic: Boolean) {
         this.isPublic = isPublic
+    }
+
+    fun updateName(name: String) {
+        // TODO: 루트마무리 API 클라이언트에서 엮은 후 제거 (임시 코드)
+        if (this.name == null) {
+            // 루트 마무리 처리
+            this.recordFinishedAt = LocalDateTime.now()
+        }
+
+        this.name = name
+    }
+
+    fun updateDescription(description: String) {
+        this.description = description
+    }
+
+    fun updateWhoWith(whoWith: String) {
+        this.whoWith = whoWith
+    }
+
+    fun updateNumberOfPeople(numberOfPeople: Int) {
+        this.numberOfPeople = numberOfPeople
+    }
+
+    fun updateNumberOfDays(numberOfDays: String) {
+        this.numberOfDays = numberOfDays
+    }
+
+    fun updateStyle(style: Array<String>) {
+        this.style = style
+    }
+
+    fun updateTransportation(transportation: String) {
+        this.transportation = transportation
+    }
+
+    fun finishRecord(name: String, description: String?) {
+        this.name = name
+        this.description = description
+        this.recordFinishedAt = LocalDateTime.now()
     }
 }

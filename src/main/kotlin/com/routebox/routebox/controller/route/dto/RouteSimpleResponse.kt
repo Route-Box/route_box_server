@@ -18,8 +18,8 @@ data class RouteSimpleResponse(
     val purchaseCount: Int,
     @Schema(description = "댓글 수")
     val commentCount: Int,
-    @Schema(description = "루트 생성일", example = "2021-08-01T00:00:00")
-    val createdAt: String,
+    @Schema(description = "루트 작성 완료일", example = "2021-08-01T00:00:00")
+    val createdAt: String?,
 ) {
     companion object {
         fun from(
@@ -30,10 +30,10 @@ data class RouteSimpleResponse(
                 routeName = route.routeName,
                 routeDescription = route.routeDescription,
                 routeImageUrl = route.routeImageUrls.firstOrNull(),
-                isPublic = true,
+                isPublic = route.isPublic,
                 purchaseCount = route.purchaseCount,
                 commentCount = route.commentCount,
-                createdAt = route.createdAt.toString(),
+                createdAt = route.recordFinishedAt?.toString(),
             )
     }
 }

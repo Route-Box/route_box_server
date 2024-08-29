@@ -78,7 +78,7 @@ class RouteService(
             numberOfPeople = null,
             numberOfDays = null,
             style = emptyArray(),
-            transportations = null,
+            transportation = null,
             isPublic = false,
         )
         return routeRepository.save(route)
@@ -252,19 +252,25 @@ class RouteService(
         whoWith: String?,
         numberOfPeople: Int?,
         numberOfDays: String?,
-        style: Array<String>,
+        style: Array<String>?,
         transportation: String?,
     ): Route {
         val route = findRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
-        route.update(
-            name = name,
-            description = description,
-            whoWith = whoWith,
-            numberOfPeople = numberOfPeople,
-            numberOfDays = numberOfDays,
-            style = style,
-            transportation = transportation,
-        )
+
+        if (name != null) route.updateName(name)
+
+        if (description != null) route.updateDescription(description)
+
+        if (whoWith != null) route.updateWhoWith(whoWith)
+
+        if (numberOfPeople != null) route.updateNumberOfPeople(numberOfPeople)
+
+        if (numberOfDays != null) route.updateNumberOfDays(numberOfDays)
+
+        if (style !== null && style.isNotEmpty()) route.updateStyle(style)
+
+        if (transportation != null) route.updateTransportation(transportation)
+
         return routeRepository.save(route)
     }
 
@@ -310,12 +316,22 @@ class RouteService(
      */
     @Transactional(readOnly = true)
     fun getMyRoutes(userId: Long): List<Route> =
-        routeRepository.findByUser_IdOrderByCreatedAtDesc(userId)
+        routeRepository.findByUser_IdAndRecordFinishedAtIsNotNullOrderByRecordFinishedAtDesc(userId)
 
     /**
      * 사용자 루트 목록 조회
      */
     @Transactional(readOnly = true)
     fun getRoutesByUserId(userId: Long): List<Route> =
-        routeRepository.findByUser_IdAndIsPublicOrderByCreatedAtDesc(userId, true)
+        routeRepository.findByUser_IdAndIsPublicOrderByRecordFinishedAtDesc(userId, true)
+
+    /**
+     * 루트 마무리
+     */
+    @Transactional
+    fun finishRecordRoute(routeId: Long, name: String, description: String?): Route {
+        val route = findRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
+        route.finishRecord(name, description)
+        return routeRepository.save(route)
+    }
 }

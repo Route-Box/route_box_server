@@ -7,7 +7,7 @@ data class GetUserRouteResult(
     val routeName: String?,
     val routeDescription: String?,
     val routeImageUrl: String?,
-    val createdAt: String,
+    val recordFinishedAt: String,
 ) {
     companion object {
         fun from(route: Route) = GetUserRouteResult(
@@ -15,7 +15,7 @@ data class GetUserRouteResult(
             routeName = route.name,
             routeDescription = route.description,
             routeImageUrl = route.routeActivities.map { a -> a.activityImages.first().fileUrl }.firstOrNull(),
-            createdAt = route.createdAt.toString(),
+            recordFinishedAt = route.recordFinishedAt.toString(),
         )
     }
 }

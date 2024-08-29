@@ -50,8 +50,8 @@ data class RouteResponse(
     @Schema(description = "일 수", example = "1박 2일")
     val numberOfDays: String?,
 
-    @Schema(description = "루트 생성일", example = "2021-08-01T00:00:00")
-    val createdAt: LocalDateTime,
+    @Schema(description = "루트 작성 완료일", example = "2021-08-01T00:00:00")
+    val createdAt: LocalDateTime?,
 ) {
     companion object {
         fun from(
@@ -72,7 +72,7 @@ data class RouteResponse(
             transportation = getRouteDetailResult.transportation,
             numberOfPeople = getRouteDetailResult.numberOfPeople,
             numberOfDays = getRouteDetailResult.numberOfDays,
-            createdAt = getRouteDetailResult.createdAt,
+            createdAt = getRouteDetailResult.recordFinishedAt,
         )
     }
 }
