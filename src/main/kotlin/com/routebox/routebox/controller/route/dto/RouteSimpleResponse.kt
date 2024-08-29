@@ -30,7 +30,7 @@ data class RouteSimpleResponse(
                 routeName = route.routeName,
                 routeDescription = route.routeDescription,
                 routeImageUrl = route.routeImageUrls.firstOrNull(),
-                isPublic = true,
+                isPublic = route.isPublic,
                 purchaseCount = route.purchaseCount,
                 commentCount = route.commentCount,
                 createdAt = route.recordFinishedAt?.toString(),

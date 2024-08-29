@@ -19,6 +19,7 @@ data class GetMyRouteResult(
     val transportation: String?,
     val numberOfPeople: Int?,
     val numberOfDays: String?,
+    val isPublic: Boolean,
     val recordFinishedAt: LocalDateTime?,
 ) {
     companion object {
@@ -39,6 +40,7 @@ data class GetMyRouteResult(
                 transportation = route.transportation,
                 numberOfPeople = route.numberOfPeople,
                 numberOfDays = route.numberOfDays,
+                isPublic = route.isPublic,
                 recordFinishedAt = route.recordFinishedAt,
             )
     }
