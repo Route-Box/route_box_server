@@ -308,8 +308,8 @@ class RouteService(
      * 기록중인 루트 조회
      */
     @Transactional(readOnly = true)
-    fun getProgressRouteByUserId(now: LocalDateTime, userId: Long): Route? =
-        routeRepository.findByEndTimeIsAfterAndUser_Id(now, userId)
+    fun getProgressRouteByUserId(userId: Long): Route? =
+        routeRepository.findByRecordFinishedAtIsNullAndUser_Id(userId).firstOrNull()
 
     /**
      * 내 루트 목록조회

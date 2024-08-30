@@ -1,6 +1,5 @@
 package com.routebox.routebox.application.route
 
-import com.routebox.routebox.application.route.dto.CheckProgressRouteCommand
 import com.routebox.routebox.domain.route.RouteService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -17,8 +16,8 @@ class CheckProgressRouteUseCase(
      * @throws
      */
     @Transactional(readOnly = true)
-    operator fun invoke(command: CheckProgressRouteCommand): Long? {
-        val route = routeService.getProgressRouteByUserId(command.userLocalTime, command.userId).let {
+    operator fun invoke(userId: Long): Long? {
+        val route = routeService.getProgressRouteByUserId(userId).let {
             it ?: return null
         }
         return route.id
