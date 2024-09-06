@@ -88,13 +88,13 @@ class RouteService(
      * 루트 점찍기
      */
     @Transactional
-    fun createRoutePoint(routeId: Long, latitude: String, longitude: String, pointOrder: Int): RoutePoint {
+    fun createRoutePoint(routeId: Long, latitude: String, longitude: String, recordAt: LocalDateTime): RoutePoint {
         val route = findRouteById(routeId) ?: throw IllegalArgumentException("Route not found")
         val routePoint = RoutePoint(
             route = route,
             latitude = latitude,
             longitude = longitude,
-            pointOrder = pointOrder,
+            recordAt = recordAt,
         )
         return routePointRepository.save(routePoint)
     }

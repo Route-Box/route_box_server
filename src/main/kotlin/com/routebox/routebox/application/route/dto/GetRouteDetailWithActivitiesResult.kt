@@ -40,7 +40,7 @@ data class GetRouteDetailWithActivitiesResult(
             transportation = route.transportation,
             isPublic = route.isPublic,
             recordFinishedAt = route.recordFinishedAt.toString(),
-            routePath = route.routePoints.map { mapOf("latitude" to it.latitude, "longitude" to it.longitude) },
+            routePath = route.getRoutePath(),
             routeActivities = route.routeActivities.map { ActivityResult.from(it) },
         )
     }

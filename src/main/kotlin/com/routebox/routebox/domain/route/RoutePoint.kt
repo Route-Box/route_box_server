@@ -10,6 +10,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import java.time.LocalDateTime
 
 @Table(name = "route_points")
 @Entity
@@ -18,7 +19,7 @@ class RoutePoint(
     route: Route,
     latitude: String,
     longitude: String,
-    pointOrder: Int,
+    recordAt: LocalDateTime,
 ) : TimeTrackedBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +36,6 @@ class RoutePoint(
     @Column(name = "longitude", nullable = false)
     var longitude: String = longitude
 
-    @Column(name = "point_order", nullable = false)
-    var pointOrder: Int = pointOrder
+    @Column(name = "record_at", nullable = false)
+    var recordAt: LocalDateTime = recordAt
 }
