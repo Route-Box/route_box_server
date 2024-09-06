@@ -180,7 +180,7 @@ CREATE TABLE route_points
     route_id    BIGINT       NOT NULL,
     latitude    VARCHAR(255) NOT NULL,
     longitude   VARCHAR(255) NOT NULL,
-    point_order INT          NOT NULL,
+    record_at DATETIME     NOT NULL,
     created_at  DATETIME     NOT NULL,
     updated_at  DATETIME     NOT NULL
 );
