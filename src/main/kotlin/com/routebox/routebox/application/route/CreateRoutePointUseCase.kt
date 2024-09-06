@@ -24,7 +24,7 @@ class CreateRoutePointUseCase(
             routeId = command.routeId,
             latitude = command.latitude,
             longitude = command.longitude,
-            pointOrder = command.pointOrder,
+            recordAt = command.recordAt,
         )
         return CreateRoutePointResult.from(routePoint)
     }
