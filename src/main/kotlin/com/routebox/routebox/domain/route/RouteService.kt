@@ -334,4 +334,11 @@ class RouteService(
         route.finishRecord(name, description)
         return routeRepository.save(route)
     }
+
+    /**
+     * 루트 활동 조회
+     */
+    @Transactional(readOnly = true)
+    fun findRouteActivityById(activityId: Long): RouteActivity? =
+        routeActivityRepository.findById(activityId).orElse(null)
 }

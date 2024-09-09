@@ -8,6 +8,7 @@ import com.routebox.routebox.application.route.DeleteRouteActivityUseCase
 import com.routebox.routebox.application.route.DeleteRouteUseCase
 import com.routebox.routebox.application.route.FinishRecordRouteUseCase
 import com.routebox.routebox.application.route.GetMyRouteListUseCase
+import com.routebox.routebox.application.route.GetRouteActivityDetailUseCase
 import com.routebox.routebox.application.route.UpdateRouteActivityUseCase
 import com.routebox.routebox.application.route.UpdateRoutePublicUseCase
 import com.routebox.routebox.application.route.UpdateRouteUseCase
@@ -26,6 +27,7 @@ import com.routebox.routebox.controller.route.dto.FinishRecordRouteRequest
 import com.routebox.routebox.controller.route.dto.FinishRecordRouteResponse
 import com.routebox.routebox.controller.route.dto.GetMyRouteInsightResponse
 import com.routebox.routebox.controller.route.dto.GetMyRouteResponse
+import com.routebox.routebox.controller.route.dto.RouteActivityResponse
 import com.routebox.routebox.controller.route.dto.RouteSimpleResponse
 import com.routebox.routebox.controller.route.dto.UpdateRouteActivityRequest
 import com.routebox.routebox.controller.route.dto.UpdateRouteActivityResponse
@@ -69,6 +71,7 @@ class RouteCommandController(
     private val checkProgressRouteUseCase: CheckProgressRouteUseCase,
     private val getMyRouteListUseCase: GetMyRouteListUseCase,
     private val finishRecordRouteUseCase: FinishRecordRouteUseCase,
+    private val getRouteActivityDetailUseCase: GetRouteActivityDetailUseCase,
 ) {
     @Operation(
         summary = "루트 생성 (루트 기록 시작)",
@@ -252,5 +255,19 @@ class RouteCommandController(
             description = routeResponse.description,
             recordFinishedAt = routeResponse.recordFinishedAt,
         )
+    }
+
+    @Operation(
+        summary = "활동 상세 조회",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @GetMapping("/v1/routes/{routeId}/activity/{activityId}")
+    fun getRouteActivityDetail(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @PathVariable routeId: Long,
+        @PathVariable activityId: Long,
+    ): RouteActivityResponse {
+        val activity = getRouteActivityDetailUseCase(activityId)
+        return RouteActivityResponse.from(activity)
     }
 }
