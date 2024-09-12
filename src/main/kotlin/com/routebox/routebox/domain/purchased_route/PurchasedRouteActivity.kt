@@ -5,7 +5,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 data class PurchasedRouteActivity(
-    val id: Long,
+    val routeActivityId: Long,
     val locationName: String,
     val address: String,
     val latitude: String?,
@@ -19,7 +19,7 @@ data class PurchasedRouteActivity(
 ) {
     companion object {
         fun fromRouteActivity(routeActivity: RouteActivity): PurchasedRouteActivity = PurchasedRouteActivity(
-            id = routeActivity.id,
+            routeActivityId = routeActivity.id,
             locationName = routeActivity.locationName,
             address = routeActivity.address,
             latitude = routeActivity.latitude,

@@ -188,25 +188,25 @@ CREATE INDEX idx__route_points__route_id ON route_points (route_id);
 
 CREATE TABLE purchased_route
 (
-    purchased_route_id BIGINT   NOT NULL AUTO_INCREMENT,
-    route_id           BIGINT   NOT NULL,
-    buyer_id           BIGINT   NOT NULL,
-    writer_id          BIGINT   NOT NULL,
+    purchased_route_id BIGINT       NOT NULL AUTO_INCREMENT,
+    route_id           BIGINT       NOT NULL,
+    buyer_id           BIGINT       NOT NULL,
+    writer_id          BIGINT       NOT NULL,
     name               VARCHAR(255),
     description        TEXT,
-    start_time         DATETIME NOT NULL,
-    end_time           DATETIME NOT NULL,
+    start_time         DATETIME     NOT NULL,
+    end_time           DATETIME     NOT NULL,
     who_with           VARCHAR(255),
     number_of_peoples  INT,
     number_of_days     VARCHAR(255),
-    styles             JSON     NOT NULL,
+    styles             VARCHAR(255) NOT NULL,
     transportation     VARCHAR(255),
-    route_points       JSON     NOT NULL,
-    route_activities   JSON     NOT NULL,
-    created_at         DATETIME NOT NULL,
-    updated_at         DATETIME NOT NULL,
-    created_by         BIGINT   NOT NULL,
-    updated_by         BIGINT   NOT NULL,
+    route_points       JSON         NOT NULL,
+    route_activities   JSON         NOT NULL,
+    created_at         DATETIME     NOT NULL,
+    updated_at         DATETIME     NOT NULL,
+    created_by         BIGINT       NOT NULL,
+    updated_by         BIGINT       NOT NULL,
     PRIMARY KEY (purchased_route_id)
 );
 CREATE INDEX idx__routes__route_id ON purchased_route (route_id);

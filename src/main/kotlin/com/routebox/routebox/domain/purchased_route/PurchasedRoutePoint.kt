@@ -4,14 +4,14 @@ import com.routebox.routebox.domain.route.RoutePoint
 import java.time.LocalDateTime
 
 data class PurchasedRoutePoint(
-    val id: Long,
+    val routePointId: Long,
     val latitude: String,
     val longitude: String,
     val recordAt: LocalDateTime,
 ) {
     companion object {
         fun fromRoutePoint(routePoint: RoutePoint): PurchasedRoutePoint = PurchasedRoutePoint(
-            id = routePoint.id,
+            routePointId = routePoint.id,
             latitude = routePoint.latitude,
             longitude = routePoint.longitude,
             recordAt = routePoint.recordAt,
