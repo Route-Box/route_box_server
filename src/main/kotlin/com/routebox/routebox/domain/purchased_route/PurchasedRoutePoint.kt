@@ -1,0 +1,20 @@
+package com.routebox.routebox.domain.purchased_route
+
+import com.routebox.routebox.domain.route.RoutePoint
+import java.time.LocalDateTime
+
+data class PurchasedRoutePoint(
+    val id: Long,
+    val latitude: String,
+    val longitude: String,
+    val recordAt: LocalDateTime,
+) {
+    companion object {
+        fun fromRoutePoint(routePoint: RoutePoint): PurchasedRoutePoint = PurchasedRoutePoint(
+            id = routePoint.id,
+            latitude = routePoint.latitude,
+            longitude = routePoint.longitude,
+            recordAt = routePoint.recordAt,
+        )
+    }
+}
