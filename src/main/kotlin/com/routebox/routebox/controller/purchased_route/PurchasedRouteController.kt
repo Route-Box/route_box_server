@@ -2,7 +2,7 @@ package com.routebox.routebox.controller.purchased_route
 
 import com.routebox.routebox.application.purchased_route.GetPurchasedRouteUseCase
 import com.routebox.routebox.application.purchased_route.dto.GetPurchasedRouteCommand
-import com.routebox.routebox.controller.purchased_route.dto.PurchasedRouteResponse
+import com.routebox.routebox.controller.purchased_route.dto.GetPurchasedRouteResponse
 import com.routebox.routebox.security.UserPrincipal
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -36,9 +36,9 @@ class PurchasedRouteController(
     fun getPurchasedRoute(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @Parameter(description = "조회하고자 하는, 구매한 루트의 id") @PathVariable purchasedRouteId: Long,
-    ): PurchasedRouteResponse {
+    ): GetPurchasedRouteResponse {
         val purchasedRoute =
             getPurchasedRouteUseCase(GetPurchasedRouteCommand(requesterId = userPrincipal.userId, purchasedRouteId))
-        return PurchasedRouteResponse.fromPurchasedRoute(purchasedRoute)
+        return GetPurchasedRouteResponse.from(purchasedRoute)
     }
 }

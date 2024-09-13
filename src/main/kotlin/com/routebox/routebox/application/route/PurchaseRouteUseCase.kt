@@ -54,6 +54,6 @@ class PurchaseRouteUseCase(
 
         val buyer = userService.getUserById(command.buyerId)
         val route = routeService.getRouteById(command.routeId)
-        purchasedRouteService.createPurchasedRoute(PurchasedRoute.fromRoute(route, buyer))
+        purchasedRouteService.createPurchasedRoute(PurchasedRoute.from(route, buyer))
     }
 }
