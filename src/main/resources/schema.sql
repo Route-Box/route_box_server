@@ -135,6 +135,7 @@ CREATE TABLE routes
     number_of_people INT,
     number_of_days   VARCHAR(255),
     style            JSON,
+    styles           VARCHAR(255),
     transportation   VARCHAR(255),
     is_public        BOOLEAN  NOT NULL DEFAULT FALSE,
     record_finished_at DATETIME,

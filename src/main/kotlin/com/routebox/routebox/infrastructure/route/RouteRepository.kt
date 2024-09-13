@@ -1,5 +1,6 @@
 package com.routebox.routebox.infrastructure.route
 
+import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpqlExecutor
 import com.routebox.routebox.domain.route.Route
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository
 
 @Suppress("ktlint:standard:function-naming")
 @Repository
-interface RouteRepository : JpaRepository<Route, Long> {
+interface RouteRepository : JpaRepository<Route, Long>, KotlinJdslJpqlExecutor {
     @Query(
         """
         SELECT r FROM Route r

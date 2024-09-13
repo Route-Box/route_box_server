@@ -29,6 +29,7 @@ class Route(
     numberOfPeople: Int?,
     numberOfDays: String?,
     style: Array<String>,
+    styles: String,
     transportation: String?,
     isPublic: Boolean = false,
 ) : TimeTrackedBaseEntity() {
@@ -65,6 +66,8 @@ class Route(
     @Convert(converter = StringArrayConverter::class)
     @Column(columnDefinition = "json")
     var style: Array<String> = style
+
+    var styles: String? = styles
         private set
 
     var transportation: String? = transportation
@@ -115,7 +118,7 @@ class Route(
     }
 
     fun updateStyle(style: Array<String>) {
-        this.style = style
+        this.styles = style.joinToString(",")
     }
 
     fun updateTransportation(transportation: String) {

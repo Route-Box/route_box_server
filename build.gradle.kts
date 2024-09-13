@@ -68,6 +68,11 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+    val jdslVersion = "3.5.2"
+    implementation("com.linecorp.kotlin-jdsl:jpql-dsl:$jdslVersion")
+    implementation("com.linecorp.kotlin-jdsl:jpql-render:$jdslVersion")
+    implementation("com.linecorp.kotlin-jdsl:spring-data-jpa-support:$jdslVersion")
 }
 
 kotlin {

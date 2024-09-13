@@ -79,6 +79,7 @@ class GetUserRoutesResponseRouteDetailUseCaseTest {
         numberOfPeople = numberOfPeople,
         numberOfDays = numberOfDays,
         style = style,
+        styles = "",
         transportation = transportation,
         user = user,
     )
