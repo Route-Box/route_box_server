@@ -3,6 +3,7 @@ package com.routebox.routebox.controller.auth
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.routebox.routebox.application.auth.OAuthLoginUseCase
 import com.routebox.routebox.application.auth.RefreshTokensUseCase
+import com.routebox.routebox.application.auth.WithdrawUseCase
 import com.routebox.routebox.application.auth.dto.LoginResult
 import com.routebox.routebox.application.auth.dto.OAuthLoginCommand
 import com.routebox.routebox.config.ControllerTestConfig
@@ -38,6 +39,9 @@ class AuthControllerTest @Autowired constructor(
 
     @MockBean
     lateinit var refreshTokensUseCase: RefreshTokensUseCase
+
+    @MockBean
+    lateinit var withdrawUseCase: WithdrawUseCase
 
     @Test
     fun `카카오에서 발급받은 access token이 주어지고, 주어진 token으로 로그인한다`() {

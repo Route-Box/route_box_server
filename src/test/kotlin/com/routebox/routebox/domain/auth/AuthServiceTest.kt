@@ -8,6 +8,7 @@ import com.routebox.routebox.exception.kakao.RequestKakaoUserInfoException
 import com.routebox.routebox.infrastructure.apple.AppleApiClient
 import com.routebox.routebox.infrastructure.apple.AppleAuthKey
 import com.routebox.routebox.infrastructure.apple.AppleAuthKeys
+import com.routebox.routebox.infrastructure.auth.WithdrawalHistoryRepository
 import com.routebox.routebox.infrastructure.kakao.KakaoApiClient
 import com.routebox.routebox.infrastructure.kakao.KakaoUserInfo
 import com.routebox.routebox.security.JwtInfo
@@ -41,6 +42,9 @@ class AuthServiceTest {
 
     @Mock
     lateinit var refreshTokenRepository: RefreshTokenRepository
+
+    @Mock
+    lateinit var withdrawalHistoryRepository: WithdrawalHistoryRepository
 
     @Mock
     lateinit var jwtManager: JwtManager
