@@ -59,6 +59,7 @@ class RouteController(
     @Operation(
         summary = "루트 단건 조회",
         description = "루트 단건 조회",
+        security = [SecurityRequirement(name = "access-token")],
     )
     @ApiResponses(
         ApiResponse(responseCode = "200"),

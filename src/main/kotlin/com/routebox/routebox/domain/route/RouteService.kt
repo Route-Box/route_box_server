@@ -1,5 +1,9 @@
 package com.routebox.routebox.domain.route
 
+import com.linecorp.kotlinjdsl.querymodel.jpql.sort.Sorts.asc
+import com.linecorp.kotlinjdsl.querymodel.jpql.sort.Sorts.desc
+import com.routebox.routebox.application.route.dto.SearchCommand
+import com.routebox.routebox.controller.route.dto.RouteSortBy
 import com.routebox.routebox.domain.common.FileManager
 import com.routebox.routebox.domain.user.User
 import com.routebox.routebox.exception.route.RouteNotFoundException
@@ -77,6 +81,7 @@ class RouteService(
             whoWith = null,
             numberOfPeople = null,
             numberOfDays = null,
+            styles = "",
             style = emptyArray(),
             transportation = null,
             isPublic = false,
@@ -341,4 +346,55 @@ class RouteService(
     @Transactional(readOnly = true)
     fun findRouteActivityById(activityId: Long): RouteActivity? =
         routeActivityRepository.findById(activityId).orElse(null)
+
+    /**
+     * 루트 검색
+     */
+    @Transactional(readOnly = true)
+    fun searchRoutes(request: SearchCommand): List<Route> {
+        val pageable = PageRequest.of(request.page, request.size)
+        return routeRepository.findPage(pageable) {
+            select(
+                entity(Route::class),
+            ).from(
+                entity(Route::class),
+            ).where(
+                and(
+                    path(Route::isPublic).eq(true),
+                    request.query?.let {
+                        or(
+                            path(Route::name).like("%$it%"),
+                            path(Route::description).like("%$it%"),
+                        )
+                    },
+                    request.filters.whoWith.takeIf { it.isNotEmpty() }?.let {
+                        path(Route::whoWith).`in`(it)
+                    },
+                    request.filters.numberOfPeople.takeIf { it.isNotEmpty() }?.let {
+                        path(Route::numberOfPeople).`in`(it)
+                    },
+                    request.filters.numberOfDays.takeIf { it.isNotEmpty() }?.let {
+                        path(Route::numberOfDays).`in`(it)
+                    },
+                    request.filters.style.takeIf { it.isNotEmpty() }?.let { stylesFilter ->
+                        and(
+                            *stylesFilter.map { style ->
+                                path(Route::styles).like("%$style%")
+                            }.toTypedArray(),
+                        )
+                    },
+                    request.filters.transportation.takeIf { it.isNotEmpty() }?.let {
+                        path(Route::transportation).`in`(it)
+                    },
+                ),
+            ).orderBy(
+                when (request.sortBy) {
+                    RouteSortBy.NEWEST -> desc(path(Route::createdAt))
+                    RouteSortBy.OLDEST -> asc(path(Route::createdAt))
+                    RouteSortBy.POPULAR -> asc(path(Route::createdAt)) // TODO: implements
+                    RouteSortBy.COMMENTS -> asc(path(Route::createdAt)) // TODO: implements
+                },
+            )
+        }.content.filterNotNull()
+    }
 }

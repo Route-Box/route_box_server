@@ -113,6 +113,7 @@ class PurchaseRouteUseCaseTest {
         numberOfPeople = 2,
         numberOfDays = "2박3일",
         style = arrayOf("힐링"),
+        styles = "힐링",
         transportation = "뚜벅뚜벅",
     )
 
