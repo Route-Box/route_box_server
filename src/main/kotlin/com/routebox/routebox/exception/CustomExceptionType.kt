@@ -25,6 +25,7 @@ enum class CustomExceptionType(
     USER_SOCIAL_LOGIN_UID_DUPLICATION(3001, "이미 가입된 계정입니다."),
     USER_NICKNAME_DUPLICATION(3002, "이미 사용중인 닉네임입니다."),
     NO_AVAILABLE_COUPON(3003, "이용 가능한 쿠폰이 없습니다."),
+    USER_WITHDRAWN(3004, "탈퇴한 유저입니다."),
 
     /**
      * 루트 관련 예외
