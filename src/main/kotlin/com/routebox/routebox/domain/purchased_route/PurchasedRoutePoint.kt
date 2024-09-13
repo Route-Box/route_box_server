@@ -10,7 +10,7 @@ data class PurchasedRoutePoint(
     val recordAt: LocalDateTime,
 ) {
     companion object {
-        fun fromRoutePoint(routePoint: RoutePoint): PurchasedRoutePoint = PurchasedRoutePoint(
+        fun from(routePoint: RoutePoint): PurchasedRoutePoint = PurchasedRoutePoint(
             routePointId = routePoint.id,
             latitude = routePoint.latitude,
             longitude = routePoint.longitude,

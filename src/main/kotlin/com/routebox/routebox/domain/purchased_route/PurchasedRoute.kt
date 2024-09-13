@@ -38,7 +38,7 @@ class PurchasedRoute(
     routeActivities: List<PurchasedRouteActivity>,
 ) : BaseEntity() {
     companion object {
-        fun fromRoute(route: Route, buyer: User): PurchasedRoute = PurchasedRoute(
+        fun from(route: Route, buyer: User): PurchasedRoute = PurchasedRoute(
             buyer = buyer,
             writer = route.user,
             routeId = route.id,
@@ -51,8 +51,8 @@ class PurchasedRoute(
             numberOfDays = route.numberOfDays,
             styles = route.style.toList(),
             transportation = route.name,
-            routePoints = route.routePoints.map { PurchasedRoutePoint.fromRoutePoint(it) },
-            routeActivities = route.routeActivities.map { PurchasedRouteActivity.fromRouteActivity(it) },
+            routePoints = route.routePoints.map { PurchasedRoutePoint.from(it) },
+            routeActivities = route.routeActivities.map { PurchasedRouteActivity.from(it) },
         )
     }
 

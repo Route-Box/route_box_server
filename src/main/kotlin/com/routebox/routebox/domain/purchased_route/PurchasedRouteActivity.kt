@@ -18,7 +18,7 @@ data class PurchasedRouteActivity(
     val activityImageUrls: List<String>,
 ) {
     companion object {
-        fun fromRouteActivity(routeActivity: RouteActivity): PurchasedRouteActivity = PurchasedRouteActivity(
+        fun from(routeActivity: RouteActivity): PurchasedRouteActivity = PurchasedRouteActivity(
             routeActivityId = routeActivity.id,
             locationName = routeActivity.locationName,
             address = routeActivity.address,

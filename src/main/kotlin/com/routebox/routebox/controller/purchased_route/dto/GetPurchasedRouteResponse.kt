@@ -9,7 +9,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-data class PurchasedRouteResponse(
+data class GetPurchasedRouteResponse(
     @Schema(description = "Id of purchased route")
     val id: Long,
 
@@ -44,10 +44,10 @@ data class PurchasedRouteResponse(
     val routeActivities: List<PurchasedRouteActivityResponse>,
 ) {
     companion object {
-        fun fromPurchasedRoute(route: PurchasedRoute): PurchasedRouteResponse =
-            PurchasedRouteResponse(
+        fun from(route: PurchasedRoute): GetPurchasedRouteResponse =
+            GetPurchasedRouteResponse(
                 id = route.id,
-                writer = UserResponse.fromUser(route.writer),
+                writer = UserResponse.from(route.writer),
                 name = route.name,
                 description = route.description,
                 whoWith = route.whoWith,
@@ -55,9 +55,9 @@ data class PurchasedRouteResponse(
                 numberOfDays = route.numberOfDays,
                 styles = route.styles,
                 transportation = route.transportation,
-                routePoints = route.routePoints.map { PurchasedRoutePointResponse.fromPurchasedRoutePoint(it) },
+                routePoints = route.routePoints.map { PurchasedRoutePointResponse.from(it) },
                 routeActivities = route.routeActivities
-                    .map { PurchasedRouteActivityResponse.fromPurchasedRouteActivity(it) },
+                    .map { PurchasedRouteActivityResponse.from(it) },
             )
     }
 
@@ -72,7 +72,7 @@ data class PurchasedRouteResponse(
         val nickname: String,
     ) {
         companion object {
-            fun fromUser(user: User): UserResponse = UserResponse(
+            fun from(user: User): UserResponse = UserResponse(
                 id = user.id,
                 profileImageUrl = user.profileImageUrl,
                 nickname = user.nickname,
@@ -94,7 +94,7 @@ data class PurchasedRouteResponse(
         val recordAt: LocalDateTime,
     ) {
         companion object {
-            fun fromPurchasedRoutePoint(point: PurchasedRoutePoint): PurchasedRoutePointResponse =
+            fun from(point: PurchasedRoutePoint): PurchasedRoutePointResponse =
                 PurchasedRoutePointResponse(
                     routePointId = point.routePointId,
                     latitude = point.latitude,
@@ -139,7 +139,7 @@ data class PurchasedRouteResponse(
         val activityImageUrls: List<String>,
     ) {
         companion object {
-            fun fromPurchasedRouteActivity(activity: PurchasedRouteActivity): PurchasedRouteActivityResponse =
+            fun from(activity: PurchasedRouteActivity): PurchasedRouteActivityResponse =
                 PurchasedRouteActivityResponse(
                     routeActivityId = activity.routeActivityId,
                     locationName = activity.locationName,
