@@ -109,4 +109,8 @@ class User(
     fun updateProfileImageUrl(profileImageUrl: String) {
         this.profileImageUrl = profileImageUrl
     }
+
+    fun deleteUser() {
+        this.deletedAt = LocalDateTime.now()
+    }
 }

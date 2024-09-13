@@ -8,6 +8,7 @@ import com.routebox.routebox.domain.coupon.constant.CouponStatus
 import com.routebox.routebox.domain.coupon.constant.CouponType
 import com.routebox.routebox.domain.coupon.event.CouponsIssuedEvent
 import com.routebox.routebox.domain.user.UserService
+import com.routebox.routebox.exception.user.UserWithdrawnException
 import jakarta.validation.Valid
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
@@ -26,6 +27,8 @@ class OAuthLoginUseCase(
      * Social login uid를 조회한 후, 다음 로직을 수행한다.
      * - 신규 유저라면: 유저 데이터 생성 및 저장
      * - 기존 유저라면: 유저 데이터 조회
+     *
+     * 탈퇴한 유저라면 탈퇴한 유저 예외를 발생시킨다.
      * 만약 유저 데이터를 생성했을 경우, 회원가입 기념 쿠폰을 세 장 지급할 수 있도록 이벤트를 발행한다.
      *
      * 이후 생성 또는 조회한 유저 정보로 access token과 refresh token을 생성하여 반환한다.
@@ -41,6 +44,10 @@ class OAuthLoginUseCase(
         val user = userService.findUserBySocialLoginUid(oAuthUserInfo.uid)
             ?: userService.createNewUser(command.loginType, oAuthUserInfo.uid)
                 .also { isSignUpProceeded = true }
+
+        if (user.deletedAt != null) {
+            throw UserWithdrawnException()
+        }
 
         val result = LoginResult(
             isNew = user.isOnboardingComplete(),

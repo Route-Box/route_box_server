@@ -7,6 +7,7 @@ import com.routebox.routebox.exception.apple.RequestAppleAuthKeysException
 import com.routebox.routebox.exception.kakao.RequestKakaoUserInfoException
 import com.routebox.routebox.infrastructure.apple.AppleApiClient
 import com.routebox.routebox.infrastructure.apple.AppleAuthKeys
+import com.routebox.routebox.infrastructure.auth.WithdrawalHistoryRepository
 import com.routebox.routebox.infrastructure.kakao.KakaoApiClient
 import com.routebox.routebox.security.JwtInfo
 import com.routebox.routebox.security.JwtManager
@@ -25,6 +26,7 @@ class AuthService(
     private val appleApiClient: AppleApiClient,
     private val jwtManager: JwtManager,
     private val refreshTokenRepository: RefreshTokenRepository,
+    private val withdrawalHistoryRepository: WithdrawalHistoryRepository,
 ) {
     /**
      * OAuth 로그인을 위해, 사용자 정보를 조회한다.
@@ -137,6 +139,21 @@ class AuthService(
         val refreshToken = jwtManager.createRefreshToken(user.id, user.roles)
         refreshTokenRepository.save(RefreshToken(user.id, refreshToken.token))
         return refreshToken
+    }
+
+    /**
+     * 회원 탈퇴 처리
+     *
+     * @param user 탈퇴할 유저 정보
+     * @param reasonType 탈퇴 사유 유형
+     * @param reasonDetail 탈퇴 사유 상세
+     *
+     * @return 탈퇴 처리 결과
+     */
+    @Transactional
+    fun withdrawUser(user: User, reasonType: WithdrawalReasonType?, reasonDetail: String?) {
+        user.deleteUser()
+        withdrawalHistoryRepository.save(WithdrawalHistory(userId = user.id, reasonType = reasonType, reasonDetail = reasonDetail))
     }
 }
 

@@ -236,6 +236,16 @@ CREATE TABLE route_report
     created_at        DATETIME NOT NULL,
     updated_at        DATETIME NOT NULL,
     PRIMARY KEY (route_report_id)
-)
+);
 -- CREATE INDEX idx__route_report__reporter_id ON route_report (reporter_id);
 -- CREATE INDEX idx__route_report__reported_route_id ON route_report (reported_route_id);
+
+CREATE TABLE withdrawal_histories
+(
+    withdrawal_history_id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '탈퇴 기록 ID',
+    user_id BIGINT NOT NULL COMMENT '사용자 ID',
+    reason_type VARCHAR(255) NULL COMMENT '탈퇴 사유',
+    reason_detail VARCHAR(1600) NULL COMMENT '탈퇴 상세 사유',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간'
+);
