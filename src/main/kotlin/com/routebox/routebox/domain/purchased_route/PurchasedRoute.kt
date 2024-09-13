@@ -1,7 +1,9 @@
 package com.routebox.routebox.domain.purchased_route
 
 import com.routebox.routebox.domain.common.BaseEntity
-import com.routebox.routebox.domain.converter.StringArrayConverter
+import com.routebox.routebox.domain.purchased_route.converter.PurchasedRouteActivityConverter
+import com.routebox.routebox.domain.purchased_route.converter.PurchasedRoutePointConverter
+import com.routebox.routebox.domain.purchased_route.converter.PurchasedRouteStylesConverter
 import com.routebox.routebox.domain.route.Route
 import com.routebox.routebox.domain.user.User
 import jakarta.persistence.Column
@@ -30,12 +32,13 @@ class PurchasedRoute(
     whoWith: String?,
     numberOfPeoples: Int?,
     numberOfDays: String?,
-    styles: Array<String>,
+    styles: List<String>,
     transportation: String?,
+    routePoints: List<PurchasedRoutePoint>,
+    routeActivities: List<PurchasedRouteActivity>,
 ) : BaseEntity() {
-
     companion object {
-        fun createFrom(route: Route, buyer: User): PurchasedRoute = PurchasedRoute(
+        fun fromRoute(route: Route, buyer: User): PurchasedRoute = PurchasedRoute(
             buyer = buyer,
             writer = route.user,
             routeId = route.id,
@@ -46,8 +49,10 @@ class PurchasedRoute(
             whoWith = route.whoWith,
             numberOfPeoples = route.numberOfPeople,
             numberOfDays = route.numberOfDays,
-            styles = route.style,
+            styles = route.style.toList(),
             transportation = route.name,
+            routePoints = route.routePoints.map { PurchasedRoutePoint.fromRoutePoint(it) },
+            routeActivities = route.routeActivities.map { PurchasedRouteActivity.fromRouteActivity(it) },
         )
     }
 
@@ -87,14 +92,20 @@ class PurchasedRoute(
     var numberOfDays: String? = numberOfDays
         private set
 
-    @Convert(converter = StringArrayConverter::class)
-    @Column(columnDefinition = "json")
-    var styles: Array<String> = styles
+    @Convert(converter = PurchasedRouteStylesConverter::class)
+    var styles: List<String> = styles
         private set
 
     var transportation: String? = transportation
         private set
 
-    // TODO: routePoints 추가
-    // TODO: routeActivities 추가
+    @Convert(converter = PurchasedRoutePointConverter::class)
+    @Column(columnDefinition = "JSON")
+    var routePoints: List<PurchasedRoutePoint> = routePoints
+        private set
+
+    @Convert(converter = PurchasedRouteActivityConverter::class)
+    @Column(columnDefinition = "JSON")
+    var routeActivities: List<PurchasedRouteActivity> = routeActivities
+        private set
 }

@@ -139,8 +139,8 @@ CREATE TABLE routes
     transportation   VARCHAR(255),
     is_public        BOOLEAN  NOT NULL DEFAULT FALSE,
     record_finished_at DATETIME,
-    created_at       DATETIME NOT NULL,
-    updated_at       DATETIME NOT NULL,
+    created_at         DATETIME NOT NULL,
+    updated_at         DATETIME NOT NULL,
     PRIMARY KEY (route_id)
 );
 CREATE INDEX idx__routes__user_id ON routes (user_id);
@@ -177,35 +177,37 @@ CREATE INDEX idx__route_activity_image__route_activity_id ON route_activity_imag
 
 CREATE TABLE route_points
 (
-    point_id    BIGINT AUTO_INCREMENT PRIMARY KEY,
-    route_id    BIGINT       NOT NULL,
-    latitude    VARCHAR(255) NOT NULL,
-    longitude   VARCHAR(255) NOT NULL,
-    record_at DATETIME     NOT NULL,
-    created_at  DATETIME     NOT NULL,
-    updated_at  DATETIME     NOT NULL
+    point_id   BIGINT AUTO_INCREMENT PRIMARY KEY,
+    route_id   BIGINT       NOT NULL,
+    latitude   VARCHAR(255) NOT NULL,
+    longitude  VARCHAR(255) NOT NULL,
+    record_at  DATETIME     NOT NULL,
+    created_at DATETIME     NOT NULL,
+    updated_at DATETIME     NOT NULL
 );
 CREATE INDEX idx__route_points__route_id ON route_points (route_id);
 
 CREATE TABLE purchased_route
 (
-    purchased_route_id BIGINT   NOT NULL AUTO_INCREMENT,
-    route_id           BIGINT   NOT NULL,
-    buyer_id           BIGINT   NOT NULL,
-    writer_id          BIGINT   NOT NULL,
+    purchased_route_id BIGINT       NOT NULL AUTO_INCREMENT,
+    route_id           BIGINT       NOT NULL,
+    buyer_id           BIGINT       NOT NULL,
+    writer_id          BIGINT       NOT NULL,
     name               VARCHAR(255),
     description        TEXT,
-    start_time         DATETIME NOT NULL,
-    end_time           DATETIME NOT NULL,
+    start_time         DATETIME     NOT NULL,
+    end_time           DATETIME     NOT NULL,
     who_with           VARCHAR(255),
     number_of_peoples  INT,
     number_of_days     VARCHAR(255),
-    styles             JSON     NOT NULL,
+    styles             VARCHAR(255) NOT NULL,
     transportation     VARCHAR(255),
-    created_at         DATETIME NOT NULL,
-    updated_at         DATETIME NOT NULL,
-    created_by         BIGINT   NOT NULL,
-    updated_by         BIGINT   NOT NULL,
+    route_points       JSON         NOT NULL,
+    route_activities   JSON         NOT NULL,
+    created_at         DATETIME     NOT NULL,
+    updated_at         DATETIME     NOT NULL,
+    created_by         BIGINT       NOT NULL,
+    updated_by         BIGINT       NOT NULL,
     PRIMARY KEY (purchased_route_id)
 );
 CREATE INDEX idx__routes__route_id ON purchased_route (route_id);
@@ -226,13 +228,13 @@ CREATE TABLE user_report
 
 CREATE TABLE route_report
 (
-    route_report_id   BIGINT       NOT NULL AUTO_INCREMENT,
-    reporter_id       BIGINT       NOT NULL COMMENT '신고자 id',
-    reported_route_id BIGINT       NOT NULL COMMENT '신고 대상(루트)의 id',
-    reason_type       VARCHAR(255) NOT NULL COMMENT '신고 사유',
-    reason_detail     VARCHAR(255) NOT NULL COMMENT '신고 상세 사유',
-    created_at        DATETIME     NOT NULL,
-    updated_at        DATETIME     NOT NULL,
+    route_report_id   BIGINT   NOT NULL AUTO_INCREMENT,
+    reporter_id       BIGINT   NOT NULL COMMENT '신고자 id',
+    reported_route_id BIGINT   NOT NULL COMMENT '신고 대상(루트)의 id',
+    reason_type       VARCHAR(255) COMMENT '신고 사유',
+    reason_detail     VARCHAR(255) COMMENT '신고 상세 사유',
+    created_at        DATETIME NOT NULL,
+    updated_at        DATETIME NOT NULL,
     PRIMARY KEY (route_report_id)
 )
 -- CREATE INDEX idx__route_report__reporter_id ON route_report (reporter_id);
