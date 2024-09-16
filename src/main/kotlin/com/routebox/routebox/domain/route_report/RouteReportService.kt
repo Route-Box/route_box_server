@@ -13,14 +13,14 @@ class RouteReportService(
     fun report(
         reporterId: Long,
         reportedRouteId: Long,
-        reasonType: RouteReportReasonType?,
+        reasonTypes: List<RouteReportReasonType>?,
         reasonDetail: String?,
     ): RouteReport =
         routeReportRepository.save(
             RouteReport(
                 reporterId = reporterId,
                 reportedRouteId = reportedRouteId,
-                reasonType = reasonType,
+                reasonTypes = reasonTypes,
                 reasonDetail = reasonDetail,
             ),
         )
