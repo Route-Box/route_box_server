@@ -14,7 +14,7 @@ class ReportRouteUseCase(
         val report = routeReportService.report(
             reporterId = command.reporterId,
             reportedRouteId = command.reportedRouteId,
-            reasonType = command.reasonType,
+            reasonTypes = command.reasonTypes,
             reasonDetail = command.reasonDetail,
         )
         return report.id

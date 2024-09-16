@@ -2,10 +2,10 @@ package com.routebox.routebox.domain.route_report
 
 import com.routebox.routebox.domain.common.TimeTrackedBaseEntity
 import com.routebox.routebox.domain.route_report.constant.RouteReportReasonType
+import com.routebox.routebox.domain.route_report.converter.RouteReportReasonTypesConverter
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -17,7 +17,7 @@ class RouteReport(
     id: Long = 0,
     reporterId: Long,
     reportedRouteId: Long,
-    reasonType: RouteReportReasonType?,
+    reasonTypes: List<RouteReportReasonType>?,
     reasonDetail: String?,
 ) : TimeTrackedBaseEntity() {
     @Id
@@ -29,8 +29,8 @@ class RouteReport(
 
     val reportedRouteId = reportedRouteId
 
-    @Enumerated(EnumType.STRING)
-    var reasonType: RouteReportReasonType? = reasonType
+    @Convert(converter = RouteReportReasonTypesConverter::class)
+    var reasonTypes: List<RouteReportReasonType>? = reasonTypes
         private set
 
     var reasonDetail: String? = reasonDetail

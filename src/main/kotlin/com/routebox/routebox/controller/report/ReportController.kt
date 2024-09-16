@@ -58,7 +58,7 @@ class ReportController(
             ReportRouteCommand(
                 reporterId = userPrincipal.userId,
                 reportedRouteId = request.routeId,
-                reasonType = request.reasonType,
+                reasonTypes = request.reasonTypes,
                 reasonDetail = request.reasonDetail,
             ),
         )

@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS route_points;
 DROP TABLE IF EXISTS purchased_route;
 DROP TABLE IF EXISTS user_report;
 DROP TABLE IF EXISTS route_report;
+DROP TABLE IF EXISTS withdrawal_histories;
 
 CREATE TABLE users
 (
@@ -125,19 +126,19 @@ CREATE INDEX idx__inquiry_response__inquiry_id ON inquiry_response (inquiry_id);
 
 CREATE TABLE routes
 (
-    route_id         BIGINT AUTO_INCREMENT,
-    user_id          BIGINT,
-    name             VARCHAR(255),
-    description      TEXT,
-    start_time       DATETIME,
-    end_time         DATETIME,
-    who_with         VARCHAR(255),
-    number_of_people INT,
-    number_of_days   VARCHAR(255),
-    style            JSON,
-    styles           VARCHAR(255),
-    transportation   VARCHAR(255),
-    is_public        BOOLEAN  NOT NULL DEFAULT FALSE,
+    route_id           BIGINT AUTO_INCREMENT,
+    user_id            BIGINT,
+    name               VARCHAR(255),
+    description        TEXT,
+    start_time         DATETIME,
+    end_time           DATETIME,
+    who_with           VARCHAR(255),
+    number_of_people   INT,
+    number_of_days     VARCHAR(255),
+    style              JSON,
+    styles             VARCHAR(255),
+    transportation     VARCHAR(255),
+    is_public          BOOLEAN  NOT NULL DEFAULT FALSE,
     record_finished_at DATETIME,
     created_at         DATETIME NOT NULL,
     updated_at         DATETIME NOT NULL,
@@ -228,13 +229,13 @@ CREATE TABLE user_report
 
 CREATE TABLE route_report
 (
-    route_report_id   BIGINT   NOT NULL AUTO_INCREMENT,
-    reporter_id       BIGINT   NOT NULL COMMENT '신고자 id',
-    reported_route_id BIGINT   NOT NULL COMMENT '신고 대상(루트)의 id',
-    reason_type       VARCHAR(255) COMMENT '신고 사유',
+    route_report_id   BIGINT       NOT NULL AUTO_INCREMENT,
+    reporter_id       BIGINT       NOT NULL COMMENT '신고자 id',
+    reported_route_id BIGINT       NOT NULL COMMENT '신고 대상(루트)의 id',
+    reason_types      VARCHAR(255) NOT NULL COMMENT '신고 사유',
     reason_detail     VARCHAR(255) COMMENT '신고 상세 사유',
-    created_at        DATETIME NOT NULL,
-    updated_at        DATETIME NOT NULL,
+    created_at        DATETIME     NOT NULL,
+    updated_at        DATETIME     NOT NULL,
     PRIMARY KEY (route_report_id)
 );
 -- CREATE INDEX idx__route_report__reporter_id ON route_report (reporter_id);
@@ -243,9 +244,9 @@ CREATE TABLE route_report
 CREATE TABLE withdrawal_histories
 (
     withdrawal_history_id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '탈퇴 기록 ID',
-    user_id BIGINT NOT NULL COMMENT '사용자 ID',
-    reason_type VARCHAR(255) NULL COMMENT '탈퇴 사유',
-    reason_detail VARCHAR(1600) NULL COMMENT '탈퇴 상세 사유',
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간'
+    user_id               BIGINT   NOT NULL COMMENT '사용자 ID',
+    reason_type           VARCHAR(255) NULL COMMENT '탈퇴 사유',
+    reason_detail         VARCHAR(1600) NULL COMMENT '탈퇴 상세 사유',
+    created_at            DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
+    updated_at            DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간'
 );
