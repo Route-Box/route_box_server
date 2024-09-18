@@ -1,4 +1,4 @@
-package com.routebox.routebox.controller.route.dto
+package com.routebox.routebox.controller.route.dto.home
 
 import io.swagger.v3.oas.annotations.media.Schema
 
