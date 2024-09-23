@@ -1,23 +1,31 @@
 package com.routebox.routebox.security
 
+import com.routebox.routebox.domain.user.UserService
+import com.routebox.routebox.exception.security.InvalidTokenException
+import com.routebox.routebox.exception.user.UserNotFoundException
+import com.routebox.routebox.security.SecurityConfig.Companion.AUTH_WHITE_LIST
+import com.routebox.routebox.security.SecurityConfig.Companion.AUTH_WHITE_PATHS
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
+import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class JwtAuthenticationFilter(
     private val jwtManager: JwtManager,
-    private val userDetailsService: UserDetailsService,
+    private val userService: UserService,
 ) : OncePerRequestFilter() {
 
     companion object {
         private const val TOKEN_TYPE_BEARER_PREFIX = "Bearer "
+        private val pathMatcher = AntPathMatcher()
     }
 
     /**
@@ -33,19 +41,41 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        val accessToken = getAccessToken(request)
-        if (!accessToken.isNullOrBlank()) {
-            try {
+        if (isRequiredAuth(request.requestURI, request.method)) {
+            val accessToken = getAccessTokenFromHeader(request)
+            if (accessToken.isNullOrBlank()) {
+                throw AuthenticationCredentialsNotFoundException("Access token does not exist.")
+            }
+
+            runCatching {
                 jwtManager.validate(accessToken)
                 val userId = jwtManager.getUserIdFromToken(accessToken)
-                val userDetails = userDetailsService.loadUserByUsername(userId.toString())
-                val authentication = UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
+                val userPrincipal = loadUserPrincipal(userId)
+                val authentication = UsernamePasswordAuthenticationToken(userPrincipal, "", userPrincipal.authorities)
                 SecurityContextHolder.getContext().authentication = authentication
-            } catch (ignored: Exception) {
-                // 인증 권한 설정 중 에러가 발생하면 권한을 부여하지 않고 다음 단계로 진행
+            }.getOrElse { e ->
+                if (e is InvalidTokenException) {
+                    throw BadCredentialsException("Invalid access token.")
+                } else {
+                    throw e
+                }
             }
         }
+
         filterChain.doFilter(request, response)
+    }
+
+    /**
+     * 인증/인가 권한이 필요한 요청인지 확인한다.
+     */
+    private fun isRequiredAuth(uri: String, method: String): Boolean {
+        if (AUTH_WHITE_PATHS.any { authWhitePath -> pathMatcher.match(authWhitePath, uri) }) {
+            return false
+        }
+        if (AUTH_WHITE_LIST.any { (path, httpMethod) -> pathMatcher.match(path, uri) && httpMethod.name() == method }) {
+            return false
+        }
+        return true
     }
 
     /**
@@ -54,11 +84,24 @@ class JwtAuthenticationFilter(
      * @param request Request 객체
      * @return Header에서 추출한 token
      */
-    fun getAccessToken(request: HttpServletRequest): String? {
+    private fun getAccessTokenFromHeader(request: HttpServletRequest): String? {
         val authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
         if (authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_TYPE_BEARER_PREFIX)) {
             return null
         }
         return authorizationHeader.substring(TOKEN_TYPE_BEARER_PREFIX.length)
+    }
+
+    private fun loadUserPrincipal(userId: Long): UserPrincipal {
+        val user = userService.findUserById(userId)
+        if (user == null || user.deletedAt != null) {
+            throw UserNotFoundException()
+        }
+
+        return UserPrincipal(
+            userId = user.id,
+            socialLoginUid = user.socialLoginUid,
+            userRoles = user.roles,
+        )
     }
 }

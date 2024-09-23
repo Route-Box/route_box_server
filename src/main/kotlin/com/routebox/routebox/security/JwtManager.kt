@@ -99,24 +99,12 @@ class JwtManager(@Value("\${routebox.jwt.secret-key}") private val salt: String)
     private fun getClaimsFromToken(token: String): Claims =
         getJwsFromToken(token).body
 
-    private fun getJwsFromToken(token: String): Jws<Claims> =
-        Jwts.parserBuilder()
-            .setSigningKey(secretKey)
-            .build()
-            .parseClaimsJws(token)
-
-    /**
-     * 토큰의 유효성, 만료일자 검증
-     *
-     * @param token 검증하고자 하는 JWT token
-     * @throws InvalidTokenException Token 값이 잘못되거나 만료되어 유효하지 않은 경우
-     */
-    fun validate(token: String) {
-        if (token.isBlank()) {
-            throw InvalidTokenException("The token is empty")
-        }
+    private fun getJwsFromToken(token: String): Jws<Claims> {
         try {
-            getJwsFromToken(token)
+            return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
         } catch (ex: UnsupportedJwtException) {
             throw InvalidTokenException("The claimsJws argument does not represent an Claims JWS", ex)
         } catch (ex: MalformedJwtException) {
@@ -128,5 +116,18 @@ class JwtManager(@Value("\${routebox.jwt.secret-key}") private val salt: String)
         } catch (ex: IllegalArgumentException) {
             throw InvalidTokenException("The claimsJws string is null or empty or only whitespace", ex)
         }
+    }
+
+    /**
+     * 토큰의 유효성, 만료일자 검증
+     *
+     * @param token 검증하고자 하는 JWT token
+     * @throws InvalidTokenException Token 값이 잘못되거나 만료되어 유효하지 않은 경우
+     */
+    fun validate(token: String) {
+        if (token.isBlank()) {
+            throw InvalidTokenException("The token is empty")
+        }
+        getJwsFromToken(token)
     }
 }

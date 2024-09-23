@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDate
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class UserService(
@@ -34,6 +35,16 @@ class UserService(
     @Transactional(readOnly = true)
     fun getUserById(id: Long): User =
         userRepository.findById(id).orElseThrow { UserNotFoundException() }
+
+    /**
+     * Id(PK)로 유저를 조회한다.
+     *
+     * @param id 조회할 유저의 id
+     * @return 조회된 user entity(nullable)
+     */
+    @Transactional(readOnly = true)
+    fun findUserById(id: Long): User? =
+        userRepository.findById(id).getOrNull()
 
     /**
      * Social login uid로 유저를 조회한다.

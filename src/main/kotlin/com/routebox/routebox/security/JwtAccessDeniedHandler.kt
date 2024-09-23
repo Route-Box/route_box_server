@@ -35,7 +35,7 @@ class JwtAccessDeniedHandler : AccessDeniedHandler {
             ObjectMapper().writeValueAsString(
                 ErrorResponse(
                     CustomExceptionType.ACCESS_DENIED.code,
-                    CustomExceptionType.ACCESS_DENIED.message,
+                    "${CustomExceptionType.ACCESS_DENIED.message} ${accessDeniedException.message}",
                 ),
             ),
         )

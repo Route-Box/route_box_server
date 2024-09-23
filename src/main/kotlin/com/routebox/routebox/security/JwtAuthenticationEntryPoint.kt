@@ -35,7 +35,7 @@ class JwtAuthenticationEntryPoint : AuthenticationEntryPoint {
             ObjectMapper().writeValueAsString(
                 ErrorResponse(
                     CustomExceptionType.ACCESS_DENIED.code,
-                    CustomExceptionType.ACCESS_DENIED.message,
+                    "${CustomExceptionType.ACCESS_DENIED.message} ${authenticationException.message}",
                 ),
             ),
         )
