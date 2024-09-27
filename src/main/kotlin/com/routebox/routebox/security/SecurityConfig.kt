@@ -64,6 +64,7 @@ class SecurityConfig {
             val corsConfig = CorsConfiguration()
             corsConfig.allowedOrigins = listOf(
                 "https://api-dev.myroutebox.com",
+                "https://api.myroutebox.com",
                 "https://www.myroutebox.com",
                 "https://myroutebox.com",
                 "http://localhost:8080",
