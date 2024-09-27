@@ -1,16 +1,16 @@
-name: Dev Deploy to Amazon ECS
+name: Prod Deploy to Amazon ECS
 
 on:
     push:
-        branches: [ "develop" ]
+        branches: [ "main" ]
 
 env:
     AWS_REGION: ap-northeast-2
-    ECR_REPOSITORY: routebox-dev
-    ECS_SERVICE: routebox-service-dev
-    ECS_CLUSTER: routebox-dev-cluster
-    ECS_TASK_DEFINITION: routebox-task-definition-dev.json
-    CONTAINER_NAME: routebox-dev
+    ECR_REPOSITORY: routebox-prod
+    ECS_SERVICE: routebox-service-prod
+    ECS_CLUSTER: routebox-prod-cluster
+    ECS_TASK_DEFINITION: routebox-task-definition-prod.json
+    CONTAINER_NAME: routebox-prod
 
 permissions:
     contents: read
@@ -36,7 +36,7 @@ jobs:
 
             - name: Copy Secret
               env:
-                  CREATE_SECRET: ${{secrets.ENV_DEV}}
+                  CREATE_SECRET: ${{secrets.ENV_PROD}}
                   CREATE_SECRET_DIR: src/main/resources
                   CREATE_SECRET_DIR_FILE_NAME: env.properties
               run: echo $CREATE_SECRET | base64 --decode > $CREATE_SECRET_DIR/$CREATE_SECRET_DIR_FILE_NAME
