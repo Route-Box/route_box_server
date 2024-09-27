@@ -1,4 +1,7 @@
-routebox.app-version: 0.0.1
+routebox:
+    jwt:
+        secret-key: ${JWT_SECRET_KEY}
+    app-version: 0.0.1
 
 spring:
     application:
@@ -25,6 +28,10 @@ spring:
                 format_sql: false
                 default_batch_fetch_size: 100
         defer-datasource-initialization: false
+    data:
+        redis:
+            host: ${REDIS_HOST}
+            port: ${REDIS_PORT}
 
 logging:
     level:
@@ -39,6 +46,15 @@ logging:
 springdoc:
     swagger-ui:
         operations-sorter: method
+
+swagger:
+    server-url: ${SWAGGER_SERVER_URL}
+
+aws:
+    s3:
+        bucket-name: ${AWS_S3_BUCKET_NAME}
+        access-key: ${AWS_S3_ACCESS_KEY}
+        secret-key: ${AWS_S3_SECRET_KEY}
 
 ---
 spring:
@@ -60,6 +76,7 @@ spring:
             hibernate:
                 format_sql: false
 
+
 ---
 spring:
     config:
@@ -72,6 +89,7 @@ spring:
         properties:
             hibernate:
                 format_sql: true
+
 
 logging:
     level:

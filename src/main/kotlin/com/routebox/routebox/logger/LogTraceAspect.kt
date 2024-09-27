@@ -12,18 +12,19 @@ class LogTraceAspect(
 ) {
     @Around(
         "com.routebox.routebox.logger.Pointcuts.controllerPoint() || " +
-            "com.routebox.routebox.logger.Pointcuts.servicePoint() || " +
-            "com.routebox.routebox.logger.Pointcuts.infrastructurePoint()",
+            "com.routebox.routebox.logger.Pointcuts.useCasePoint() || " +
+            "com.routebox.routebox.logger.Pointcuts.domainServicePoint() || " +
+            "com.routebox.routebox.logger.Pointcuts.repositoryPoint()",
     )
     @Throws(Throwable::class)
-    fun execute(joinPoint: ProceedingJoinPoint): Any {
+    fun execute(joinPoint: ProceedingJoinPoint): Any? {
         var status: TraceStatus? = null
         try {
             val message = joinPoint.signature.toShortString()
             status = logTrace.begin(message)
 
             // Logic call
-            val result = joinPoint.proceed()
+            val result: Any? = joinPoint.proceed()
 
             logTrace.end(status)
             return result
