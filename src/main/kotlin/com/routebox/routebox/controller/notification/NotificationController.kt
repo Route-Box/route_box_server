@@ -27,7 +27,7 @@ class NotificationController {
     )
     @GetMapping("/v1/notifications")
     fun getNotificationHistory(): GetNotificationHistoryResponse {
-        val mockData: List<NotificationHistoryDto>  = listOf()
+        val mockData: List<NotificationHistoryDto> = listOf()
         return GetNotificationHistoryResponse.from(mockData)
     }
 
