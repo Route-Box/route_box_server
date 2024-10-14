@@ -27,18 +27,7 @@ class NotificationController {
     )
     @GetMapping("/v1/notifications")
     fun getNotificationHistory(): GetNotificationHistoryResponse {
-        val mockData = listOf(
-            NotificationHistoryDto.from(1, "알림 내용1", "2024-08-04", false),
-            NotificationHistoryDto.from(2, "알림 내용2", "2024-08-03", false),
-            NotificationHistoryDto.from(3, "알림 내용3", "2024-08-02", true),
-            NotificationHistoryDto.from(4, "알림 내용4", "2024-08-02", true),
-            NotificationHistoryDto.from(5, "알림 내용5", "2024-08-01", true),
-            NotificationHistoryDto.from(6, "알림 내용6", "2024-08-01", true),
-            NotificationHistoryDto.from(7, "알림 내용7", "2024-08-01", true),
-            NotificationHistoryDto.from(8, "알림 내용8", "2024-07-31", true),
-            NotificationHistoryDto.from(9, "알림 내용9", "2024-07-30", true),
-            NotificationHistoryDto.from(10, "알림 내용10", "2024-07-20", true),
-        )
+        val mockData: List<NotificationHistoryDto> = listOf()
         return GetNotificationHistoryResponse.from(mockData)
     }
 
