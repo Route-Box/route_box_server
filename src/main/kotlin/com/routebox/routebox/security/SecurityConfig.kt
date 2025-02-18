@@ -30,6 +30,7 @@ class SecurityConfig {
             "/api/v1/users/nickname/*/availability" to HttpMethod.GET,
             "/api/v1/notifications" to HttpMethod.GET,
             "/api/v1/notifications/unread" to HttpMethod.GET,
+            "/api/v1/health" to HttpMethod.GET,
         )
 
         @Bean
