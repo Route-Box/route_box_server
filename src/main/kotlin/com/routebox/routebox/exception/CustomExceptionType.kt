@@ -39,6 +39,11 @@ enum class CustomExceptionType(
     ROUTE_NOT_PURCHASED(3401, "내가 구매하지 않은 루트이거나, 유효하지 않은 구매 루트입니다."),
 
     /**
+     * 문의 관련 예외
+     */
+    INQUIRY_NOT_FOUND(3500, "일치하는 문의 내역을 찾을 수 없습니다."),
+
+    /**
      * Kakao(kakao open api 등) 관련 예외
      */
     REQUEST_KAKAO_USER_INFO(10000, "카카오 사용자 정보 조회 중 오류가 발생했습니다."),
