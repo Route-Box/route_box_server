@@ -23,4 +23,8 @@ class PurchasedRouteService(
     fun createPurchasedRoute(purchasedRoute: PurchasedRoute) {
         purchasedRouteRepository.save(purchasedRoute)
     }
+
+    @Transactional(readOnly = true)
+    fun getPurchasedRouteCount(buyerId: Long): Int =
+        purchasedRouteRepository.countByBuyer_Id(buyerId)
 }

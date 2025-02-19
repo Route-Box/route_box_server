@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 @Suppress("ktlint:standard:function-naming")
 interface PurchasedRouteRepository : JpaRepository<PurchasedRoute, Long> {
     fun findByBuyer_IdOrderByCreatedAtDesc(buyerId: Long, pageable: Pageable): Page<PurchasedRoute>
+    fun countByBuyer_Id(buyerId: Long): Int
 }

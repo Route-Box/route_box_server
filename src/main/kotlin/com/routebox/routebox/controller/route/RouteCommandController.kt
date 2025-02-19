@@ -9,6 +9,7 @@ import com.routebox.routebox.application.route.DeleteRouteUseCase
 import com.routebox.routebox.application.route.FinishRecordRouteUseCase
 import com.routebox.routebox.application.route.GetMyRouteListUseCase
 import com.routebox.routebox.application.route.GetRouteActivityDetailUseCase
+import com.routebox.routebox.application.route.GetRouteInsightUseCase
 import com.routebox.routebox.application.route.UpdateRouteActivityUseCase
 import com.routebox.routebox.application.route.UpdateRoutePublicUseCase
 import com.routebox.routebox.application.route.UpdateRouteUseCase
@@ -53,7 +54,6 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import kotlin.random.Random
 
 @Tag(name = "내루트 관련 API")
 @RestController
@@ -72,6 +72,7 @@ class RouteCommandController(
     private val getMyRouteListUseCase: GetMyRouteListUseCase,
     private val finishRecordRouteUseCase: FinishRecordRouteUseCase,
     private val getRouteActivityDetailUseCase: GetRouteActivityDetailUseCase,
+    private val getRouteInsightUseCase: GetRouteInsightUseCase,
 ) {
     @Operation(
         summary = "루트 생성 (루트 기록 시작)",
@@ -207,19 +208,15 @@ class RouteCommandController(
     }
 
     @Operation(
-        summary = "인사이트 조회 (더미데이터)",
+        summary = "인사이트 조회",
         security = [SecurityRequirement(name = "access-token")],
     )
     @GetMapping("/v1/routes/insight")
     fun getMyRouteInsight(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
     ): GetMyRouteInsightResponse {
-        // TODO: 구현
-        val routeCount = Random.nextInt(0, 21)
-        val purchaseCount = Random.nextInt(0, 101)
-        val commentCount = Random.nextInt(0, 101)
-
-        return GetMyRouteInsightResponse(routeCount, purchaseCount, commentCount)
+        val result = getRouteInsightUseCase.invoke(userPrincipal.userId)
+        return GetMyRouteInsightResponse.from(result)
     }
 
     @Operation(
