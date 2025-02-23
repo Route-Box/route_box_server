@@ -1,4 +1,4 @@
-package com.routebox.routebox.domain.user
+package com.routebox.routebox.domain.user_point_history
 
 import com.routebox.routebox.domain.common.TimeTrackedBaseEntity
 import com.routebox.routebox.domain.user.constant.UserPointTransactionType
@@ -13,17 +13,19 @@ import jakarta.persistence.Id
 @Entity
 class UserPointHistory(
     userId: Long,
+    routeId: Long,
     transactionType: UserPointTransactionType,
     amount: Int,
     id: Long = 0,
 ) : TimeTrackedBaseEntity() {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_point_history_id")
     val id: Long = id
 
     val userId: Long = userId
+
+    val routeId: Long = routeId
 
     @Enumerated(EnumType.STRING)
     val transactionType: UserPointTransactionType = transactionType

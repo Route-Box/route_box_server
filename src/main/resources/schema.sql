@@ -14,6 +14,8 @@ DROP TABLE IF EXISTS purchased_route;
 DROP TABLE IF EXISTS user_report;
 DROP TABLE IF EXISTS route_report;
 DROP TABLE IF EXISTS withdrawal_histories;
+DROP TABLE IF EXISTS popular_routes;
+DROP TABLE IF EXISTS recommended_routes;
 
 CREATE TABLE users
 (
@@ -52,6 +54,7 @@ CREATE TABLE user_point_history
 (
     user_point_history_id BIGINT       NOT NULL AUTO_INCREMENT,
     user_id               BIGINT       NOT NULL,
+    route_id              BIGINT       NOT NULL,
     transaction_type      VARCHAR(255) NOT NULL,
     amount                INT          NOT NULL,
     created_at            DATETIME     NOT NULL,
@@ -59,6 +62,7 @@ CREATE TABLE user_point_history
     PRIMARY KEY (user_point_history_id)
 );
 CREATE INDEX idx__user_point_history__user_id ON user_point_history (user_id);
+CREATE INDEX idx__user_point_history__route_id ON user_point_history (route_id);
 
 CREATE TABLE coupon
 (
@@ -159,7 +163,7 @@ CREATE TABLE route_activities
     start_time        TIME         NOT NULL,
     end_time          TIME         NOT NULL,
     category          VARCHAR(100) NOT NULL,
-    description       TEXT NULL,
+    description       TEXT         NULL,
     created_at        DATETIME     NOT NULL,
     updated_at        DATETIME     NOT NULL
 );
@@ -173,7 +177,7 @@ CREATE TABLE route_activity_image
     file_url                VARCHAR(255) NOT NULL,
     created_at              DATETIME     NOT NULL,
     updated_at              DATETIME     NOT NULL,
-    deleted_at              DATETIME NULL
+    deleted_at              DATETIME     NULL
 );
 CREATE INDEX idx__route_activity_image__route_activity_id ON route_activity_image (route_activity_id);
 
@@ -245,28 +249,28 @@ CREATE TABLE route_report
 CREATE TABLE withdrawal_histories
 (
     withdrawal_history_id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '탈퇴 기록 ID',
-    user_id               BIGINT   NOT NULL COMMENT '사용자 ID',
-    reason_type           VARCHAR(255) NULL COMMENT '탈퇴 사유',
+    user_id               BIGINT        NOT NULL COMMENT '사용자 ID',
+    reason_type           VARCHAR(255)  NULL COMMENT '탈퇴 사유',
     reason_detail         VARCHAR(1600) NULL COMMENT '탈퇴 상세 사유',
-    created_at            DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
-    updated_at            DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간'
+    created_at            DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
+    updated_at            DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간'
 );
 
 CREATE TABLE popular_routes
 (
-    popular_route_id   BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '인기 루트 ID',
-    route_id   BIGINT   NOT NULL COMMENT '루트 ID',
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간'
+    popular_route_id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '인기 루트 ID',
+    route_id         BIGINT   NOT NULL COMMENT '루트 ID',
+    created_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
+    updated_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간'
 );
 
 CREATE TABLE recommended_routes
 (
-    recommended_route_id        BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '추천 루트 ID',
-    route_id       BIGINT       NOT NULL COMMENT '루트 ID',
-    show_from      DATETIME     NOT NULL COMMENT '표시 시작 시간',
-    common_comment VARCHAR(255) NULL COMMENT '추천 루트 상단에 나오는 공통 코멘트, 가장 앞쪽 데이터의 코멘트가 노출됨',
-    created_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
-    updated_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간'
+    recommended_route_id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '추천 루트 ID',
+    route_id             BIGINT       NOT NULL COMMENT '루트 ID',
+    show_from            DATETIME     NOT NULL COMMENT '표시 시작 시간',
+    common_comment       VARCHAR(255) NULL COMMENT '추천 루트 상단에 나오는 공통 코멘트, 가장 앞쪽 데이터의 코멘트가 노출됨',
+    created_at           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
+    updated_at           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간'
 );
 
