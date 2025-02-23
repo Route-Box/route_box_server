@@ -13,6 +13,7 @@ import com.routebox.routebox.domain.user.User
 import com.routebox.routebox.domain.user.UserService
 import com.routebox.routebox.domain.user.constant.Gender
 import com.routebox.routebox.domain.user.constant.LoginType
+import com.routebox.routebox.domain.user_point_history.UserPointHistoryService
 import org.apache.commons.lang3.RandomStringUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.extension.ExtendWith
@@ -46,6 +47,9 @@ class PurchaseRouteUseCaseTest {
 
     @Mock
     lateinit var purchasedRouteService: PurchasedRouteService
+
+    @Mock
+    lateinit var userPointHistoryService: UserPointHistoryService
 
     @Test
     fun `쿠폰으로 루트를 구매하면, 쿠폰이 하나 차감되고 구매한 루트의 복사본이 생성된다`() {
@@ -91,6 +95,7 @@ class PurchaseRouteUseCaseTest {
         then(couponService).shouldHaveNoMoreInteractions()
         then(routeService).shouldHaveNoMoreInteractions()
         then(purchasedRouteService).shouldHaveNoMoreInteractions()
+        then(userPointHistoryService).shouldHaveNoMoreInteractions()
     }
 
     private fun createUser(userId: Long) = User(

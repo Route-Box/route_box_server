@@ -33,8 +33,7 @@ class UserService(
      * @throws UserNotFoundException 주어진 id와 일치하는 유저가 없는 경우
      */
     @Transactional(readOnly = true)
-    fun getUserById(id: Long): User =
-        userRepository.findById(id).orElseThrow { UserNotFoundException() }
+    fun getUserById(id: Long): User = userRepository.findById(id).orElseThrow { UserNotFoundException() }
 
     /**
      * Id(PK)로 유저를 조회한다.
@@ -43,8 +42,7 @@ class UserService(
      * @return 조회된 user entity(nullable)
      */
     @Transactional(readOnly = true)
-    fun findUserById(id: Long): User? =
-        userRepository.findById(id).getOrNull()
+    fun findUserById(id: Long): User? = userRepository.findById(id).getOrNull()
 
     /**
      * Social login uid로 유저를 조회한다.
@@ -53,8 +51,7 @@ class UserService(
      * @return 조회된 user entity (nullable)
      */
     @Transactional(readOnly = true)
-    fun findUserBySocialLoginUid(socialLoginUid: String): User? =
-        userRepository.findBySocialLoginUid(socialLoginUid)
+    fun findUserBySocialLoginUid(socialLoginUid: String): User? = userRepository.findBySocialLoginUid(socialLoginUid)
 
     /**
      * 닉네임이 이용 가능한지 조회한다.
@@ -63,8 +60,7 @@ class UserService(
      * @return 닉네임의 이용 가능 여부. `true`인 경우 이용 가능한 닉네임.
      */
     @Transactional(readOnly = true)
-    fun isNicknameAvailable(nickname: String): Boolean =
-        !userRepository.existsByNickname(nickname)
+    fun isNicknameAvailable(nickname: String): Boolean = !userRepository.existsByNickname(nickname)
 
     /**
      * 신규 유저 데이터를 생성 및 저장한다.
@@ -137,6 +133,16 @@ class UserService(
             user.updateProfileImageUrl(profileImageUrl)
         }
 
+        return user
+    }
+
+    @Transactional
+    fun usePoint(userId: Long, point: Int): User {
+        val user = getUserById(userId)
+        if (user.point < point) {
+            TODO("잔여 포인트가 부족할 경우 예외 발생")
+        }
+        user.usePoint(point)
         return user
     }
 

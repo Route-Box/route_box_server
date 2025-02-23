@@ -131,13 +131,11 @@ class Route(
         this.recordFinishedAt = LocalDateTime.now()
     }
 
-    fun getRoutePath(): List<Map<String, String>> {
-        return routePoints.map {
-            mapOf(
-                "latitude" to it.latitude,
-                "longitude" to it.longitude,
-                "recordAt" to it.recordAt.toString(),
-            )
-        }.sortedBy { it["recordAt"] }
-    }
+    fun getRoutePath(): List<Map<String, String>> = routePoints.map {
+        mapOf(
+            "latitude" to it.latitude,
+            "longitude" to it.longitude,
+            "recordAt" to it.recordAt.toString(),
+        )
+    }.sortedBy { it["recordAt"] }
 }

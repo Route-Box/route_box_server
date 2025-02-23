@@ -113,4 +113,8 @@ class User(
     fun deleteUser() {
         this.deletedAt = LocalDateTime.now()
     }
+
+    fun usePoint(point: Int) {
+        this.point -= point
+    }
 }

@@ -8,6 +8,9 @@ import com.routebox.routebox.domain.purchased_route.constant.RoutePaymentMethod.
 import com.routebox.routebox.domain.purchased_route.constant.RoutePaymentMethod.POINT
 import com.routebox.routebox.domain.route.RouteService
 import com.routebox.routebox.domain.user.UserService
+import com.routebox.routebox.domain.user.constant.UserPointTransactionType
+import com.routebox.routebox.domain.user_point_history.UserPointHistory
+import com.routebox.routebox.domain.user_point_history.UserPointHistoryService
 import com.routebox.routebox.exception.coupon.NoAvailableCouponException
 import com.routebox.routebox.exception.route.RouteNotFoundException
 import com.routebox.routebox.exception.user.UserNotFoundException
@@ -21,6 +24,7 @@ class PurchaseRouteUseCase(
     private val couponService: CouponService,
     private val routeService: RouteService,
     private val purchasedRouteService: PurchasedRouteService,
+    private val userPointHistoryService: UserPointHistoryService,
 ) {
     /**
      * 루트를 구매합니다. 루트는 쿠폰과 포인트를 사용하여 구매할 수 있다.
@@ -34,12 +38,18 @@ class PurchaseRouteUseCase(
     operator fun invoke(command: PurchaseRouteCommand) {
         when (command.paymentMethod) {
             POINT -> {
-                // TODO: 포인트 결제 기능 추가
-                throw IllegalArgumentException("아직 사용할 수 없는 기능입니다.")
+                userService.usePoint(command.buyerId, ROUTE_POINT_AMOUNT)
+                userPointHistoryService.create(
+                    UserPointHistory(
+                        userId = command.buyerId,
+                        routeId = command.routeId,
+                        transactionType = UserPointTransactionType.USE,
+                        amount = ROUTE_POINT_AMOUNT,
+                    ),
+                )
             }
 
             COUPON -> {
-                // TODO: 쿠폰 사용에 대한 log(history) 저장에 대한 고민 필요
                 // 이용 가능한 쿠폰 중, 종료일이 가장 빠른(현재에 가까운) 쿠폰 단건 조회
                 val coupon = couponService.findAvailableCoupons(command.buyerId)
                     // 종료일이 null인 경우, 즉 종료 기한 없이 무제한 사용이 가능한 쿠폰은 가장 마지막에 위치
@@ -55,5 +65,9 @@ class PurchaseRouteUseCase(
         val buyer = userService.getUserById(command.buyerId)
         val route = routeService.getRouteById(command.routeId)
         purchasedRouteService.createPurchasedRoute(PurchasedRoute.from(route, buyer))
+    }
+
+    companion object {
+        private const val ROUTE_POINT_AMOUNT = 5
     }
 }
