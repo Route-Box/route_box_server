@@ -1,6 +1,7 @@
 package com.routebox.routebox.controller.user.dto
 
 import com.routebox.routebox.application.user.dto.UpdateUserInfoResult
+import com.routebox.routebox.domain.user.User
 import com.routebox.routebox.domain.user.constant.Gender
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
@@ -28,6 +29,16 @@ data class UserResponse(
     val introduction: String,
 ) {
     companion object {
+        fun from(user: User) = UserResponse(
+            id = user.id,
+            nickname = user.nickname,
+            profileImageUrl = user.profileImageUrl,
+            point = user.point,
+            gender = user.gender,
+            birthDay = user.birthDay,
+            introduction = user.introduction,
+        )
+
         fun from(updateUserInfoResult: UpdateUserInfoResult): UserResponse = UserResponse(
             id = updateUserInfoResult.id,
             profileImageUrl = updateUserInfoResult.profileImageUrl,
