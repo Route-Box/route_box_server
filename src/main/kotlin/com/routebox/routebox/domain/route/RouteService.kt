@@ -393,4 +393,10 @@ class RouteService(
             )
         }.content.filterNotNull()
     }
+
+    /**
+     * 내루트 개수 조회
+     */
+    fun getMyRouteCount(userId: Long): Int =
+        routeRepository.countByUser_IdAndRecordFinishedAtIsNotNull(userId)
 }

@@ -29,4 +29,5 @@ interface RouteRepository :
     fun findByRecordFinishedAtIsNullAndUser_Id(userId: Long): List<Route>
     fun findByUser_IdAndRecordFinishedAtIsNotNullOrderByRecordFinishedAtDesc(userId: Long): List<Route>
     fun findByUser_IdAndIsPublicOrderByRecordFinishedAtDesc(userId: Long, isPublic: Boolean): List<Route>
+    fun countByUser_IdAndRecordFinishedAtIsNotNull(userId: Long): Int
 }
