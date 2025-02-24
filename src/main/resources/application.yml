@@ -98,6 +98,7 @@ logging:
             hibernate:
                 type: trace
                 SQL: debug
+                orm.jdbc.bind: trace
             springframework:
                 jdbc: debug
                 web.client.RestTemplate: debug

@@ -43,7 +43,7 @@ class PurchaseRouteUseCase(
                     UserPointHistory(
                         userId = command.buyerId,
                         routeId = command.routeId,
-                        transactionType = UserPointTransactionType.USE,
+                        transactionType = UserPointTransactionType.USE_FOR_ROUTE_PURCHASE,
                         amount = ROUTE_POINT_AMOUNT,
                     ),
                 )

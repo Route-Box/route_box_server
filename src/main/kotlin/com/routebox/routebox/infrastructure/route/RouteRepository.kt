@@ -10,7 +10,9 @@ import org.springframework.stereotype.Repository
 
 @Suppress("ktlint:standard:function-naming")
 @Repository
-interface RouteRepository : JpaRepository<Route, Long>, KotlinJdslJpqlExecutor {
+interface RouteRepository :
+    JpaRepository<Route, Long>,
+    KotlinJdslJpqlExecutor {
     @Query(
         """
         SELECT r FROM Route r
@@ -21,6 +23,7 @@ interface RouteRepository : JpaRepository<Route, Long>, KotlinJdslJpqlExecutor {
     """,
     )
     fun findAllFiltered(userId: Long, pageable: Pageable): Page<Route>
+    fun findByIdIn(ids: Collection<Long>): List<Route>
 
     fun countByUser_Id(userId: Long): Int
     fun findByRecordFinishedAtIsNullAndUser_Id(userId: Long): List<Route>
