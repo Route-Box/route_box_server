@@ -52,14 +52,14 @@ CREATE INDEX idx__user_profile_image__user_id ON user_profile_image (user_id);
 
 CREATE TABLE user_point_history
 (
-    user_point_history_id BIGINT       NOT NULL AUTO_INCREMENT,
-    user_id               BIGINT       NOT NULL,
-    route_id              BIGINT       NOT NULL,
-    transaction_type      VARCHAR(255) NOT NULL,
-    amount                INT          NOT NULL,
-    created_at            DATETIME     NOT NULL,
-    updated_at            DATETIME     NOT NULL,
-    PRIMARY KEY (user_point_history_id)
+    id               BIGINT       NOT NULL AUTO_INCREMENT,
+    user_id          BIGINT       NOT NULL,
+    route_id         BIGINT,
+    transaction_type VARCHAR(255) NOT NULL,
+    amount           INT          NOT NULL,
+    created_at       DATETIME     NOT NULL,
+    updated_at       DATETIME     NOT NULL,
+    PRIMARY KEY (id)
 );
 CREATE INDEX idx__user_point_history__user_id ON user_point_history (user_id);
 CREATE INDEX idx__user_point_history__route_id ON user_point_history (route_id);

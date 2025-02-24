@@ -13,19 +13,21 @@ import jakarta.persistence.Id
 @Entity
 class UserPointHistory(
     userId: Long,
-    routeId: Long,
+    routeId: Long?,
     transactionType: UserPointTransactionType,
     amount: Int,
     id: Long = 0,
 ) : TimeTrackedBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_point_history_id")
+    @Column(name = "id")
     val id: Long = id
 
+    @Column(name = "user_id", nullable = false)
     val userId: Long = userId
 
-    val routeId: Long = routeId
+    @Column(name = "route_id", nullable = true)
+    val routeId: Long? = routeId
 
     @Enumerated(EnumType.STRING)
     val transactionType: UserPointTransactionType = transactionType

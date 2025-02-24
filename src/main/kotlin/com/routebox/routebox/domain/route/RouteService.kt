@@ -45,8 +45,10 @@ class RouteService(
      * 루트 상세 조회
      */
     @Transactional(readOnly = true)
-    fun findRouteById(id: Long): Route? =
-        routeRepository.findById(id).orElse(null)
+    fun findRouteById(id: Long): Route? = routeRepository.findById(id).orElse(null)
+
+    @Transactional(readOnly = true)
+    fun findRoutesByIds(ids: List<Long>): List<Route> = routeRepository.findByIdIn(ids)
 
     /**
      * 루트 단건 조회
@@ -54,8 +56,7 @@ class RouteService(
      * @throws RouteNotFoundException id와 일치하는 루트가 없는 경우
      */
     @Transactional(readOnly = true)
-    fun getRouteById(id: Long): Route =
-        this.findRouteById(id) ?: throw RouteNotFoundException()
+    fun getRouteById(id: Long): Route = this.findRouteById(id) ?: throw RouteNotFoundException()
 
     /**
      * 유저 id로 유저가 작성한 루트 개수 조회하기
@@ -64,8 +65,7 @@ class RouteService(
      * @return userId에 해당하는 유저가 작성한 루트 개수
      */
     @Transactional(readOnly = true)
-    fun countRoutesByUserId(userId: Long) =
-        routeRepository.countByUser_Id(userId)
+    fun countRoutesByUserId(userId: Long) = routeRepository.countByUser_Id(userId)
 
     /**
      * 루트 생성
@@ -313,22 +313,19 @@ class RouteService(
      * 기록중인 루트 조회
      */
     @Transactional(readOnly = true)
-    fun getProgressRouteByUserId(userId: Long): Route? =
-        routeRepository.findByRecordFinishedAtIsNullAndUser_Id(userId).firstOrNull()
+    fun getProgressRouteByUserId(userId: Long): Route? = routeRepository.findByRecordFinishedAtIsNullAndUser_Id(userId).firstOrNull()
 
     /**
      * 내 루트 목록조회
      */
     @Transactional(readOnly = true)
-    fun getMyRoutes(userId: Long): List<Route> =
-        routeRepository.findByUser_IdAndRecordFinishedAtIsNotNullOrderByRecordFinishedAtDesc(userId)
+    fun getMyRoutes(userId: Long): List<Route> = routeRepository.findByUser_IdAndRecordFinishedAtIsNotNullOrderByRecordFinishedAtDesc(userId)
 
     /**
      * 사용자 루트 목록 조회
      */
     @Transactional(readOnly = true)
-    fun getRoutesByUserId(userId: Long): List<Route> =
-        routeRepository.findByUser_IdAndIsPublicOrderByRecordFinishedAtDesc(userId, true)
+    fun getRoutesByUserId(userId: Long): List<Route> = routeRepository.findByUser_IdAndIsPublicOrderByRecordFinishedAtDesc(userId, true)
 
     /**
      * 루트 마무리
@@ -344,8 +341,7 @@ class RouteService(
      * 루트 활동 조회
      */
     @Transactional(readOnly = true)
-    fun findRouteActivityById(activityId: Long): RouteActivity? =
-        routeActivityRepository.findById(activityId).orElse(null)
+    fun findRouteActivityById(activityId: Long): RouteActivity? = routeActivityRepository.findById(activityId).orElse(null)
 
     /**
      * 루트 검색
