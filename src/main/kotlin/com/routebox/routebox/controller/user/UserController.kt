@@ -2,6 +2,7 @@ package com.routebox.routebox.controller.user
 
 import com.routebox.routebox.application.user.CheckNicknameAvailabilityUseCase
 import com.routebox.routebox.application.user.GetUserProfileUseCase
+import com.routebox.routebox.application.user.GetUserUseCase
 import com.routebox.routebox.application.user.UpdateUserInfoUseCase
 import com.routebox.routebox.controller.user.dto.CheckNicknameAvailabilityResponse
 import com.routebox.routebox.controller.user.dto.UpdateUserInfoRequest
@@ -32,10 +33,19 @@ import org.springframework.web.bind.annotation.RestController
 @Validated
 @RequestMapping("/api")
 class UserController(
+    private val getUserUseCase: GetUserUseCase,
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val checkNicknameAvailabilityUseCase: CheckNicknameAvailabilityUseCase,
     private val updateUserInfoUseCase: UpdateUserInfoUseCase,
 ) {
+    @Operation(
+        summary = "내 유저 정보 조회",
+        description = "내 정보를 조회합니다.",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @GetMapping("/v1/users/me")
+    fun getMyInfo(@AuthenticationPrincipal principal: UserPrincipal): UserResponse = getUserUseCase(userId = principal.userId)
+
     @Operation(
         summary = "내 프로필 정보 조회",
         description = "<p><strong>내 루트 개수, 취향 정보 등 추가 예정 (미구현)</strong>" +

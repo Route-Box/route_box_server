@@ -2,6 +2,7 @@ package com.routebox.routebox.controller.user
 
 import com.routebox.routebox.application.user.CheckNicknameAvailabilityUseCase
 import com.routebox.routebox.application.user.GetUserProfileUseCase
+import com.routebox.routebox.application.user.GetUserUseCase
 import com.routebox.routebox.application.user.UpdateUserInfoUseCase
 import com.routebox.routebox.application.user.dto.GetUserProfileResult
 import com.routebox.routebox.application.user.dto.UpdateUserInfoResult
@@ -34,6 +35,9 @@ import kotlin.test.Test
 @WebMvcTest(controllers = [UserController::class])
 class UserControllerTest @Autowired constructor(private val mvc: MockMvc) {
     @MockBean
+    lateinit var getUserUseCase: GetUserUseCase
+
+    @MockBean
     lateinit var getUserProfileUseCase: GetUserProfileUseCase
 
     @MockBean
@@ -41,6 +45,13 @@ class UserControllerTest @Autowired constructor(private val mvc: MockMvc) {
 
     @MockBean
     lateinit var checkNicknameAvailabilityUseCase: CheckNicknameAvailabilityUseCase
+
+    private fun verifyEveryMocksShouldHaveNoMoreInteractions() {
+        then(getUserUseCase).shouldHaveNoMoreInteractions()
+        then(getUserProfileUseCase).shouldHaveNoMoreInteractions()
+        then(updateUserInfoUseCase).shouldHaveNoMoreInteractions()
+        then(checkNicknameAvailabilityUseCase).shouldHaveNoMoreInteractions()
+    }
 
     @Test
     fun `내 프로필 정보를 조회한다`() {
@@ -167,11 +178,6 @@ class UserControllerTest @Autowired constructor(private val mvc: MockMvc) {
             .andExpect(jsonPath("$.birthDay").value(expectedResult.birthDay.toString()))
         then(updateUserInfoUseCase).should().invoke(any())
         verifyEveryMocksShouldHaveNoMoreInteractions()
-    }
-
-    private fun verifyEveryMocksShouldHaveNoMoreInteractions() {
-        then(updateUserInfoUseCase).shouldHaveNoMoreInteractions()
-        then(checkNicknameAvailabilityUseCase).shouldHaveNoMoreInteractions()
     }
 
     private fun createMockImageFile() = MockMultipartFile(
