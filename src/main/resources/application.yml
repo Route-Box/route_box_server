@@ -21,7 +21,7 @@ spring:
             mode: never
     jpa:
         hibernate:
-            ddl-auto: validate
+            ddl-auto: update
         open-in-view: true
         properties:
             hibernate:
