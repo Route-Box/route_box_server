@@ -13,7 +13,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 
-@Table(name = "comment")
+@Table(name = "comments")
 @Entity
 class Comment(
     id: Long = 0,
@@ -23,7 +23,7 @@ class Comment(
 ) : TimeTrackedBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment")
+    @Column(name = "comment_id")
     val id: Long = id
 
     @ManyToOne(fetch = FetchType.LAZY)
