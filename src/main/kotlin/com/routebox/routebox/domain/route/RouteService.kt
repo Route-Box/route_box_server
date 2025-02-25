@@ -2,6 +2,7 @@ package com.routebox.routebox.domain.route
 
 import com.linecorp.kotlinjdsl.querymodel.jpql.sort.Sorts.asc
 import com.linecorp.kotlinjdsl.querymodel.jpql.sort.Sorts.desc
+import com.routebox.routebox.application.route.dto.CreateRoutePointCommand
 import com.routebox.routebox.application.route.dto.SearchCommand
 import com.routebox.routebox.controller.route.dto.RouteSortBy
 import com.routebox.routebox.domain.common.FileManager
@@ -91,6 +92,24 @@ class RouteService(
 
     /**
      * 루트 점찍기
+     */
+    @Transactional
+    fun createRoutePoints(commands: List<CreateRoutePointCommand>): List<RoutePoint> {
+        val routePoints: List<RoutePoint> = commands.map {
+            val route = routeRepository.findById(it.routeId).orElseThrow { IllegalArgumentException("Route not found") }
+            RoutePoint(
+                route = route,
+                latitude = it.latitude,
+                longitude = it.longitude,
+                recordAt = it.recordAt,
+            )
+        }
+        return routePointRepository.saveAll(routePoints)
+    }
+
+    /**
+     * 루트 점찍기 (Legacy)
+     * TODO: 배열 point 적용 이후 삭제 필요
      */
     @Transactional
     fun createRoutePoint(routeId: Long, latitude: String, longitude: String, recordAt: LocalDateTime): RoutePoint {

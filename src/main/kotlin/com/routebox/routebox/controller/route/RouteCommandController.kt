@@ -2,6 +2,7 @@ package com.routebox.routebox.controller.route
 
 import com.routebox.routebox.application.route.CheckProgressRouteUseCase
 import com.routebox.routebox.application.route.CreateRouteActivityUseCase
+import com.routebox.routebox.application.route.CreateRoutePointLegacyUseCase
 import com.routebox.routebox.application.route.CreateRoutePointUseCase
 import com.routebox.routebox.application.route.CreateRouteUseCase
 import com.routebox.routebox.application.route.DeleteRouteActivityUseCase
@@ -20,6 +21,7 @@ import com.routebox.routebox.controller.route.dto.CreateRouteActivityRequest
 import com.routebox.routebox.controller.route.dto.CreateRouteActivityResponse
 import com.routebox.routebox.controller.route.dto.CreateRoutePointRequest
 import com.routebox.routebox.controller.route.dto.CreateRoutePointResponse
+import com.routebox.routebox.controller.route.dto.CreateRoutePointsRequest
 import com.routebox.routebox.controller.route.dto.CreateRouteRequest
 import com.routebox.routebox.controller.route.dto.CreateRouteResponse
 import com.routebox.routebox.controller.route.dto.DeleteRouteActivityResponse
@@ -38,9 +40,11 @@ import com.routebox.routebox.controller.route.dto.UpdateRouteRequest
 import com.routebox.routebox.controller.route.dto.UpdateRouteResponse
 import com.routebox.routebox.security.UserPrincipal
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
@@ -53,6 +57,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @Tag(name = "내루트 관련 API")
@@ -62,6 +67,7 @@ import org.springframework.web.bind.annotation.RestController
 class RouteCommandController(
     private val createRouteUseCase: CreateRouteUseCase,
     private val createRoutePointUseCase: CreateRoutePointUseCase,
+    private val createRoutePointLegacyUseCase: CreateRoutePointLegacyUseCase,
     private val createRouteActivityUseCase: CreateRouteActivityUseCase,
     private val updateRouteActivityUseCase: UpdateRouteActivityUseCase,
     private val deleteRouteActivityUseCase: DeleteRouteActivityUseCase,
@@ -89,18 +95,37 @@ class RouteCommandController(
     }
 
     @Operation(
-        summary = "루트 경로(점) 기록",
+        summary = "루트 경로(점) 기록 - legacy",
         description = "1분마다 현재 위치 보내서 루트 경로의 점 찍는데 사용",
         security = [SecurityRequirement(name = "access-token")],
     )
+    @ApiResponse(responseCode = "204", description = "루트 경로(점) 기록 성공")
     @PostMapping("/v1/routes/{routeId}/point")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun createRoutePoint(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @PathVariable routeId: Long,
         @RequestBody @Valid request: CreateRoutePointRequest,
     ): CreateRoutePointResponse {
-        val routeResponse = createRoutePointUseCase(request.toCommand(userId = userPrincipal.userId, routeId = routeId))
+        val routeResponse = createRoutePointLegacyUseCase(request.toCommand(userId = userPrincipal.userId, routeId = routeId))
         return CreateRoutePointResponse.from(routeResponse.pointId)
+    }
+
+    @Operation(
+        summary = "루트 경로(점) 기록 - 배열",
+        description = "1분마다 현재 위치 보내서 루트 경로의 점 찍는데 사용",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @ApiResponse(responseCode = "204", description = "루트 경로(점) 기록 성공")
+    @PostMapping("/v1/routes/{routeId}/points")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun createRoutePoints(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @PathVariable routeId: Long,
+        @RequestBody @Valid request: CreateRoutePointsRequest,
+    ) {
+        val points = request.toCommand(userId = userPrincipal.userId, routeId = routeId)
+        createRoutePointUseCase(points)
     }
 
     @Operation(
