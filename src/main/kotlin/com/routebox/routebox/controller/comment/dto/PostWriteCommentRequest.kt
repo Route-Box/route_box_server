@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 
-data class PostWriteCommentRequest (
+data class PostWriteCommentRequest(
     @Schema(description = "댓글 내용", example = "좋은 루트네요!!")
     @field:NotNull
     @field:NotBlank

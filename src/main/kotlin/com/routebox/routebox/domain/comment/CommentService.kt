@@ -49,7 +49,7 @@ class CommentService(
                 userNickname = comment.user.nickname,
                 userProfileImageUrl = comment.user.profileImageUrl,
                 content = comment.content,
-                timeAgo = getTimeAgo(comment.createdAt), // 상대시간으로 변환
+                timeAgo = getTimeAgo(comment.createdAt),
             )
         }
     }
