@@ -16,6 +16,7 @@ DROP TABLE IF EXISTS route_report;
 DROP TABLE IF EXISTS withdrawal_histories;
 DROP TABLE IF EXISTS popular_routes;
 DROP TABLE IF EXISTS recommended_routes;
+DROP TABLE IF EXISTS comments;
 
 CREATE TABLE users
 (
@@ -274,3 +275,13 @@ CREATE TABLE recommended_routes
     updated_at           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간'
 );
 
+CREATE TABLE comments (
+    comment_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 ID',
+    route_id BIGINT NOT NULL COMMENT '댓글이 달리는 루트(게시글) ID',
+    user_id BIGINT NOT NULL COMMENT '댓글 작성자 ID',
+    content VARCHAR(500) NOT NULL COMMENT '댓글 내용',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간'
+);
+CREATE INDEX idx__comments__route_id ON comments (route_id);
+CREATE INDEX idx__comments__user_id ON comments (user_id);

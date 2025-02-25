@@ -9,8 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 class CouponService(private val couponRepository: CouponRepository) {
 
     @Transactional(readOnly = true)
-    fun findAvailableCoupons(userId: Long): List<Coupon> =
-        couponRepository.findByUserIdAndStatus(userId, CouponStatus.AVAILABLE)
+    fun findAvailableCoupons(userId: Long): List<Coupon> = couponRepository.findByUserIdAndStatus(userId, CouponStatus.AVAILABLE)
 
     @Transactional
     fun deleteCoupon(coupon: Coupon) {

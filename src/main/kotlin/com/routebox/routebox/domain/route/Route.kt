@@ -1,8 +1,10 @@
 package com.routebox.routebox.domain.route
 
+import com.routebox.routebox.domain.comment.Comment
 import com.routebox.routebox.domain.common.TimeTrackedBaseEntity
 import com.routebox.routebox.domain.converter.StringArrayConverter
 import com.routebox.routebox.domain.user.User
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
@@ -86,6 +88,9 @@ class Route(
     @OneToMany(mappedBy = "route")
     var routeActivities: List<RouteActivity> = mutableListOf()
         private set
+
+    @OneToMany(mappedBy = "route", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val comments: MutableList<Comment> = mutableListOf()
 
     fun updatePublic(isPublic: Boolean) {
         this.isPublic = isPublic
