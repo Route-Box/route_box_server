@@ -276,18 +276,12 @@ CREATE TABLE recommended_routes
 );
 
 CREATE TABLE comments (
-    comment_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 ID',,
+    comment_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 ID',
     route_id BIGINT NOT NULL COMMENT '댓글이 달리는 루트(게시글) ID',
     user_id BIGINT NOT NULL COMMENT '댓글 작성자 ID',
     content VARCHAR(500) NOT NULL COMMENT '댓글 내용',
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간',
-    PRIMARY KEY (comment_id),
-    FOREIGN KEY (route_id) REFERENCES routes(route_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간'
 );
-
 CREATE INDEX idx__comments__route_id ON comments (route_id);
 CREATE INDEX idx__comments__user_id ON comments (user_id);
-
-
