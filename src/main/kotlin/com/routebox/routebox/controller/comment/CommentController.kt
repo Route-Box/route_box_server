@@ -36,20 +36,18 @@ class CommentController(
 ) {
     @Operation(
         summary = "댓글 작성",
-        description = "<p>게시글에 댓글을 작성합니다." +
-            "<p>댓글 내용에 <code>null</code>이나 빈 값이 들어갈 경우, 작성되지 않습니다.",
+        description = "게시글에 댓글을 작성합니다.",
         security = [SecurityRequirement(name = "access-token")],
     )
-    @PostMapping("/{routeId}")
+    @PostMapping("")
     fun writeComment(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
-        @PathVariable routeId: Long,
         @RequestBody request: PostWriteCommentRequest,
     ): ResponseEntity<String> {
         // 댓글을 작성한다
         writeCommentUseCase(
             userId = userPrincipal.userId,
-            routeId = routeId,
+            routeId = request.routeId,
             content = request.content,
         )
 

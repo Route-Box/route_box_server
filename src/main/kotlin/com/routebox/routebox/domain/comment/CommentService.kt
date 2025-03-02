@@ -24,7 +24,7 @@ class CommentService(
     /*댓글 작성*/
     @Transactional
     fun writeComment(userId: Long, routeId: Long, content: String) {
-        // 댓글을 작성하려면 User와 Route가 존재해야 하므로 ID로 조회
+        // id에 해당하는 각 객체 조회
         val user: User = userRepository.findById(userId)
             .orElseThrow { throw UserNotFoundException() }
         val route: Route = routeRepository.findById(routeId)
