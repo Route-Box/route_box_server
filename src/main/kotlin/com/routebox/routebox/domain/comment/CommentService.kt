@@ -3,6 +3,7 @@ package com.routebox.routebox.domain.comment
 import com.routebox.routebox.application.comment.dto.GetAllCommentsOfPostDto
 import com.routebox.routebox.domain.route.Route
 import com.routebox.routebox.domain.user.User
+import com.routebox.routebox.exception.comment.CommentNotFoundException
 import com.routebox.routebox.exception.route.RouteNotFoundException
 import com.routebox.routebox.exception.user.UserNotFoundException
 import com.routebox.routebox.infrastructure.comment.CommentRepository
@@ -70,5 +71,16 @@ class CommentService(
             duration.toMinutes() > 0 -> "${duration.toMinutes()}분 전"
             else -> "방금 전"
         }
+    }
+
+    /*댓글 내용 수정*/
+    @Transactional
+    fun modifyComment(id: Long, content: String) {
+        // 수정할 댓글을 조회
+        val comment: Comment = commentRepository.findById(id)
+            .orElseThrow { throw CommentNotFoundException() }
+
+        // 댓글 내용 수정
+        comment.content = content
     }
 }

@@ -35,5 +35,5 @@ class Comment(
     val user: User = user
 
     @Column(nullable = false, length = 500)
-    val content: String = content.take(500)
+    var content: String = content.take(500)
 }
