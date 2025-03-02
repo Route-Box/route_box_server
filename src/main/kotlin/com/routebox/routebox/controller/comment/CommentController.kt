@@ -1,5 +1,6 @@
 package com.routebox.routebox.controller.comment
 
+import com.routebox.routebox.application.comment.DeleteCommentUseCase
 import com.routebox.routebox.application.comment.GetAllCommentsOfPostUseCase
 import com.routebox.routebox.application.comment.ModifyCommentUseCase
 import com.routebox.routebox.application.comment.WriteCommentUseCase
@@ -14,6 +15,7 @@ import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -30,6 +32,7 @@ class CommentController(
     private val writeCommentUseCase: WriteCommentUseCase,
     private val getAllCommentsOfPostUseCase: GetAllCommentsOfPostUseCase,
     private val modifyCommentUseCase: ModifyCommentUseCase,
+    private val deleteCommentUseCase: DeleteCommentUseCase,
 ) {
     @Operation(
         summary = "댓글 작성",
@@ -78,8 +81,22 @@ class CommentController(
         @PathVariable commentId: Long,
         @RequestBody @Valid request: PatchModifyCommentRequest,
     ): ResponseEntity<String> {
-        val updateUserInfo = modifyCommentUseCase(commentId, request.content)
+        modifyCommentUseCase(commentId, request.content)
 
         return ResponseEntity.ok("댓글 수정을 완료했습니다.")
+    }
+
+    @Operation(
+        summary = "댓글 삭제",
+        description = "댓글을 삭제합니다.",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @DeleteMapping("/{commentId}")
+    fun deleteComment(
+        @PathVariable commentId: Long,
+    ): ResponseEntity<String> {
+        deleteCommentUseCase(commentId)
+
+        return ResponseEntity.ok("댓글을 삭제했습니다.")
     }
 }

@@ -83,4 +83,15 @@ class CommentService(
         // 댓글 내용 수정
         comment.content = content
     }
+
+    /*댓글 삭제*/
+    @Transactional
+    fun deleteComment(id: Long) {
+        // 삭제할 댓글을 조회
+        val comment: Comment = commentRepository.findById(id)
+            .orElseThrow { throw CommentNotFoundException() }
+
+        // 댓글 삭제
+        commentRepository.delete(comment)
+    }
 }
