@@ -3,6 +3,8 @@ package com.routebox.routebox.domain.comment
 import com.routebox.routebox.application.comment.dto.GetAllCommentsOfPostDto
 import com.routebox.routebox.domain.route.Route
 import com.routebox.routebox.domain.user.User
+import com.routebox.routebox.exception.comment.CommentDeleteForbiddenException
+import com.routebox.routebox.exception.comment.CommentEditForbiddenException
 import com.routebox.routebox.exception.comment.CommentNotFoundException
 import com.routebox.routebox.exception.route.RouteNotFoundException
 import com.routebox.routebox.exception.user.UserNotFoundException
@@ -75,10 +77,18 @@ class CommentService(
 
     /*댓글 내용 수정*/
     @Transactional
-    fun modifyComment(id: Long, content: String) {
+    fun modifyComment(id: Long, content: String, userId: Long) {
         // 수정할 댓글을 조회
         val comment: Comment = commentRepository.findById(id)
             .orElseThrow { throw CommentNotFoundException() }
+
+        // 요청자 조회
+        val user: User = userRepository.findById(userId)
+            .orElseThrow { throw UserNotFoundException() }
+        // 요청자와 댓글 작성자가 다를 경우 예외 발생
+        if (comment.user.id != user.id) {
+            throw CommentEditForbiddenException()
+        }
 
         // 댓글 내용 수정
         comment.content = content
@@ -86,10 +96,18 @@ class CommentService(
 
     /*댓글 삭제*/
     @Transactional
-    fun deleteComment(id: Long) {
+    fun deleteComment(id: Long, userId: Long) {
         // 삭제할 댓글을 조회
         val comment: Comment = commentRepository.findById(id)
             .orElseThrow { throw CommentNotFoundException() }
+
+        // 요청자 조회
+        val user: User = userRepository.findById(userId)
+            .orElseThrow { throw UserNotFoundException() }
+        // 요청자와 댓글 작성자가 다를 경우 예외 발생
+        if (comment.user.id != user.id) {
+            throw CommentDeleteForbiddenException()
+        }
 
         // 댓글 삭제
         commentRepository.delete(comment)

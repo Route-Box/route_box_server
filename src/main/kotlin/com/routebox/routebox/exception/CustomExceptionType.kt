@@ -53,6 +53,9 @@ enum class CustomExceptionType(
      * 댓글 관련 예외
      */
     COMMENT_NOT_FOUND(3600, "일치하는 댓글을 찾을 수 없습니다."),
+    COMMENT_EDIT_FORBIDDEN(3601, "이 댓글을 수정할 권한이 없습니다."),
+    COMMENT_DELETE_FORBIDDEN(3602, "이 댓글을 삭제할 권한이 없습니다."),
+    COMMENT_REPORT_FORBIDDEN(3602, "이 댓글을 신고할 권한이 없습니다."),
 
     /**
      * Apple 관련 예외

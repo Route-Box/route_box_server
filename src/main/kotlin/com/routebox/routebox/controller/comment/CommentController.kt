@@ -76,10 +76,11 @@ class CommentController(
     )
     @PatchMapping("/{commentId}")
     fun modifyComment(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @PathVariable commentId: Long,
         @RequestBody @Valid request: PatchModifyCommentRequest,
     ): ResponseEntity<String> {
-        modifyCommentUseCase(commentId, request.content)
+        modifyCommentUseCase(commentId, request.content, userPrincipal.userId)
 
         return ResponseEntity.ok("댓글 수정을 완료했습니다.")
     }
@@ -91,9 +92,10 @@ class CommentController(
     )
     @DeleteMapping("/{commentId}")
     fun deleteComment(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @PathVariable commentId: Long,
     ): ResponseEntity<String> {
-        deleteCommentUseCase(commentId)
+        deleteCommentUseCase(commentId, userPrincipal.userId)
 
         return ResponseEntity.ok("댓글을 삭제했습니다.")
     }

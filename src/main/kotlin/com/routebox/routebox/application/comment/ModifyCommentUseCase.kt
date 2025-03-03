@@ -10,5 +10,5 @@ class ModifyCommentUseCase(
 ) {
     /*댓글 내용 수정*/
     @Transactional
-    operator fun invoke(id: Long, content: String) = commentService.modifyComment(id, content)
+    operator fun invoke(id: Long, content: String, userId: Long) = commentService.modifyComment(id, content, userId)
 }

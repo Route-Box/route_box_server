@@ -237,7 +237,7 @@ CREATE TABLE route_report
 (
     route_report_id   BIGINT       NOT NULL AUTO_INCREMENT,
     reporter_id       BIGINT       NOT NULL COMMENT '신고자 id',
-    reported_route_id BIGINT       NOT NULL COMMENT '신고 대상(루트)의 id',
+    reported_route_id BIGINT       NOT NULL COMMENT '신고 대상(루트)의 id고',
     reason_types      VARCHAR(255) NOT NULL COMMENT '신고 사유',
     reason_detail     VARCHAR(255) COMMENT '신고 상세 사유',
     created_at        DATETIME     NOT NULL,
@@ -285,3 +285,13 @@ CREATE TABLE comments (
 );
 CREATE INDEX idx__comments__route_id ON comments (route_id);
 CREATE INDEX idx__comments__user_id ON comments (user_id);
+
+CREATE TABLE comment_report (
+    comment_report_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 신고 ID',
+    reporter_id BIGINT NOT NULL COMMENT '신고자 ID',
+    reported_comment_id BIGINT NOT NULL COMMENT '신고된 댓글 ID',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간'
+);
+-- CREATE INDEX idx__comment_report__reporter_id ON comment_report (reporter_id);
+-- CREATE INDEX idx__comment_report__reported_comment_id ON comment_report (reported_comment_id);

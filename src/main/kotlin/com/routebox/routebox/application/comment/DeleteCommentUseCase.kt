@@ -10,5 +10,5 @@ class DeleteCommentUseCase(
 ) {
     /*댓글 삭제*/
     @Transactional
-    operator fun invoke(id: Long) = commentService.deleteComment(id)
+    operator fun invoke(id: Long, userId: Long) = commentService.deleteComment(id, userId)
 }
