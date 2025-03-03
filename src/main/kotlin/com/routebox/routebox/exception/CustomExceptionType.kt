@@ -8,6 +8,7 @@ package com.routebox.routebox.exception
  * - 3000 ~ 3199: 유저 관련 예외
  * - 3200 ~ 3399: 루트 관련 예외
  * - 3400 ~ 3599: 담은(구매한) 루트 관련 예외
+ * - 3600 ~ 3799: 댓글 관련 예외
  * - 10000 ~ 10199: kakao(kakao open api 등) 관련 관련 예외
  */
 enum class CustomExceptionType(
@@ -47,6 +48,14 @@ enum class CustomExceptionType(
      * Kakao(kakao open api 등) 관련 예외
      */
     REQUEST_KAKAO_USER_INFO(10000, "카카오 사용자 정보 조회 중 오류가 발생했습니다."),
+
+    /**
+     * 댓글 관련 예외
+     */
+    COMMENT_NOT_FOUND(3600, "일치하는 댓글을 찾을 수 없습니다."),
+    COMMENT_EDIT_FORBIDDEN(3601, "이 댓글을 수정할 권한이 없습니다."),
+    COMMENT_DELETE_FORBIDDEN(3602, "이 댓글을 삭제할 권한이 없습니다."),
+    COMMENT_REPORT_FORBIDDEN(3602, "이 댓글을 신고할 권한이 없습니다."),
 
     /**
      * Apple 관련 예외

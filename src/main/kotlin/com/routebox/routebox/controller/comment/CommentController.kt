@@ -1,17 +1,23 @@
 package com.routebox.routebox.controller.comment
 
+import com.routebox.routebox.application.comment.DeleteCommentUseCase
 import com.routebox.routebox.application.comment.GetAllCommentsOfPostUseCase
+import com.routebox.routebox.application.comment.ModifyCommentUseCase
 import com.routebox.routebox.application.comment.WriteCommentUseCase
 import com.routebox.routebox.controller.comment.dto.GetAllCommentsOfPostResponse
+import com.routebox.routebox.controller.comment.dto.PatchModifyCommentRequest
 import com.routebox.routebox.controller.comment.dto.PostWriteCommentRequest
 import com.routebox.routebox.security.UserPrincipal
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -25,22 +31,23 @@ import org.springframework.web.bind.annotation.RestController
 class CommentController(
     private val writeCommentUseCase: WriteCommentUseCase,
     private val getAllCommentsOfPostUseCase: GetAllCommentsOfPostUseCase,
+    private val modifyCommentUseCase: ModifyCommentUseCase,
+    private val deleteCommentUseCase: DeleteCommentUseCase,
 ) {
     @Operation(
         summary = "댓글 작성",
         description = "게시글에 댓글을 작성합니다.",
         security = [SecurityRequirement(name = "access-token")],
     )
-    @PostMapping("/{routeId}")
+    @PostMapping("")
     fun writeComment(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
-        @PathVariable routeId: Long,
         @RequestBody request: PostWriteCommentRequest,
     ): ResponseEntity<String> {
         // 댓글을 작성한다
         writeCommentUseCase(
             userId = userPrincipal.userId,
-            routeId = routeId,
+            routeId = request.routeId,
             content = request.content,
         )
 
@@ -60,5 +67,36 @@ class CommentController(
         // response 객체로 변환한다
         val response = GetAllCommentsOfPostResponse(comments)
         return ResponseEntity.ok(response)
+    }
+
+    @Operation(
+        summary = "댓글 내용 수정",
+        description = "댓글 내용을 수정합니다.",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @PatchMapping("/{commentId}")
+    fun modifyComment(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @PathVariable commentId: Long,
+        @RequestBody @Valid request: PatchModifyCommentRequest,
+    ): ResponseEntity<String> {
+        modifyCommentUseCase(commentId, request.content, userPrincipal.userId)
+
+        return ResponseEntity.ok("댓글 수정을 완료했습니다.")
+    }
+
+    @Operation(
+        summary = "댓글 삭제",
+        description = "댓글을 삭제합니다.",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @DeleteMapping("/{commentId}")
+    fun deleteComment(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @PathVariable commentId: Long,
+    ): ResponseEntity<String> {
+        deleteCommentUseCase(commentId, userPrincipal.userId)
+
+        return ResponseEntity.ok("댓글을 삭제했습니다.")
     }
 }

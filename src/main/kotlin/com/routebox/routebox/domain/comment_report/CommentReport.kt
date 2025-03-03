@@ -1,7 +1,7 @@
-package com.routebox.routebox.domain.comment
+package com.routebox.routebox.domain.comment_report
 
+import com.routebox.routebox.domain.comment.Comment
 import com.routebox.routebox.domain.common.TimeTrackedBaseEntity
-import com.routebox.routebox.domain.route.Route
 import com.routebox.routebox.domain.user.User
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -13,26 +13,22 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 
-@Table(name = "comments")
+@Table(name = "comment_report")
 @Entity
-class Comment(
-    route: Route,
-    user: User,
-    content: String,
+class CommentReport(
+    reporter: User,
+    reportedComment: Comment,
 ) : TimeTrackedBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
+    @Column(name = "comment_report_id")
     val id: Long = 0
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "route_id")
-    val route: Route = route
+    @JoinColumn(name = "reporter_id")
+    val reporter: User = reporter
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    val user: User = user
-
-    @Column(nullable = false, length = 500)
-    var content: String = content.take(500)
+    @JoinColumn(name = "reported_comment_id")
+    val reportedComment: Comment = reportedComment
 }
