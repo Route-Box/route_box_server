@@ -21,7 +21,7 @@ class UserPointHistoryController(
         summary = "내 포인트 이력 조회",
         security = [SecurityRequirement(name = "access-token")],
     )
-    @GetMapping("/api/users/me/point-histories")
+    @GetMapping("/api/v1/users/me/point-histories")
     fun findUserPointHistories(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @RequestParam(defaultValue = "0") page: Int,
