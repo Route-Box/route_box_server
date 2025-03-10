@@ -37,7 +37,7 @@ data class GetRouteDetailResult(
             isPurchased = false,
             purchaseCount = 0,
             commentCount = 0,
-            routeStyles = route.style.toList(),
+            routeStyles = route.style?.toList() ?: emptyList(),
             whoWith = route.whoWith,
             transportation = route.transportation,
             numberOfPeople = route.numberOfPeople,
