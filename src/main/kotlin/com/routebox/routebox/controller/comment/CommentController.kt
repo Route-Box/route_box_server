@@ -9,6 +9,8 @@ import com.routebox.routebox.controller.comment.dto.PatchModifyCommentRequest
 import com.routebox.routebox.controller.comment.dto.PostWriteCommentRequest
 import com.routebox.routebox.security.UserPrincipal
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -38,6 +40,11 @@ class CommentController(
         summary = "댓글 작성",
         description = "게시글에 댓글을 작성합니다.",
         security = [SecurityRequirement(name = "access-token")],
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "댓글 작성이 완료되었습니다."),
+        ],
     )
     @PostMapping("")
     fun writeComment(
@@ -74,6 +81,11 @@ class CommentController(
         description = "댓글 내용을 수정합니다.",
         security = [SecurityRequirement(name = "access-token")],
     )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "댓글 수정을 완료했습니다."),
+        ],
+    )
     @PatchMapping("/{commentId}")
     fun modifyComment(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
@@ -89,6 +101,11 @@ class CommentController(
         summary = "댓글 삭제",
         description = "댓글을 삭제합니다.",
         security = [SecurityRequirement(name = "access-token")],
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "댓글을 삭제했습니다."),
+        ],
     )
     @DeleteMapping("/{commentId}")
     fun deleteComment(
