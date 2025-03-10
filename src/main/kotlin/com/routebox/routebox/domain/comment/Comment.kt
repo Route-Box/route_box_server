@@ -1,10 +1,13 @@
 package com.routebox.routebox.domain.comment
 
+import com.routebox.routebox.domain.comment.constant.CommentStatus
 import com.routebox.routebox.domain.common.TimeTrackedBaseEntity
 import com.routebox.routebox.domain.route.Route
 import com.routebox.routebox.domain.user.User
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -19,6 +22,7 @@ class Comment(
     route: Route,
     user: User,
     content: String,
+    status: CommentStatus,
 ) : TimeTrackedBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,4 +39,12 @@ class Comment(
 
     @Column(nullable = false, length = 500)
     var content: String = content.take(500)
+
+    @Enumerated(EnumType.STRING)
+    var status: CommentStatus = status
+        private set
+
+    fun delete() {
+        this.status = CommentStatus.DELETED
+    }
 }
