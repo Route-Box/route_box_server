@@ -22,7 +22,7 @@ class Comment(
     route: Route,
     user: User,
     content: String,
-    status: CommentStatus,
+    status: CommentStatus = CommentStatus.ACTIVE,
 ) : TimeTrackedBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +41,7 @@ class Comment(
     var content: String = content.take(500)
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
     var status: CommentStatus = status
         private set
 

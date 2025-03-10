@@ -1,6 +1,7 @@
 package com.routebox.routebox.domain.comment
 
 import com.routebox.routebox.application.comment.dto.GetAllCommentsOfPostDto
+import com.routebox.routebox.domain.comment.constant.CommentStatus
 import com.routebox.routebox.domain.route.Route
 import com.routebox.routebox.domain.user.User
 import com.routebox.routebox.exception.comment.CommentDeleteForbiddenException
@@ -37,6 +38,7 @@ class CommentService(
             route = route,
             user = user,
             content = content,
+            status = CommentStatus.ACTIVE,
         )
         commentRepository.save(comment)
     }
@@ -44,7 +46,7 @@ class CommentService(
     /* 게시글의 모든 댓글 조회 */
     @Transactional(readOnly = true)
     fun getAllCommentsOfPost(routeId: Long): List<GetAllCommentsOfPostDto> {
-        val comments = commentRepository.findByRoute_Id(routeId)
+        val comments = commentRepository.findByRoute_IdAndStatus(routeId, CommentStatus.ACTIVE)
 
         return comments.map { comment ->
             GetAllCommentsOfPostDto(
@@ -79,7 +81,7 @@ class CommentService(
     @Transactional
     fun modifyComment(id: Long, content: String, userId: Long) {
         // 수정할 댓글을 조회
-        val comment: Comment = commentRepository.findById(id)
+        val comment: Comment = commentRepository.findByIdAndStatus(id, CommentStatus.ACTIVE)
             .orElseThrow { throw CommentNotFoundException() }
 
         // 요청자 조회
@@ -98,7 +100,7 @@ class CommentService(
     @Transactional
     fun deleteComment(id: Long, userId: Long) {
         // 삭제할 댓글을 조회
-        val comment: Comment = commentRepository.findById(id)
+        val comment: Comment = commentRepository.findByIdAndStatus(id, CommentStatus.ACTIVE)
             .orElseThrow { throw CommentNotFoundException() }
 
         // 요청자 조회
