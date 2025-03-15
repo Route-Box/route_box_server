@@ -4,6 +4,7 @@ import com.routebox.routebox.application.comment.DeleteCommentUseCase
 import com.routebox.routebox.application.comment.GetAllCommentsOfPostUseCase
 import com.routebox.routebox.application.comment.ModifyCommentUseCase
 import com.routebox.routebox.application.comment.WriteCommentUseCase
+import com.routebox.routebox.controller.comment.dto.DeleteCommentResponse
 import com.routebox.routebox.controller.comment.dto.GetAllCommentsOfPostResponse
 import com.routebox.routebox.controller.comment.dto.PatchModifyCommentRequest
 import com.routebox.routebox.controller.comment.dto.PatchModifyCommentResponse
@@ -113,9 +114,9 @@ class CommentController(
     fun deleteComment(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @PathVariable commentId: Long,
-    ): ResponseEntity<String> {
+    ): ResponseEntity<DeleteCommentResponse> {
         deleteCommentUseCase(commentId, userPrincipal.userId)
 
-        return ResponseEntity.ok("댓글을 삭제했습니다.")
+        return ResponseEntity.ok(DeleteCommentResponse(true))
     }
 }
