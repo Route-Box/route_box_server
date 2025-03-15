@@ -4,9 +4,12 @@ import com.routebox.routebox.application.comment.DeleteCommentUseCase
 import com.routebox.routebox.application.comment.GetAllCommentsOfPostUseCase
 import com.routebox.routebox.application.comment.ModifyCommentUseCase
 import com.routebox.routebox.application.comment.WriteCommentUseCase
+import com.routebox.routebox.controller.comment.dto.DeleteCommentResponse
 import com.routebox.routebox.controller.comment.dto.GetAllCommentsOfPostResponse
 import com.routebox.routebox.controller.comment.dto.PatchModifyCommentRequest
+import com.routebox.routebox.controller.comment.dto.PatchModifyCommentResponse
 import com.routebox.routebox.controller.comment.dto.PostWriteCommentRequest
+import com.routebox.routebox.controller.comment.dto.PostWriteCommentResponse
 import com.routebox.routebox.security.UserPrincipal
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -50,7 +53,7 @@ class CommentController(
     fun writeComment(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @RequestBody request: PostWriteCommentRequest,
-    ): ResponseEntity<String> {
+    ): ResponseEntity<PostWriteCommentResponse> {
         // 댓글을 작성한다
         writeCommentUseCase(
             userId = userPrincipal.userId,
@@ -58,7 +61,7 @@ class CommentController(
             content = request.content,
         )
 
-        return ResponseEntity.ok("댓글 작성이 완료되었습니다.")
+        return ResponseEntity.ok(PostWriteCommentResponse(true))
     }
 
     @Operation(
@@ -91,10 +94,10 @@ class CommentController(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @PathVariable commentId: Long,
         @RequestBody @Valid request: PatchModifyCommentRequest,
-    ): ResponseEntity<String> {
+    ): ResponseEntity<PatchModifyCommentResponse> {
         modifyCommentUseCase(commentId, request.content, userPrincipal.userId)
 
-        return ResponseEntity.ok("댓글 수정을 완료했습니다.")
+        return ResponseEntity.ok(PatchModifyCommentResponse(true))
     }
 
     @Operation(
@@ -111,9 +114,9 @@ class CommentController(
     fun deleteComment(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @PathVariable commentId: Long,
-    ): ResponseEntity<String> {
+    ): ResponseEntity<DeleteCommentResponse> {
         deleteCommentUseCase(commentId, userPrincipal.userId)
 
-        return ResponseEntity.ok("댓글을 삭제했습니다.")
+        return ResponseEntity.ok(DeleteCommentResponse(true))
     }
 }
