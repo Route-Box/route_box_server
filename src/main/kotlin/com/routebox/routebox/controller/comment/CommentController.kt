@@ -6,6 +6,7 @@ import com.routebox.routebox.application.comment.ModifyCommentUseCase
 import com.routebox.routebox.application.comment.WriteCommentUseCase
 import com.routebox.routebox.controller.comment.dto.GetAllCommentsOfPostResponse
 import com.routebox.routebox.controller.comment.dto.PatchModifyCommentRequest
+import com.routebox.routebox.controller.comment.dto.PatchModifyCommentResponse
 import com.routebox.routebox.controller.comment.dto.PostWriteCommentRequest
 import com.routebox.routebox.controller.comment.dto.PostWriteCommentResponse
 import com.routebox.routebox.security.UserPrincipal
@@ -92,10 +93,10 @@ class CommentController(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @PathVariable commentId: Long,
         @RequestBody @Valid request: PatchModifyCommentRequest,
-    ): ResponseEntity<String> {
+    ): ResponseEntity<PatchModifyCommentResponse> {
         modifyCommentUseCase(commentId, request.content, userPrincipal.userId)
 
-        return ResponseEntity.ok("댓글 수정을 완료했습니다.")
+        return ResponseEntity.ok(PatchModifyCommentResponse(true))
     }
 
     @Operation(
