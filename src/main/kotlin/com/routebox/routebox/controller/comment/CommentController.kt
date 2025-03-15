@@ -7,6 +7,7 @@ import com.routebox.routebox.application.comment.WriteCommentUseCase
 import com.routebox.routebox.controller.comment.dto.GetAllCommentsOfPostResponse
 import com.routebox.routebox.controller.comment.dto.PatchModifyCommentRequest
 import com.routebox.routebox.controller.comment.dto.PostWriteCommentRequest
+import com.routebox.routebox.controller.comment.dto.PostWriteCommentResponse
 import com.routebox.routebox.security.UserPrincipal
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -50,7 +51,7 @@ class CommentController(
     fun writeComment(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @RequestBody request: PostWriteCommentRequest,
-    ): ResponseEntity<String> {
+    ): ResponseEntity<PostWriteCommentResponse> {
         // 댓글을 작성한다
         writeCommentUseCase(
             userId = userPrincipal.userId,
@@ -58,7 +59,7 @@ class CommentController(
             content = request.content,
         )
 
-        return ResponseEntity.ok("댓글 작성이 완료되었습니다.")
+        return ResponseEntity.ok(PostWriteCommentResponse(true))
     }
 
     @Operation(
