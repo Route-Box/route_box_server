@@ -158,4 +158,14 @@ class UserService(
         } while (userRepository.existsByNickname(nickname = name))
         return name
     }
+
+    /**
+     * 포인트 추가
+     */
+    @Transactional
+    fun addPoint(userId: Long, point: Int): Int {
+        val user = getUserById(userId)
+        user.addPoint(point)
+        return user.point
+    }
 }
