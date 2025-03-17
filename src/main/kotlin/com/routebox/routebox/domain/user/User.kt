@@ -87,8 +87,7 @@ class User(
      *
      * @return 유저가 온보딩 과정을 완료했는지 여부
      */
-    fun isOnboardingComplete(): Boolean =
-        this.createdAt == this.updatedAt || this.birthDay == LocalDate.of(1, 1, 1)
+    fun isOnboardingComplete(): Boolean = this.createdAt == this.updatedAt || this.birthDay == LocalDate.of(1, 1, 1)
 
     fun updateNickname(nickname: String) {
         this.nickname = nickname
@@ -120,5 +119,9 @@ class User(
 
     fun addPoint(point: Int) {
         this.point += point
+    }
+
+    fun rejoin() {
+        this.deletedAt = LocalDateTime.now()
     }
 }
