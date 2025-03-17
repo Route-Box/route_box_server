@@ -4,6 +4,7 @@ import com.routebox.routebox.domain.route.Route
 import com.routebox.routebox.domain.user.constant.UserPointTransactionType
 import com.routebox.routebox.domain.user_point_history.UserPointHistory
 import io.swagger.v3.oas.annotations.media.Schema
+import java.time.LocalDateTime
 
 data class UserPointHistoryResponse(
     @Schema(description = "Id of point history")
@@ -20,6 +21,9 @@ data class UserPointHistoryResponse(
 
     @Schema(description = "거래한 포인트 양")
     val amount: Int,
+
+    @Schema(description = "거래 시각 (거래 이력이 생성된 시각)")
+    val createdAt: LocalDateTime,
 ) {
     companion object {
         fun from(userPointHistory: UserPointHistory, route: Route?) = UserPointHistoryResponse(
@@ -28,6 +32,7 @@ data class UserPointHistoryResponse(
             route = route?.let { RouteResponse.from(it) },
             transactionType = userPointHistory.transactionType,
             amount = userPointHistory.amount,
+            createdAt = userPointHistory.createdAt,
         )
     }
 
