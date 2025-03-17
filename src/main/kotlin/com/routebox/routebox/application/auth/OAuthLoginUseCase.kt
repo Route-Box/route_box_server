@@ -8,7 +8,6 @@ import com.routebox.routebox.domain.coupon.constant.CouponStatus
 import com.routebox.routebox.domain.coupon.constant.CouponType
 import com.routebox.routebox.domain.coupon.event.CouponsIssuedEvent
 import com.routebox.routebox.domain.user.UserService
-import com.routebox.routebox.exception.user.UserWithdrawnException
 import jakarta.validation.Valid
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
@@ -46,7 +45,7 @@ class OAuthLoginUseCase(
                 .also { isSignUpProceeded = true }
 
         if (user.deletedAt != null) {
-            throw UserWithdrawnException()
+            user.rejoin()
         }
 
         val result = LoginResult(
