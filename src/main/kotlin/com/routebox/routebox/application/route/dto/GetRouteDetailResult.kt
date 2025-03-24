@@ -36,7 +36,7 @@ data class GetRouteDetailResult(
                 .flatten(),
             isPurchased = false,
             purchaseCount = 0,
-            commentCount = 0,
+            commentCount = route.getCommentCount(),
             routeStyles = route.style?.toList() ?: emptyList(),
             whoWith = route.whoWith,
             transportation = route.transportation,
