@@ -1,13 +1,15 @@
 package com.routebox.routebox.controller.inquiry.dto
 
+import InquiryType
 import com.routebox.routebox.application.inquiry.dto.GetInquiryResult
+import com.routebox.routebox.domain.inquiry.InquiryStatus
 
 data class GetInquiryDetailResponse(
     val inquiryId: Long,
     val userId: Long,
-    val type: String,
+    val type: InquiryType,
     val content: String,
-    val status: String,
+    val status: InquiryStatus,
     val reply: String?,
     val imageUrls: List<String>?,
 ) {
