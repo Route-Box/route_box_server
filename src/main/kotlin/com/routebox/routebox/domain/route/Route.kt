@@ -1,6 +1,7 @@
 package com.routebox.routebox.domain.route
 
 import com.routebox.routebox.domain.comment.Comment
+import com.routebox.routebox.domain.comment.constant.CommentStatus
 import com.routebox.routebox.domain.common.TimeTrackedBaseEntity
 import com.routebox.routebox.domain.converter.StringArrayConverter
 import com.routebox.routebox.domain.user.User
@@ -143,4 +144,6 @@ class Route(
             "recordAt" to it.recordAt.toString(),
         )
     }.sortedBy { it["recordAt"] }
+
+    fun getCommentCount(): Int = comments.count { it.status == CommentStatus.ACTIVE }
 }
