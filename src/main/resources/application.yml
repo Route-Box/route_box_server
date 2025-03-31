@@ -2,6 +2,8 @@ routebox:
     jwt:
         secret-key: ${JWT_SECRET_KEY}
     app-version: 0.0.1
+    scheduler:
+        enabled: true  # 스케줄러 활성화 여부
 
 spring:
     application:

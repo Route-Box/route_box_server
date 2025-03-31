@@ -261,6 +261,8 @@ CREATE TABLE popular_routes
 (
     popular_route_id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '인기 루트 ID',
     route_id         BIGINT   NOT NULL COMMENT '루트 ID',
+    count            BIGINT   NOT NULL,
+    date             DATE     NOT NULL,
     created_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
     updated_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간'
 );

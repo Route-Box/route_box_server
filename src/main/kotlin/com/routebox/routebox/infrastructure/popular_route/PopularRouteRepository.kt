@@ -12,7 +12,9 @@ interface PopularRouteRepository : JpaRepository<PopularRoute, Long> {
             FROM PopularRoute pr
             JOIN Route r ON pr.routeId = r.id
             WHERE r.isPublic = true
+            AND pr.date = (SELECT MAX(p.date) FROM PopularRoute p)
+            ORDER BY pr.count DESC
         """,
     )
-    fun findAllPopularRoutes(): List<PopularRouteDto>
+    fun findRecentPopularRoutes(): List<PopularRouteDto>
 }

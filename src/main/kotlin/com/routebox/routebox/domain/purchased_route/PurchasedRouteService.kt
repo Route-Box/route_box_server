@@ -1,5 +1,6 @@
 package com.routebox.routebox.domain.purchased_route
 
+import com.routebox.routebox.application.popular_route.dto.PopularRouteCountDto
 import com.routebox.routebox.exception.purchased_route.PurchasedRouteNotFoundException
 import com.routebox.routebox.infrastructure.purchased_route.PurchasedRouteRepository
 import org.springframework.data.domain.Page
@@ -27,4 +28,10 @@ class PurchasedRouteService(
     @Transactional(readOnly = true)
     fun getPurchasedRouteCount(buyerId: Long): Int =
         purchasedRouteRepository.countByBuyer_Id(buyerId)
+
+    @Transactional(readOnly = true)
+    fun getPurchasedRouteCountByRoute(): List<PopularRouteCountDto> {
+        val pageable = PageRequest.of(0, 5)
+        return purchasedRouteRepository.findTop5PopularRoutes(pageable)
+    }
 }
