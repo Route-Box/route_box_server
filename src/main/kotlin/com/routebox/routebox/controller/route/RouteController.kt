@@ -8,6 +8,7 @@ import com.routebox.routebox.application.route.dto.GetLatestRoutesCommand
 import com.routebox.routebox.application.route.dto.PurchaseRouteCommand
 import com.routebox.routebox.controller.route.dto.GetLatestRoutesResponse
 import com.routebox.routebox.controller.route.dto.PurchaseRouteRequest
+import com.routebox.routebox.controller.route.dto.PurchaseRouteResponse
 import com.routebox.routebox.controller.route.dto.RouteDetailResponse
 import com.routebox.routebox.controller.route.dto.RouteResponse
 import com.routebox.routebox.security.UserPrincipal
@@ -17,7 +18,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
@@ -52,7 +52,13 @@ class RouteController(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
     ): GetLatestRoutesResponse {
-        val routeResponses = getLatestRoutesUseCase(GetLatestRoutesCommand(userPrincipal.userId, page, size)).map { RouteResponse.from(it) }
+        val routeResponses = getLatestRoutesUseCase(
+            GetLatestRoutesCommand(
+                userPrincipal.userId,
+                page,
+                size,
+            ),
+        ).map { RouteResponse.from(it) }
         return GetLatestRoutesResponse.from(routeResponses)
     }
 
@@ -98,7 +104,7 @@ class RouteController(
         security = [SecurityRequirement(name = "access-token")],
     )
     @ApiResponses(
-        ApiResponse(responseCode = "204"),
+        ApiResponse(responseCode = "200"),
         ApiResponse(responseCode = "400", description = "[3003] (쿠폰으로 구매 시) 이용 가능한 쿠폰이 없는 경우", content = [Content()]),
     )
     @PostMapping("/v1/routes/{routeId}/purchase")
@@ -106,7 +112,7 @@ class RouteController(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @PathVariable routeId: Long,
         @RequestBody request: PurchaseRouteRequest,
-    ): ResponseEntity<Unit> {
+    ): PurchaseRouteResponse {
         purchaseRouteUseCase(
             PurchaseRouteCommand(
                 buyerId = userPrincipal.userId,
@@ -114,6 +120,6 @@ class RouteController(
                 paymentMethod = request.paymentMethod,
             ),
         )
-        return ResponseEntity.noContent().build()
+        return PurchaseRouteResponse(true)
     }
 }
