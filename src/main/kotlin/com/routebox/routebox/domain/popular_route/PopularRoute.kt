@@ -7,12 +7,15 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.time.LocalDate
 
 @Table(name = "popular_routes")
 @Entity
 class PopularRoute(
     id: Long = 0,
     routeId: Long,
+    count: Long,
+    date: LocalDate,
 ) : TimeTrackedBaseEntity() {
 
     @Id
@@ -20,5 +23,12 @@ class PopularRoute(
     @Column(name = "popular_route_id")
     val id: Long = id
 
+    @Column
     val routeId: Long = routeId
+
+    @Column
+    val count: Long = count
+
+    @Column
+    val date: LocalDate = date
 }
