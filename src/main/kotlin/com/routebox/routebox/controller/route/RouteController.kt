@@ -105,7 +105,12 @@ class RouteController(
     )
     @ApiResponses(
         ApiResponse(responseCode = "200"),
-        ApiResponse(responseCode = "400", description = "[3003] (쿠폰으로 구매 시) 이용 가능한 쿠폰이 없는 경우", content = [Content()]),
+        ApiResponse(
+            responseCode = "400",
+            description = "<p>[3003] (쿠폰으로 구매 시) 이용 가능한 쿠폰이 없는 경우" +
+                "<p>[3005] (포인트로 구매 시) 루트를 구매하기에 포인트가 부족한 경우",
+            content = [Content()],
+        ),
     )
     @PostMapping("/v1/routes/{routeId}/purchase")
     fun purchaseRoute(

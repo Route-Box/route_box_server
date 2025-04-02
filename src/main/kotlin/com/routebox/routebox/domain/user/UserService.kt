@@ -3,6 +3,7 @@ package com.routebox.routebox.domain.user
 import com.routebox.routebox.domain.common.FileManager
 import com.routebox.routebox.domain.user.constant.Gender
 import com.routebox.routebox.domain.user.constant.LoginType
+import com.routebox.routebox.exception.user.InsufficientPointException
 import com.routebox.routebox.exception.user.UserNicknameDuplicationException
 import com.routebox.routebox.exception.user.UserNotFoundException
 import com.routebox.routebox.exception.user.UserSocialLoginUidDuplicationException
@@ -139,8 +140,8 @@ class UserService(
     @Transactional
     fun usePoint(userId: Long, point: Int): User {
         val user = getUserById(userId)
-        if (user.point < point) {
-            TODO("잔여 포인트가 부족할 경우 예외 발생")
+        if (user.canPurchase(point)) {
+            throw InsufficientPointException()
         }
         user.usePoint(point)
         return user

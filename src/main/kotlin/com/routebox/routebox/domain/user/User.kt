@@ -124,4 +124,6 @@ class User(
     fun rejoin() {
         this.deletedAt = LocalDateTime.now()
     }
+
+    fun canPurchase(point: Int): Boolean = this.point >= point
 }
