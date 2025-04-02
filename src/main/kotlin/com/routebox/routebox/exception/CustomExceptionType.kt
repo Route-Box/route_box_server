@@ -27,6 +27,7 @@ enum class CustomExceptionType(
     USER_NICKNAME_DUPLICATION(3002, "이미 사용중인 닉네임입니다."),
     NO_AVAILABLE_COUPON(3003, "이용 가능한 쿠폰이 없습니다."),
     USER_WITHDRAWN(3004, "탈퇴한 유저입니다."),
+    INSUFFICIENT_POINT(3005, "포인트가 부족합니다."),
 
     /**
      * 루트 관련 예외

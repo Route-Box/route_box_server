@@ -13,6 +13,7 @@ import com.routebox.routebox.domain.user_point_history.UserPointHistory
 import com.routebox.routebox.domain.user_point_history.UserPointHistoryService
 import com.routebox.routebox.exception.coupon.NoAvailableCouponException
 import com.routebox.routebox.exception.route.RouteNotFoundException
+import com.routebox.routebox.exception.user.InsufficientPointException
 import com.routebox.routebox.exception.user.UserNotFoundException
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -33,6 +34,7 @@ class PurchaseRouteUseCase(
      * @throws NoAvailableCouponException (쿠폰으로 구매 시) 이용 가능한 쿠폰이 없는 경우
      * @throws UserNotFoundException `buyerId`에 해당하는 유저가 없는 경우
      * @throws RouteNotFoundException `routeId`에 해당하는, 구매할 루트 정보가 없는 경우
+     * @throws InsufficientPointException (포인트로 구매 시) 루트를 구매하기에 포인트가 부족한 경우
      */
     @Transactional
     operator fun invoke(command: PurchaseRouteCommand) {
