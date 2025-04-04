@@ -6,6 +6,7 @@ import com.routebox.routebox.application.user.GetUserUseCase
 import com.routebox.routebox.application.user.UpdateUserInfoUseCase
 import com.routebox.routebox.application.user.dto.GetUserProfileResult
 import com.routebox.routebox.application.user.dto.UpdateUserInfoResult
+import com.routebox.routebox.application.user_mobile.UpdateUserMobileUseCase
 import com.routebox.routebox.config.ControllerTestConfig
 import com.routebox.routebox.controller.user.dto.UpdateUserInfoRequest
 import com.routebox.routebox.domain.user.constant.Gender
@@ -45,6 +46,9 @@ class UserControllerTest @Autowired constructor(private val mvc: MockMvc) {
 
     @MockBean
     lateinit var checkNicknameAvailabilityUseCase: CheckNicknameAvailabilityUseCase
+
+    @MockBean
+    lateinit var updateUserMobileUseCase: UpdateUserMobileUseCase
 
     private fun verifyEveryMocksShouldHaveNoMoreInteractions() {
         then(getUserUseCase).shouldHaveNoMoreInteractions()

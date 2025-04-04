@@ -298,3 +298,12 @@ CREATE TABLE comment_report (
 );
 -- CREATE INDEX idx__comment_report__reporter_id ON comment_report (reporter_id);
 -- CREATE INDEX idx__comment_report__reported_comment_id ON comment_report (reported_comment_id);
+
+CREATE TABLE user_mobile (
+    user_mobile_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    push_token TEXT,
+    os_type VARCHAR(10) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간'
+);
