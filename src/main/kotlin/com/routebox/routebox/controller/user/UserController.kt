@@ -4,8 +4,11 @@ import com.routebox.routebox.application.user.CheckNicknameAvailabilityUseCase
 import com.routebox.routebox.application.user.GetUserProfileUseCase
 import com.routebox.routebox.application.user.GetUserUseCase
 import com.routebox.routebox.application.user.UpdateUserInfoUseCase
+import com.routebox.routebox.application.user_mobile.UpdateUserMobileUseCase
 import com.routebox.routebox.controller.user.dto.CheckNicknameAvailabilityResponse
 import com.routebox.routebox.controller.user.dto.UpdateUserInfoRequest
+import com.routebox.routebox.controller.user.dto.UpdateUserMobileRequest
+import com.routebox.routebox.controller.user.dto.UpdateUserMobileResponse
 import com.routebox.routebox.controller.user.dto.UserProfileResponse
 import com.routebox.routebox.controller.user.dto.UserResponse
 import com.routebox.routebox.domain.validation.Nickname
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -37,6 +41,7 @@ class UserController(
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val checkNicknameAvailabilityUseCase: CheckNicknameAvailabilityUseCase,
     private val updateUserInfoUseCase: UpdateUserInfoUseCase,
+    private val updateUserMobileUseCase: UpdateUserMobileUseCase,
 ) {
     @Operation(
         summary = "내 유저 정보 조회",
@@ -105,5 +110,21 @@ class UserController(
     ): UserResponse {
         val updateUserInfo = updateUserInfoUseCase(request.toCommand(userPrincipal.userId))
         return UserResponse.from(updateUserInfo)
+    }
+
+    @Operation(
+        summary = "유저 푸시 정보 입력",
+        security = [SecurityRequirement(name = "access-token")],
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200"),
+    )
+    @PutMapping("/v1/users/mobile")
+    fun updateUserMobile(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @ModelAttribute @Valid request: UpdateUserMobileRequest,
+    ): UpdateUserMobileResponse {
+        val id = updateUserMobileUseCase(request.toCommand(userPrincipal.userId))
+        return UpdateUserMobileResponse(id)
     }
 }
