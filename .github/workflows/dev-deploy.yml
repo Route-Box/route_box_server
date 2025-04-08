@@ -7,7 +7,7 @@ on:
 env:
     AWS_REGION: ap-northeast-2
     ECR_REPOSITORY: routebox-dev
-    EB_APP_NAME: routebox-dev
+    EB_APP_NAME: routebox
     EB_ENV_NAME: Routebox-dev-env
     DOCKER_IMAGE_TAG: ${{ github.sha }}
 
@@ -75,13 +75,6 @@ jobs:
             - name: Install EB CLI
               run: |
                   pip install awsebcli
-
-            - name: Initialize EB CLI
-              run: |
-                  eb init $EB_APP_NAME \
-                    --platform docker \
-                    --region $AWS_REGION \
-                    --no-interactive
 
             - name: Deploy to Elastic Beanstalk
               run: |
