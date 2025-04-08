@@ -1,16 +1,15 @@
-name: Dev Deploy to Amazon ECS
+name: Dev Deploy to Elastic Beanstalk
 
 on:
     push:
-        branches: [ "develop" ]
+        branches: [ "feature/#143" ]
 
 env:
     AWS_REGION: ap-northeast-2
     ECR_REPOSITORY: routebox-dev
-    ECS_SERVICE: routebox-service-dev
-    ECS_CLUSTER: routebox-dev-cluster
-    ECS_TASK_DEFINITION: routebox-task-definition-dev.json
-    CONTAINER_NAME: routebox-dev
+    EB_APP_NAME: routebox-dev
+    EB_ENV_NAME: Routebox-dev-env
+    DOCKER_IMAGE_TAG: ${{ github.sha }}
 
 permissions:
     contents: read
@@ -36,7 +35,7 @@ jobs:
 
             - name: Copy Secret
               env:
-                  CREATE_SECRET: ${{secrets.ENV_DEV}}
+                  CREATE_SECRET: ${{ secrets.ENV_DEV }}
                   CREATE_SECRET_DIR: src/main/resources
                   CREATE_SECRET_DIR_FILE_NAME: env.properties
               run: echo $CREATE_SECRET | base64 --decode > $CREATE_SECRET_DIR/$CREATE_SECRET_DIR_FILE_NAME
@@ -45,7 +44,7 @@ jobs:
               run: ./gradlew build
 
             - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v1
+              uses: aws-actions/configure-aws-credentials@v2
               with:
                   aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
                   aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -53,33 +52,37 @@ jobs:
 
             - name: Login to Amazon ECR
               id: login-ecr
-              uses: aws-actions/amazon-ecr-login@v1
-
-            - name: Build, tag, and push image to Amazon ECR
-              id: build-image
-              env:
-                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-                  IMAGE_TAG: ${{ github.sha }}
               run: |
-                  # Build a docker container and
-                  # push it to ECR so that it can
-                  # be deployed to ECS.
-                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-                  echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+                  aws ecr get-login-password --region $AWS_REGION | \
+                  docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com
 
-            - name: Fill in the new image ID in the Amazon ECS task definition
-              id: task-def
-              uses: aws-actions/amazon-ecs-render-task-definition@v1
-              with:
-                  task-definition: ${{ env.ECS_TASK_DEFINITION }}
-                  container-name: ${{ env.CONTAINER_NAME }}
-                  image: ${{ steps.build-image.outputs.image }}
+            - name: Build, tag, and push Docker image to Amazon ECR
+              id: build-image
+              run: |
+                  IMAGE_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$DOCKER_IMAGE_TAG
+                  docker build -t $IMAGE_URI .
+                  docker push $IMAGE_URI
+                  echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
 
-            - name: Deploy Amazon ECS task definition
-              uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-              with:
-                  task-definition: ${{ steps.task-def.outputs.task-definition }}
-                  service: ${{ env.ECS_SERVICE }}
-                  cluster: ${{ env.ECS_CLUSTER }}
-                  wait-for-service-stability: true
+            - name: Copy Dockerrun for current branch
+              run: |
+                    if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+                        cp Dockerrun.prod.json Dockerrun.aws.json
+                    else
+                        cp Dockerrun.dev.json Dockerrun.aws.json
+                    fi
+
+            - name: Install EB CLI
+              run: |
+                  pip install awsebcli
+
+            - name: Initialize EB CLI
+              run: |
+                  eb init $EB_APP_NAME \
+                    --platform docker \
+                    --region $AWS_REGION \
+                    --no-interactive
+
+            - name: Deploy to Elastic Beanstalk
+              run: |
+                  eb deploy $EB_ENV_NAME --staged --verbose
