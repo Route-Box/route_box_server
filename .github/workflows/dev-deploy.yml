@@ -50,6 +50,9 @@ jobs:
                   aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                   aws-region: ${{ env.AWS_REGION }}
 
+            - name: Copy dev compose file
+              run: cp docker-compose.dev.yml docker-compose.yml
+
             - name: Login to Amazon ECR
               id: login-ecr
               run: |
@@ -64,18 +67,15 @@ jobs:
                   docker push $IMAGE_URI
                   echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
 
-            - name: Copy Dockerrun for current branch
-              run: |
-                    if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-                        cp Dockerrun.prod.json Dockerrun.aws.json
-                    else
-                        cp Dockerrun.dev.json Dockerrun.aws.json
-                    fi
-
             - name: Install EB CLI
               run: |
-                  pip install awsebcli
+                pip install --upgrade --user awsebcli
+                echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+            - name: EB Init
+              run: |
+                eb init ${{ env.EB_APP_NAME }} --platform "Docker running on 64bit Amazon Linux 2023" --region ${{ env.AWS_REGION }}
+                eb use ${{ env.EB_ENV_NAME }}
 
             - name: Deploy to Elastic Beanstalk
-              run: |
-                  eb deploy $EB_ENV_NAME --staged --verbose
+              run: eb deploy --staged --verbose
