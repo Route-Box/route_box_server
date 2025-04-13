@@ -1,6 +1,7 @@
 FROM openjdk:17 AS build
 WORKDIR /app
 COPY . .
+RUN apt-get update && apt-get install -y findutils
 RUN chmod +x ./gradlew
 RUN ./gradlew bootJar --no-daemon
 
