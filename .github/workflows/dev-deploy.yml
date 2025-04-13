@@ -1,15 +1,16 @@
-name: Dev Deploy to Elastic Beanstalk
+name: Dev Deploy to Amazon ECS
 
 on:
     push:
-        branches: [ "feature/#143" ]
+        branches: [ "develop" ]
 
 env:
     AWS_REGION: ap-northeast-2
     ECR_REPOSITORY: routebox-dev
-    EB_APP_NAME: routebox
-    EB_ENV_NAME: Routebox-dev-env
-    DOCKER_IMAGE_TAG: ${{ github.sha }}
+    ECS_SERVICE: routebox-service-dev
+    ECS_CLUSTER: routebox-dev-cluster
+    ECS_TASK_DEFINITION: routebox-task-definition-dev.json
+    CONTAINER_NAME: routebox-dev
 
 permissions:
     contents: read
@@ -35,7 +36,7 @@ jobs:
 
             - name: Copy Secret
               env:
-                  CREATE_SECRET: ${{ secrets.ENV_DEV }}
+                  CREATE_SECRET: ${{secrets.ENV_DEV}}
                   CREATE_SECRET_DIR: src/main/resources
                   CREATE_SECRET_DIR_FILE_NAME: env.properties
               run: echo $CREATE_SECRET | base64 --decode > $CREATE_SECRET_DIR/$CREATE_SECRET_DIR_FILE_NAME
@@ -44,38 +45,40 @@ jobs:
               run: ./gradlew build
 
             - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v2
+              uses: aws-actions/configure-aws-credentials@v1
               with:
                   aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
                   aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                   aws-region: ${{ env.AWS_REGION }}
 
-            - name: Copy dev compose file
-              run: cp docker-compose.dev.yml docker-compose.yml
-
             - name: Login to Amazon ECR
               id: login-ecr
-              run: |
-                  aws ecr get-login-password --region $AWS_REGION | \
-                  docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com
+              uses: aws-actions/amazon-ecr-login@v1
 
-            - name: Build, tag, and push Docker image to Amazon ECR
+            - name: Build, tag, and push image to Amazon ECR
               id: build-image
+              env:
+                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                  IMAGE_TAG: ${{ github.sha }}
               run: |
-                  IMAGE_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$DOCKER_IMAGE_TAG
-                  docker build -t $IMAGE_URI .
-                  docker push $IMAGE_URI
-                  echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
+                  # Build a docker container and
+                  # push it to ECR so that it can
+                  # be deployed to ECS.
+                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+                  echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+            - name: Fill in the new image ID in the Amazon ECS task definition
+              id: task-def
+              uses: aws-actions/amazon-ecs-render-task-definition@v1
+              with:
+                  task-definition: ${{ env.ECS_TASK_DEFINITION }}
+                  container-name: ${{ env.CONTAINER_NAME }}
+                  image: ${{ steps.build-image.outputs.image }}
 
-            - name: Install EB CLI
-              run: |
-                pip install --upgrade --user awsebcli
-                echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-            - name: EB Init
-              run: |
-                eb init ${{ env.EB_APP_NAME }} --platform "Docker running on 64bit Amazon Linux 2023" --region ${{ env.AWS_REGION }}
-                eb use ${{ env.EB_ENV_NAME }}
-
-            - name: Deploy to Elastic Beanstalk
-              run: eb deploy --staged --verbose
+            - name: Deploy Amazon ECS task definition
+              uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+              with:
+                  task-definition: ${{ steps.task-def.outputs.task-definition }}
+                  service: ${{ env.ECS_SERVICE }}
+                  cluster: ${{ env.ECS_CLUSTER }}
+                  wait-for-service-stability: true

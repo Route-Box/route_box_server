@@ -1,0 +1,81 @@
+name: Dev Deploy to Elastic Beanstalk
+
+on:
+    push:
+        branches: [ "feature/#143" ]
+
+env:
+    AWS_REGION: ap-northeast-2
+    ECR_REPOSITORY: routebox-dev
+    EB_APP_NAME: routebox
+    EB_ENV_NAME: Routebox-dev-env
+    DOCKER_IMAGE_TAG: ${{ github.sha }}
+
+permissions:
+    contents: read
+
+jobs:
+    deploy:
+        name: Deploy
+        runs-on: ubuntu-latest
+        environment: production
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up JDK 17
+              uses: actions/setup-java@v3
+              with:
+                  java-version: '17'
+                  distribution: 'adopt'
+
+            - name: Grant execute permission for gradlew
+              run: chmod +x gradlew
+
+            - name: Copy Secret
+              env:
+                  CREATE_SECRET: ${{ secrets.ENV_DEV }}
+                  CREATE_SECRET_DIR: src/main/resources
+                  CREATE_SECRET_DIR_FILE_NAME: env.properties
+              run: echo $CREATE_SECRET | base64 --decode > $CREATE_SECRET_DIR/$CREATE_SECRET_DIR_FILE_NAME
+
+            - name: Build with Gradle
+              run: ./gradlew build
+
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v2
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ${{ env.AWS_REGION }}
+
+            - name: Copy dev compose file
+              run: cp docker-compose.dev.yml docker-compose.yml
+
+            - name: Login to Amazon ECR
+              id: login-ecr
+              run: |
+                  aws ecr get-login-password --region $AWS_REGION | \
+                  docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com
+
+            - name: Build, tag, and push Docker image to Amazon ECR
+              id: build-image
+              run: |
+                  IMAGE_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$DOCKER_IMAGE_TAG
+                  docker build -t $IMAGE_URI .
+                  docker push $IMAGE_URI
+                  echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
+
+            - name: Install EB CLI
+              run: |
+                pip install --upgrade --user awsebcli
+                echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+            - name: EB Init
+              run: |
+                eb init ${{ env.EB_APP_NAME }} --platform "Docker running on 64bit Amazon Linux 2023" --region ${{ env.AWS_REGION }}
+                eb use ${{ env.EB_ENV_NAME }}
+
+            - name: Deploy to Elastic Beanstalk
+              run: eb deploy --staged --verbose
