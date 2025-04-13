@@ -140,7 +140,7 @@ class UserService(
     @Transactional
     fun usePoint(userId: Long, point: Int): User {
         val user = getUserById(userId)
-        if (user.canPurchase(point)) {
+        if (!user.canPurchase(point)) {
             throw InsufficientPointException()
         }
         user.usePoint(point)

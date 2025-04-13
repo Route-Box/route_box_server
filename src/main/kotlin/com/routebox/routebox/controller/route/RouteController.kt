@@ -99,8 +99,7 @@ class RouteController(
     @Operation(
         summary = "루트 구매하기",
         description = "<p>루트를 구매합니다. 루트는 쿠폰과 포인트를 사용하여 구매할 수 있습니다." +
-            "<p>쿠폰을 사용하여 루트를 구매할 경우, 이용 종료일이 얼마 남지 않은 쿠폰이 자동으로 사용됩니다" +
-            "<p>포인트를 사용하여 루트를 구매하는 기능은 현재 미구현 상태입니다. (추후 구현 예정)",
+            "<p>쿠폰을 사용하여 루트를 구매할 경우, 이용 종료일이 얼마 남지 않은 쿠폰이 자동으로 사용됩니다",
         security = [SecurityRequirement(name = "access-token")],
     )
     @ApiResponses(
