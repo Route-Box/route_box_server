@@ -52,7 +52,9 @@ jobs:
                   aws-region: ${{ env.AWS_REGION }}
             
             - name: Create Procfile
-              run: echo "web: java -jar build/libs/${{ env.JAR_FILE }} --server.port=5000" > Procfile
+              run: |
+                echo "web: java -Dserver.port=5000 -jar build/libs/${JAR_FILE}" > Procfile
+                cat Procfile
 
             - name: Create .ebextensions for Java configuration
               run: |
