@@ -6,11 +6,10 @@ on:
 
 env:
     AWS_REGION: ap-northeast-2
-    ECR_REPOSITORY: routebox-dev
     EB_APP_NAME: routebox
     EB_ENV_NAME: Routebox-dev-env
-    DOCKER_IMAGE_TAG: ${{ github.sha }}
     JAR_FILE: routebox-0.0.1.jar
+    VERSION_LABEL: ${{ github.run_number }}-${{ github.sha }}
 
 permissions:
     contents: read
@@ -51,26 +50,26 @@ jobs:
                   aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
                   aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                   aws-region: ${{ env.AWS_REGION }}
+            
+            - name: Create Procfile
+              run: echo "web: java -jar build/libs/${{ env.JAR_FILE }} --server.port=5000" > Procfile
 
-            - name: Copy dev compose file
-              run: cp docker-compose.dev.yml docker-compose.yml
-
-            - name: Copy JAR to Docker build context
-              run: cp build/libs/${{ env.JAR_FILE }} app.jar
-
-            - name: Login to Amazon ECR
-              id: login-ecr
+            - name: Create .ebextensions for Java configuration
               run: |
-                  aws ecr get-login-password --region $AWS_REGION | \
-                  docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com
+                mkdir -p .ebextensions
+                cat > .ebextensions/java-options.config << 'EOL'
+                option_settings:
+                  aws:elasticbeanstalk:application:environment:
+                    JAVA_OPTS: "-Xms256m -Xmx512m"
+                  aws:elasticbeanstalk:environment:proxy:staticfiles:
+                    /static: static
+                EOL
 
-            - name: Build, tag, and push Docker image to Amazon ECR
-              id: build-image
+            - name: Create deployment package
               run: |
-                  IMAGE_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$DOCKER_IMAGE_TAG
-                  docker build -t $IMAGE_URI .
-                  docker push $IMAGE_URI
-                  echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
+                mkdir -p deploy
+                cp -r build/libs/${{ env.JAR_FILE }} Procfile .ebextensions deploy/
+                cd deploy && zip -r ../deploy.zip .
 
             - name: Install EB CLI
               run: |
@@ -79,8 +78,8 @@ jobs:
 
             - name: EB Init
               run: |
-                eb init ${{ env.EB_APP_NAME }} --platform "Docker running on 64bit Amazon Linux 2023" --region ${{ env.AWS_REGION }}
+                eb init ${{ env.EB_APP_NAME }} --platform "Corretto 17 running on 64bit Amazon Linux 2023" --region ${{ env.AWS_REGION }}
                 eb use ${{ env.EB_ENV_NAME }}
 
             - name: Deploy to Elastic Beanstalk
-              run: eb deploy --staged --verbose --timeout 30
+              run: eb deploy --staged --timeout 30 --version=${{ env.VERSION_LABEL }} --source=deploy.zip
