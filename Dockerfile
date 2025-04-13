@@ -1,11 +1,9 @@
-FROM openjdk:17 AS build
+FROM gradle:8.2-jdk17 AS build
 WORKDIR /app
 COPY . .
-RUN apt-get update && apt-get install -y findutils
-RUN chmod +x ./gradlew
-RUN ./gradlew bootJar --no-daemon
+RUN gradle bootJar --no-daemon
 
-FROM openjdk:17-slim
+FROM eclipse-temurin:17-jre
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
