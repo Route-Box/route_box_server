@@ -1,0 +1,9 @@
+branch-defaults:
+    develop:
+        environment: Routebox-dev-env
+    main:
+        environment: Routebox-prod-env
+global:
+    application_name: routebox
+    default_region: ap-northeast-2
+    platform: Docker
