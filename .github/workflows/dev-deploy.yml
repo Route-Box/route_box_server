@@ -9,6 +9,7 @@ env:
     EB_APP_NAME: routebox
     EB_ENV_NAME: Routebox-dev-env
     JAR_FILE: routebox-0.0.1.jar
+    S3_BUCKET: elasticbeanstalk-${{ env.AWS_REGION }}-${{ secrets.AWS_ACCOUNT_ID }}
     VERSION_LABEL: v-${{ github.run_number }}-${{ github.sha }}
 
 permissions:
@@ -83,14 +84,9 @@ jobs:
                 eb init ${{ env.EB_APP_NAME }} --platform "Corretto 17 running on 64bit Amazon Linux 2023" --region ${{ env.AWS_REGION }}
                 eb use ${{ env.EB_ENV_NAME }}
 
-            - name: Create Application Version
-              run: |
-                aws elasticbeanstalk create-application-version \
-                  --application-name ${{ env.EB_APP_NAME }} \
-                  --version-label ${{ env.VERSION_LABEL }} \
-                  --source-bundle S3Bucket="${{ env.EB_APP_NAME }}",S3Key="deploy.zip" \
-                  --process
-                aws s3 cp deploy.zip s3://${{ env.EB_APP_NAME }}/deploy.zip
-
             - name: Deploy to Elastic Beanstalk
-              run: eb deploy ${{ env.EB_ENV_NAME }} --version=${{ env.VERSION_LABEL }} --timeout 30
+              run: |
+                VERSION_LABEL="${{ env.VERSION_LABEL }}-$(date +%Y%m%d%H%M%S)"
+                echo "Deploying with version: $VERSION_LABEL"
+                
+                eb deploy ${{ env.EB_ENV_NAME }} --label=$VERSION_LABEL --timeout 30
